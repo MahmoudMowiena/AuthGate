@@ -7,7 +7,7 @@ import { TenantController } from 'src/presentation/controllers/tenant.controller
 @Module({
   imports:[
         MongooseModule.forFeature([
-            {name:Tenant.name,schema:TenantSchema}
+            {name:Tenant.name, schema:TenantSchema}
     ])
     ],
   controllers: [TenantController],
