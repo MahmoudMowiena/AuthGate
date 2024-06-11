@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, UsePipes, ValidationPipe } from "@nestjs/c
 import { userModel } from "../dtos/user.model";
 import { UserRepository } from "src/infrastructure/repositories/user.repository";
 
-@Controller('users')
+@Controller('user')
 export class UserController {
     constructor(private userRepository:UserRepository){}
     @Post()
