@@ -14,19 +14,11 @@ export class TenantRepository implements ITenantRepository{
     return createdTenant.save();
   }
 
+  async findByEmail(email: string): Promise<Tenant | null> {
+    return this.tenantModel.findOne({ email }).exec();
+  }
+
   async findAll(): Promise<Tenant[]> {
     return this.tenantModel.find().exec();
   }
-
-  async findOne(id: string): Promise<Tenant> {
-    return this.tenantModel.findById(id).exec();
-  }
-
-//   async update(id: string, updateTenantDto: UpdateTenantDto): Promise<Tenant> {
-//     return this.tenantModel.findByIdAndUpdate(id, updateTenantDto, { new: true }).exec();
-//   }
-
-//   async remove(id: string): Promise<Tenant> {
-//     return this.tenantModel.findByIdAndRemove(id).exec();
-//   }
 }
