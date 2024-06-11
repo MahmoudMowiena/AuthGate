@@ -1,6 +1,10 @@
 import { IsEmail, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class SignInTenantResponse {
+    
+    @IsString()
+    id: string;
+    
     @IsString()
     name: string;
 
@@ -14,4 +18,7 @@ export class SignInTenantResponse {
     @IsOptional()
     @IsString()
     image?: string;
+
+    @IsString()
+    role: 'tenant';
 }

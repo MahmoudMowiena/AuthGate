@@ -1,13 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './services/auth.service';
-import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthController } from './controllers/auth.controller';
-import { jwtConstants } from './constants';
+import { jwtConstants } from 'src/constants';
+import { AuthService } from 'src/infrastructure/services/auth.service';
+import { AuthController } from 'src/presentation/controllers/auth.controller';
+import { UserModule } from './user.module';
+import { TenantModule } from './tenant.module';
+import { ProjectsModule } from './project.module';
 
 @Module({
   imports: [
-    UsersModule,
+    UserModule,
+    TenantModule,
+    ProjectsModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,

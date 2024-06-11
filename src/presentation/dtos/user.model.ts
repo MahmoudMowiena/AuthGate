@@ -12,6 +12,7 @@ export class userModel {
     message:'Password must include a number, lowercase, uppercase, special character'
   })
   password: string;
+  confirmPassword: string;
 
   @Matches(/^\S+@\S+\.\S+$/,{
     message:'email pattern is invalid'
@@ -20,14 +21,9 @@ export class userModel {
   @IsEmail()
   email: string;
 
-
   @IsOptional()
   @IsString()
   phone?: string;
-
-  @IsOptional()
-  @IsString()
-  token?: string;
 
   @IsOptional()
   @IsString()
@@ -36,7 +32,4 @@ export class userModel {
   @IsOptional()
   @IsNumber()
   age?: number;
-
-  // @IsOptional()
-  // projects?: string[];
 }
