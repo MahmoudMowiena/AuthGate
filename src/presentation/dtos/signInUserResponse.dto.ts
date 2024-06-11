@@ -3,6 +3,9 @@ import { IsEmail, IsNumber, IsOptional, IsString } from "class-validator";
 export class SignInUserResponse {
 
     @IsString()
+    id: string;
+    
+    @IsString()
     name: string;
 
     @IsEmail()
@@ -19,4 +22,7 @@ export class SignInUserResponse {
     @IsOptional()
     @IsNumber()
     age?: number;
+
+    @IsString()
+    role: 'user';
 }

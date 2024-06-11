@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { tenantModel } from '../../presentation/dtos/tenant.model';
 import { Tenant, TenantDocument } from '../../domain/entities/tenant.entity';
-import { ITenantRepository } from '../../domain/Irepositories/tenant.irepository';
 
 @Injectable()
 export class TenantsService {
@@ -14,19 +13,11 @@ export class TenantsService {
     return createdTenant.save();
   }
 
+  async findByEmail(email: string): Promise<Tenant | null> {
+    return this.tenantModel.findOne({ email }).exec();
+  }
+
   async findAll(): Promise<Tenant[]> {
     return this.tenantModel.find().exec();
   }
-
-  async findOne(id: string): Promise<Tenant> {
-    return this.tenantModel.findById(id).exec();
-  }
-
-//   async update(id: string, updateTenantDto: UpdateTenantDto): Promise<Tenant> {
-//     return this.tenantModel.findByIdAndUpdate(id, updateTenantDto, { new: true }).exec();
-//   }
-
-//   async remove(id: string): Promise<Tenant> {
-//     return this.tenantModel.findByIdAndRemove(id).exec();
-//   }
 }

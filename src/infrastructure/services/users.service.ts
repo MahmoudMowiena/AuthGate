@@ -18,10 +18,11 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-  async findOne(id: string): Promise<User> {
-    return this.userModel.findById(id).exec();
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).exec();
   }
 
+  
 //   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
 //     return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).exec();
 //   }
