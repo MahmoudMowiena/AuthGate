@@ -8,4 +8,3 @@ export interface IUserRepository {
     
     findOne(id: string): Promise<User>;
 }
-  

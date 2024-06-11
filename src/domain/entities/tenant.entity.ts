@@ -43,6 +43,9 @@ export class Tenant {
   @Prop()
   website?: string;
 
+  @Prop()
+  image?: string;
+
   @Prop({ type: [projectSchema], default: [] })
   projects: Project[];
 }

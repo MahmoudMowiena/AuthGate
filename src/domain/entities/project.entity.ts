@@ -1,15 +1,29 @@
-import { Schema,Prop, SchemaFactory } from "@nestjs/mongoose";
-import mongoose from "mongoose";
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { IsString, IsNotEmpty, IsUrl, IsOptional } from 'class-validator';
 
-@Schema()
-export class Project{
-    
-    @Prop({required: true,unique:true})
-    clientID:string;
+@Schema({ timestamps: true })
+export class Project extends Document {
+  @Prop()
+  @IsString()
+  @IsOptional()
+  clientID: string;
 
-    @Prop({required: true})
-    clientSECRET:string;
+  @Prop()
+  @IsString()
+  @IsOptional()
+  clientSECRET: string;
 
+  @Prop({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @Prop({ required: true })
+  @IsString()
+  @IsUrl()
+  @IsNotEmpty()
+  callBackUrl: string;
 }
 
 export const projectSchema = SchemaFactory.createForClass(Project);

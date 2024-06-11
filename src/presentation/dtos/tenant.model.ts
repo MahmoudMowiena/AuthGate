@@ -24,6 +24,7 @@ export class tenantModel {
   readonly phone?: string;
   readonly address?: string;
   readonly website?: string;
+  readonly image?:string;
 
   @IsArray()
   @ValidateNested({ each: true })

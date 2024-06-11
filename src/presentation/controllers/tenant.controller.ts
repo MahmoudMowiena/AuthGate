@@ -4,22 +4,22 @@ import { TenantRepository } from 'src/infrastructure/repositories/tenant.reposit
 import { TenantDocument } from 'src/domain/entities/tenant.entity';
 //import { UpdateTenantDto } from './dto/update-tenant.dto';
 
-@Controller('tenant')
+@Controller('tenants')
 export class TenantController {
   constructor(private readonly tenantRepository: TenantRepository) {}
 
   @Post('signup')
   async signUp(@Body() createTenantDto: tenantModel): Promise<tenantModel> {
-    const { email, password, confirmPassword } = createTenantDto;
+    const { email } = createTenantDto;
 
     const existingTenant = await this.tenantRepository.findByEmail(email);
     if (existingTenant) {
       throw new ConflictException('Email already in use. Please go to login.');
     }
 
-    if (password !== confirmPassword) {
-      throw new ConflictException('Passwords do not match');
-    }
+    // if (password !== confirmPassword) {
+    //   throw new ConflictException('Passwords do not match');
+    // }
 
     const newTenant = new tenantModel();
     Object.assign(newTenant, createTenantDto);
