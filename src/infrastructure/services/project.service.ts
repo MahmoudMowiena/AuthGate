@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Project } from "src/domain/entities/project.entity";
@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ProjectService {
-    constructor(@InjectModel(Project.name) private readonly projectModel: Model<Project>) { }
+    constructor(@InjectModel(Project.name) private projectModel: Model<Project>) { }
 
     async create(createProjectDto: projectModel): Promise<Project> {
         const createdProject = new this.projectModel(createProjectDto);
@@ -17,15 +17,55 @@ export class ProjectService {
 
         createdProject.clientID = clientID;
         createdProject.clientSECRET = clientSECRET;
-        return createdProject.save();
+
+        try {
+            return await createdProject.save();
+        } catch (error) {
+            throw new BadRequestException('Failed to create project');
+        }
     }
 
     async findAll(): Promise<Project[]> {
-        return await this.projectModel.find();
+        try {
+            return await this.projectModel.find();
+        } catch (error) {
+            throw new BadRequestException('Failed to retrieve projects');
+        }
     }
 
     async findOne(id: string): Promise<Project> {
-        return await this.projectModel.findById(id);
+        try {
+            const project = await this.projectModel.findById(id);
+            if (!project) {
+                throw new NotFoundException(`Project with ID: ${id} not found`);
+            }
+            return project;
+        } catch (error) {
+            throw new NotFoundException(`Project with ID: ${id} not found`);
+        }
     }
 
+    async update(id: string, updateProjectDto: projectModel): Promise<Project> {
+        try {
+            const updatedProject = await this.projectModel.findByIdAndUpdate(id, updateProjectDto, { new: true });
+            if (!updatedProject) {
+                throw new NotFoundException(`Project with ID: ${id} not found for update`);
+            }
+            return updatedProject;
+        } catch (error) {
+            throw new BadRequestException('Failed to update project');
+        }
+    }
+
+    async delete(id: string): Promise<Project> {
+        try {
+            const deletedProject = await this.projectModel.findByIdAndDelete(id);
+            if (!deletedProject) {
+                throw new NotFoundException(`Project with ID: ${id} not found for deletion`);
+            }
+            return deletedProject;
+        } catch (error) {
+            throw new BadRequestException('Failed to delete project');
+        }
+    }
 }
