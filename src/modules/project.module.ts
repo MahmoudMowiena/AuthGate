@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Project, projectSchema } from 'src/domain/entities/project.entity';
 import { ProjectService } from 'src/infrastructure/services/project.service';
 import { ProjectsController } from 'src/presentation/controllers/project.controller';
+import { projectModel } from 'src/presentation/dtos/project.model';
 
 
 @Module({
@@ -11,6 +12,6 @@ import { ProjectsController } from 'src/presentation/controllers/project.control
   ],
   controllers: [ProjectsController],
   providers: [ProjectService],
-  exports: [ProjectService],
+  exports: [ProjectService,MongooseModule],
 })
 export class ProjectsModule {}
