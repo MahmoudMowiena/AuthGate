@@ -7,34 +7,33 @@ export type TenantDocument = Tenant & Document;
 
 @Schema()
 export class Tenant {
-  
   @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
   _id: Types.ObjectId;
-  
-  @Prop({ required: true, unique:true })
+
+  @Prop({ required: true, unique: true })
   name: string;
 
-  @Prop({ 
+  @Prop({
     required: true,
     match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'],
-    unique:true
+    unique: true,
   })
   email: string;
 
-  @Prop({ 
+  @Prop({
     required: true,
     // match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, 'Password must be strong']
   })
   password: string;
 
-  @Prop({ 
+  @Prop({
     required: true,
     validate: {
-      validator: function(this: Tenant, value: string) {
+      validator: function (this: Tenant, value: string) {
         return value === this.password;
       },
-      message: 'Passwords do not match'
-    }
+      message: 'Passwords do not match',
+    },
   })
   confirmPassword: string;
 
@@ -52,10 +51,12 @@ export class Tenant {
 
   @Prop({ type: [projectSchema], default: [] })
   projects: Project[];
+
+  @Prop({ default: false })
+  deleted: boolean;
 }
 
 export const TenantSchema = SchemaFactory.createForClass(Tenant);
-
 
 TenantSchema.pre('save', function (next) {
   if (this.password !== this.confirmPassword) {

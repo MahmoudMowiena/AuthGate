@@ -5,13 +5,11 @@ import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import { TenantController } from 'src/presentation/controllers/tenant.controller';
 
 @Module({
-  imports:[
-        MongooseModule.forFeature([
-            {name:Tenant.name, schema:TenantSchema}
-    ])
-    ],
-  controllers: [TenantController],
+  imports: [
+    MongooseModule.forFeature([{ name: Tenant.name, schema: TenantSchema }]),
+  ],
   providers: [TenantsService],
+  controllers: [TenantController],
   exports: [TenantsService],
 })
 export class TenantModule {}
