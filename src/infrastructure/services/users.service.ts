@@ -4,10 +4,9 @@ import { Model } from 'mongoose';
 import { userModel } from '../../presentation/dtos/user.model';
 //import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from '../../domain/entities/user.entity';
-import { IUserRepository } from 'src/domain/Irepositories/user.irepository';
 
 @Injectable()
-export class UserRepository implements IUserRepository {
+export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async create(createUserDto: userModel): Promise<User> {
@@ -19,10 +18,11 @@ export class UserRepository implements IUserRepository {
     return this.userModel.find().exec();
   }
 
-  async findOne(id: string): Promise<User> {
-    return this.userModel.findById(id).exec();
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).exec();
   }
 
+  
 //   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
 //     return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).exec();
 //   }

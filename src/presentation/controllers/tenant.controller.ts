@@ -1,25 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ConflictException, HttpException, HttpStatus } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
-import { TenantRepository } from 'src/infrastructure/repositories/tenant.repository';
-//import { UpdateTenantDto } from './dto/update-tenant.dto';
+import { TenantsService } from 'src/infrastructure/services/tenants.service';
 
-@Controller('tenant')
+@Controller('tenants')
 export class TenantController {
-  constructor(private readonly tenantRepository: TenantRepository) {}
+  constructor(private readonly tenantsService: TenantsService) {}
 
-  @Post()
-  create(@Body() createTenantDto: tenantModel) {
-    return this.tenantRepository.create(createTenantDto);
-  }
+  // @Post('signup')
+  // async signUp(@Body() createTenantDto: tenantModel): Promise<tenantModel> {
+  //   const { email } = createTenantDto;
+
+  //   const existingTenant = await this.tenantsService.findByEmail(email);
+  //   if (existingTenant) {
+  //     throw new ConflictException('Email already in use. Please go to login.');
+  //   }
+
+  //   // if (password !== confirmPassword) {
+  //   //   throw new ConflictException('Passwords do not match');
+  //   // }
+
+  //   const newTenant = new tenantModel();
+  //   Object.assign(newTenant, createTenantDto);
+  //   return this.tenantsService.create(newTenant);
+  // }
 
   @Get()
-  findAll() {
-    return this.tenantRepository.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tenantRepository.findOne(id);
+  async findAll(): Promise<tenantModel[]> {
+    return this.tenantsService.findAll();
   }
 
 //   @Patch(':id')

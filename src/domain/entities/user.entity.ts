@@ -1,20 +1,41 @@
 import { Schema,Prop, SchemaFactory } from "@nestjs/mongoose";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { UserProject } from "./userProject.entity";
 
 export type UserDocument = User & Document;
 
 @Schema()
 export class User{
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
+  _id: Types.ObjectId;
    
     @Prop({required: true})
     name:string;
 
-    @Prop({required: true,unique:true})
+    @Prop({ 
+        required: true,
+        match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'],
+        unique:true
+      })
     email:string;
 
-    @Prop({required: true})
+    @Prop({ 
+        required: true,
+        // match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, 'Password must be strong']
+      })
     password:string;
+
+    @Prop({ 
+        required: true,
+        validate: {
+          validator: function(this: User, value: string) {
+            return value === this.password;
+          },
+          message: 'Passwords do not match'
+        }
+      })
+      confirmPassword: string;
 
     @Prop()
     phone:string;
@@ -33,3 +54,11 @@ export class User{
 }
 
 export const userSchema = SchemaFactory.createForClass(User);
+
+userSchema.pre('save', function (next) {
+    if (this.password !== this.confirmPassword) {
+      next(new Error('Passwords do not match'));
+    } else {
+      next();
+    }
+  });
