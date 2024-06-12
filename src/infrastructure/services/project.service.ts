@@ -45,6 +45,14 @@ export class ProjectService {
         }
     }
 
+    // async findProjectIDByClientID(clientID: string): Promise<string> {
+    //     const project = await this.projectModel.findOne({ clientID });
+    //     if (!project) {
+    //         throw new NotFoundException(`Project with clientID: ${clientID} not found`);
+    //     }
+    //     return project._id.toString();
+    // }
+
     async update(id: string, updateProjectDto: projectModel): Promise<Project> {
         try {
             const updatedProject = await this.projectModel.findByIdAndUpdate(id, updateProjectDto, { new: true });
@@ -68,4 +76,7 @@ export class ProjectService {
             throw new BadRequestException('Failed to delete project');
         }
     }
+
+
+    
 }

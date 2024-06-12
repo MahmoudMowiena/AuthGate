@@ -1,10 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ConflictException, HttpException, HttpStatus } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
+import { ProjectService } from 'src/infrastructure/services/project.service';
 
 @Controller('tenants')
 export class TenantController {
-  constructor(private readonly tenantsService: TenantsService) {}
+
+  constructor(
+    private readonly tenantsService: TenantsService,
+    private readonly projectService: ProjectService,
+  ) {}
 
   // @Post('signup')
   // async signUp(@Body() createTenantDto: tenantModel): Promise<tenantModel> {
@@ -38,4 +43,16 @@ export class TenantController {
 //   remove(@Param('id') id: string) {
 //     return this.tenantService.remove(+id);
 //   }
+
+@Post('authorize-client')
+  async authorizeClient(@Body('clientID') clientID: string, @Body('clientSECRET') clientSECRET: string): Promise<{ callbackUrl: string }> {
+    try {
+      const projectId = await this.tenantsService.authorizeClient(clientID, clientSECRET);
+      const frontendURL = 'http://localhost:4200/authorize/';
+      const callbackUrl = frontendURL + projectId;
+      return { callbackUrl };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
+    }
+  }
 }
