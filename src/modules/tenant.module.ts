@@ -16,6 +16,7 @@ import { ProjectsModule } from './project.module';
     ],
   controllers: [TenantController],
   providers: [TenantsService],
+  controllers: [TenantController],
   exports: [TenantsService],
 })
 export class TenantModule {}
