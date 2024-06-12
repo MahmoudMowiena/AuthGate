@@ -1,11 +1,14 @@
 import { Schema,Prop, SchemaFactory } from "@nestjs/mongoose";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { UserProject } from "./userProject.entity";
 
 export type UserDocument = User & Document;
 
 @Schema()
 export class User{
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
+  _id: Types.ObjectId;
    
     @Prop({required: true})
     name:string;
@@ -19,7 +22,7 @@ export class User{
 
     @Prop({ 
         required: true,
-        match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, 'Password must be strong']
+        // match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, 'Password must be strong']
       })
     password:string;
 

@@ -13,22 +13,22 @@ export class tenantModel {
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
     message: 'Password too weak',
   })
-  readonly password: string;
+  password: string;
 
   @IsNotEmpty()
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
     message: 'Password too weak',
   })
-  readonly confirmPassword: string;
+  confirmPassword: string;
 
   readonly phone?: string;
   readonly address?: string;
   readonly website?: string;
   readonly image?:string;
 
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => Project)
-  @IsOptional()
-  projects?: Project[];
+  // @IsArray()
+  // @ValidateNested({ each: true })
+  // @Type(() => Project)
+  // @IsOptional()
+  // projects?: Project[];
 }
