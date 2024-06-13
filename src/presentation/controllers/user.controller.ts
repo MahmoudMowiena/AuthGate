@@ -9,13 +9,15 @@ import {
   Patch,
   Post,
   Put,
+  Request,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { userModel } from '../dtos/user.model';
 import { UsersService } from 'src/infrastructure/services/users.service';
 import { AuthService } from 'src/infrastructure/services/auth.service';
-import { User } from 'src/domain/entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UserController {
@@ -107,4 +109,43 @@ export class UserController {
       );
     }
   }
+
+  // @Patch()
+  // @UseGuards(AuthGuard)
+  // async update(
+  //   @Body() updateUserDto: userModel,
+  //   @Request() req: any,
+  // ): Promise<userModel> {
+  //   try {
+  //     const userId = req.user.userId;
+  //     const updatedUser = await this.userService.update(userId, updateUserDto);
+  //     if (!updatedUser) {
+  //       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  //     }
+  //     return updatedUser;
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       'Failed to update user',
+  //       HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
+
+  // @Delete()
+  // @UseGuards(AuthGuard)
+  // async remove(@Request() req: any): Promise<userModel> {
+  //   try {
+  //     const userId = req.user.userId;
+  //     const user = await this.userService.remove(userId);
+  //     if (!user) {
+  //       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  //     }
+  //     return user;
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       'Failed to delete user',
+  //       HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
 }
