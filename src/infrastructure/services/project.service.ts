@@ -1,29 +1,49 @@
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException,Inject, forwardRef } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Project } from "src/domain/entities/project.entity";
+import { Tenant } from "src/domain/entities/tenant.entity";
 import { projectModel } from "src/presentation/dtos/project.model";
 import { v4 as uuidv4 } from 'uuid';
+import { TenantsService } from "./tenants.service";
 
 @Injectable()
 export class ProjectService {
-    constructor(@InjectModel(Project.name) private projectModel: Model<Project>) { }
+    constructor(
+        @InjectModel(Project.name) private projectModel: Model<Project>,
+        @InjectModel(Tenant.name) private tenantModel: Model<Tenant>,
+        @Inject(forwardRef(() => TenantsService)) private tenantsService: TenantsService
+    ) {}
 
     async create(createProjectDto: projectModel): Promise<Project> {
-        const createdProject = new this.projectModel(createProjectDto);
+        const { tenantID, name, callBackUrl } = createProjectDto;
+
+        const tenant = await this.tenantModel.findById(tenantID);
+        if (!tenant) {
+            throw new NotFoundException(`Tenant with ID ${tenantID} not found`);
+        }
 
         const clientID = uuidv4();
         const clientSECRET = uuidv4();
 
-        createdProject.clientID = clientID;
-        createdProject.clientSECRET = clientSECRET;
+        const createdProject = new this.projectModel({
+            tenantID,
+            clientID,
+            clientSECRET,
+            name,
+            callBackUrl
+        });
 
         try {
-            return await createdProject.save();
+            const project = await createdProject.save();
+            tenant.projects.push(project);
+            await tenant.save();
+            return project;
         } catch (error) {
             throw new BadRequestException('Failed to create project');
         }
     }
+
 
     async findAll(): Promise<Project[]> {
         try {
