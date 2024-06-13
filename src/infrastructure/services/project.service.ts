@@ -15,35 +15,35 @@ export class ProjectService {
         @Inject(forwardRef(() => TenantsService)) private tenantsService: TenantsService
     ) {}
 
-    async create(createProjectDto: projectModel): Promise<Project> {
-        const { tenantID, name, callBackUrl } = createProjectDto;
-
+    async create(createProjectDto: projectModel, tenantID: string): Promise<Project> {
+        const { name, callBackUrl } = createProjectDto;
+    
         const tenant = await this.tenantModel.findById(tenantID);
         if (!tenant) {
-            throw new NotFoundException(`Tenant with ID ${tenantID} not found`);
+          throw new NotFoundException(`Tenant with ID ${tenantID} not found`);
         }
-
+    
         const clientID = uuidv4();
         const clientSECRET = uuidv4();
-
+    
         const createdProject = new this.projectModel({
-            tenantID,
-            clientID,
-            clientSECRET,
-            name,
-            callBackUrl
+          tenantID,
+          clientID,
+          clientSECRET,
+          name,
+          callBackUrl
         });
-
+    
         try {
-            const project = await createdProject.save();
-            tenant.projects.push(project);
-            await tenant.save();
-            return project;
+          const project = await createdProject.save();
+          tenant.projects.push(project);
+          await tenant.save();
+          return project;
         } catch (error) {
-            throw new BadRequestException('Failed to create project');
+          throw new BadRequestException('Failed to create project');
         }
-    }
-
+      }
+    
 
     async findAll(): Promise<Project[]> {
         try {
@@ -73,30 +73,34 @@ export class ProjectService {
     //     return project._id.toString();
     // }
 
-    async update(id: string, updateProjectDto: projectModel): Promise<Project> {
-        try {
-            const updatedProject = await this.projectModel.findByIdAndUpdate(id, updateProjectDto, { new: true });
-            if (!updatedProject) {
-                throw new NotFoundException(`Project with ID: ${id} not found for update`);
-            }
-            return updatedProject;
-        } catch (error) {
-            throw new BadRequestException('Failed to update project');
+    async update(id: string, updateProjectDto: projectModel, tenantID: string): Promise<Project> {
+        const project = await this.projectModel.findOne({ _id: id, tenantID });
+        if (!project) {
+          throw new NotFoundException(`Project with ID: ${id} not found or not associated with the tenant`);
         }
-    }
-
-    async delete(id: string): Promise<Project> {
+    
         try {
-            const deletedProject = await this.projectModel.findByIdAndDelete(id);
-            if (!deletedProject) {
-                throw new NotFoundException(`Project with ID: ${id} not found for deletion`);
-            }
-            return deletedProject;
+          Object.assign(project, updateProjectDto);
+          return await project.save();
         } catch (error) {
-            throw new BadRequestException('Failed to delete project');
+          throw new BadRequestException('Failed to update project');
         }
-    }
+      }
+    
 
+      async delete(id: string, tenantID: string): Promise<Project> {
+        const project = await this.projectModel.findOne({ _id: id, tenantID });
+        if (!project) {
+          throw new NotFoundException(`Project with ID: ${id} not found or not associated with the tenant`);
+        }
+    
+        try {
+            await this.projectModel.deleteOne({ _id: id, tenantID });
+          return project;
+        } catch (error) {
+          throw new BadRequestException('Failed to delete project');
+        }
+      }
 
     
 }

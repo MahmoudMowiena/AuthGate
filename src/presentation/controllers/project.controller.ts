@@ -1,16 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from "@nestjs/common";
 import { projectModel } from "../dtos/project.model";
 import { Project } from "src/domain/entities/project.entity";
 import { ProjectService } from "src/infrastructure/services/project.service";
+import { AuthGuard } from "../guards/auth.guard";
 
 
 @Controller('projects')
+@UseGuards(AuthGuard)
 export class ProjectsController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Post()
-  async create(@Body() createProjectDto: projectModel): Promise<Project> {
-    return await this.projectService.create(createProjectDto);
+  async create(@Body() createProjectDto: projectModel, @Request() req): Promise<Project> {
+    const tenantID = req.user.id; 
+    return await this.projectService.create(createProjectDto, tenantID);
   }
 
   @Get()
@@ -30,13 +33,14 @@ export class ProjectsController {
   // }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateProjectDto: projectModel): Promise<Project> {
-    return await this.projectService.update(id, updateProjectDto);
+  async update(@Param('id') id: string, @Body() updateProjectDto: projectModel, @Request() req): Promise<Project> {
+    const tenantID = req.user.id;
+    return await this.projectService.update(id, updateProjectDto, tenantID);
   }
-
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<Project> {
-    return await this.projectService.delete(id);
+  async remove(@Param('id') id: string, @Request() req): Promise<Project> {
+    const tenantID = req.user.id;
+    return await this.projectService.delete(id, tenantID);
   }
   
 
