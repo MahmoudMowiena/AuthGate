@@ -1,13 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { userModel } from '../../presentation/dtos/user.model';
-//import { UpdateUserDto } from './dto/update-user.dto';
+import { userProjectModel } from 'src/presentation/dtos/userProject.dto';
 import { User, UserDocument } from '../../domain/entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    //private userProjectModel: Model<userProjectModel>,
+  ) {}
 
   async create(createUserDto: userModel): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
@@ -18,16 +21,31 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.userModel.findOne({ email }).exec();
+  async findById(id: string): Promise<userModel> {
+    return this.userModel.findById(id).populate('projects').exec();
   }
 
-  
-//   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-//     return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).exec();
-//   }
+  async findByEmail(email: string): Promise<userModel> {
+    return this.userModel.findOne({ email }).populate('projects').exec();
+  }
 
-//   async remove(id: string): Promise<User> {
-//     return this.userModel.findByIdAndRemove(id).exec();
-//   }
+  //check if it works
+  async save(user: User | any): Promise<any> {
+    return user.save();
+  }
+
+  async update(id: string, updateUserDto: userModel): Promise<User> {
+    return this.userModel
+      .findByIdAndUpdate(id, updateUserDto, { new: true })
+      .exec();
+  }
+
+  async remove(id: string): Promise<User> {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    user.deleted = true;
+    return user.save();
+  }
 }

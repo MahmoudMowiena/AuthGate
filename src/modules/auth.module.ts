@@ -6,6 +6,8 @@ import { AuthController } from 'src/presentation/controllers/auth.controller';
 import { UserModule } from './user.module';
 import { TenantModule } from './tenant.module';
 import { ProjectsModule } from './project.module';
+import { TenantsService } from 'src/infrastructure/services/tenants.service';
+import { tenantModel } from 'src/presentation/dtos/tenant.model';
 
 @Module({
   imports: [
@@ -22,4 +24,4 @@ import { ProjectsModule } from './project.module';
   controllers: [AuthController],
   exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}
