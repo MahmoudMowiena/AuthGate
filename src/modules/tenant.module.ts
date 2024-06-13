@@ -8,12 +8,10 @@ import { projectModel } from 'src/presentation/dtos/project.model';
 import { ProjectsModule } from './project.module';
 
 @Module({
-  imports:[
-        MongooseModule.forFeature([
-            {name:Tenant.name, schema:TenantSchema}
-    ]),
-    ProjectsModule
-    ],
+  imports: [
+    MongooseModule.forFeature([{ name: Tenant.name, schema: TenantSchema }]),
+    ProjectsModule,
+  ],
   controllers: [TenantController],
   providers: [TenantsService],
   exports: [TenantsService],
