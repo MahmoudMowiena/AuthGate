@@ -14,10 +14,7 @@ import { tenantModel } from 'src/presentation/dtos/tenant.model';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
-import mongoose from 'mongoose';
-import { Tenant } from 'src/domain/entities/tenant.entity';
 import { UserProject } from 'src/domain/entities/userProject.entity';
-import { projectModel } from 'src/presentation/dtos/project.model';
 @Injectable()
 export class AuthService {
   constructor(
@@ -25,6 +22,14 @@ export class AuthService {
     private tenantsService: TenantsService,
     private jwtService: JwtService,
   ) {}
+
+  verifyToken(token: string): any {
+    try {
+      return this.jwtService.verify(token);
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
+  }
 
   async signIn(
     email: string,
@@ -79,33 +84,40 @@ export class AuthService {
   }
 
   async signUpAsUser(userSignUpDto: userModel) {
-    const { email, password, confirmPassword } = userSignUpDto;
+    const salt = 10;
+    const hashedPassword = await bcrypt.hash(userSignUpDto.password, salt);
+    const email = userSignUpDto.email;
+    const unhashedPassword = userSignUpDto.password;
+    const unhashedConfirmPassword = userSignUpDto.confirmPassword;
+    userSignUpDto.password = hashedPassword;
+    userSignUpDto.confirmPassword = hashedPassword;
 
-    if (password !== confirmPassword) {
+    if (unhashedPassword !== unhashedConfirmPassword) {
       throw new BadRequestException('Passwords do not match');
     }
 
     const existingUser = await this.usersService.findByEmail(email);
     if (existingUser) {
-      throw new ConflictException('Email already in use, try to login');
+      throw new ConflictException('Email already in use');
     }
-
-    const salt = 10;
-    const hashedPassword = await bcrypt.hash(password, salt);
-    userSignUpDto.password = hashedPassword;
 
     const user = await this.usersService.create(userSignUpDto);
     if (user) {
-      return this.signIn(userSignUpDto.email, password);
+      return this.signIn(userSignUpDto.email, unhashedPassword);
     } else {
-      throw new BadRequestException('User registration failed');
+      throw new BadRequestException();
     }
   }
 
   async signUpAsTenant(tenantSignUpDto: tenantModel) {
-    const { email, password, confirmPassword } = tenantSignUpDto;
-
-    if (password !== confirmPassword) {
+    const salt = 10;
+    const hashedPassword = await bcrypt.hash(tenantSignUpDto.password, salt);
+    const email = tenantSignUpDto.email;
+    const unhashedPassword = tenantSignUpDto.password;
+    const unhashedConfirmPassword = tenantSignUpDto.confirmPassword;
+    tenantSignUpDto.password = hashedPassword;
+    tenantSignUpDto.confirmPassword = hashedPassword;
+    if (unhashedPassword !== unhashedConfirmPassword) {
       throw new BadRequestException('Passwords do not match');
     }
 
@@ -114,16 +126,9 @@ export class AuthService {
       throw new ConflictException('Email already in use');
     }
 
-    const salt = 10;
-    const hashedPassword = await bcrypt.hash(password, salt);
-    tenantSignUpDto.password = hashedPassword;
-
     const tenant = await this.tenantsService.create(tenantSignUpDto);
-    if (tenant) {
-      return this.signIn(tenantSignUpDto.email, password);
-    } else {
-      throw new BadRequestException('Tenant registration failed');
-    }
+    if (tenant) return this.signIn(tenantSignUpDto.email, unhashedPassword);
+    else throw new BadRequestException();
   }
 
   async processAuth(projectId: any): Promise<any> {
