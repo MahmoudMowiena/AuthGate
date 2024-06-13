@@ -2,7 +2,7 @@ import { IsString, IsNotEmpty, IsUrl, IsOptional } from 'class-validator';
 
 export class projectModel {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   tenantID: string;
   
   @IsString()
