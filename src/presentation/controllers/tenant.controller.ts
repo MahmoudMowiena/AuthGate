@@ -15,7 +15,6 @@ import { ProjectService } from 'src/infrastructure/services/project.service';
 
 @Controller('tenants')
 export class TenantController {
-
   constructor(
     private readonly tenantsService: TenantsService,
     private readonly projectService: ProjectService,
@@ -93,11 +92,19 @@ export class TenantController {
         'Failed to delete tenant',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
 
-@Post('authorize-client')
-  async authorizeClient(@Body('clientID') clientID: string, @Body('clientSECRET') clientSECRET: string): Promise<{ callbackUrl: string }> {
+  @Post('authorize-client')
+  async authorizeClient(
+    @Body('clientID') clientID: string,
+    @Body('clientSECRET') clientSECRET: string,
+  ): Promise<{ callbackUrl: string }> {
     try {
-      const projectId = await this.tenantsService.authorizeClient(clientID, clientSECRET);
+      const projectId = await this.tenantsService.authorizeClient(
+        clientID,
+        clientSECRET,
+      );
       const frontendURL = 'http://localhost:4200/authorize/';
       const callbackUrl = frontendURL + projectId;
       return { callbackUrl };
