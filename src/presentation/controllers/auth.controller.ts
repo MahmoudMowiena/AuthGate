@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     Get,
@@ -13,10 +14,13 @@ import { AuthService } from 'src/infrastructure/services/auth.service';
 import { SignInRequest } from '../dtos/signInRequest.dto';
 import { userModel } from '../dtos/user.model';
 import { tenantModel } from '../dtos/tenant.model';
+import { UsersService } from 'src/infrastructure/services/users.service';
+import { User } from 'src/domain/entities/user.entity';
+import { Types } from 'mongoose';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) { }
+    constructor(private authService: AuthService, private usersService: UsersService) { }
 
     @HttpCode(HttpStatus.OK)
     @Post('login')
@@ -40,5 +44,21 @@ export class AuthController {
     @Post('registertenant')
     signUpAsTenant(@Body() tenantSignUpDto: tenantModel) {
         return this.authService.signUpAsTenant(tenantSignUpDto);
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('authcode')
+    async exchangeCodeWithToken(@Body() obj: { projectId: string, userId: string, authCode: string }) {
+        const { projectId, userId, authCode } = obj;
+        const user: userModel = await this.usersService.findById(userId);
+        if(!user) throw new BadRequestException("user does not exist");
+
+        const userProject = user.projects.find(project => project.projectID.toString() === projectId);
+
+        if(userProject.authorizationCode == authCode) {
+            return {
+                auth_token: userProject.authorizationAccessToken
+            }
+        }
     }
 }
