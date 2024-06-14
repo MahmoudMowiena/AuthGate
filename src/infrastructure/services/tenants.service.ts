@@ -31,6 +31,12 @@ export class TenantsService {
     return this.tenantModel.find().exec();
   }
 
+  // async save(tenant: Tenant | any): Promise<any> {
+  //   console.log("hi from save");
+  //   return tenant.save();
+  // }
+
+
 
   async update(id: string, updateTenantDto: tenantModel): Promise<Tenant> {
     return this.tenantModel

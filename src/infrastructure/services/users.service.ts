@@ -33,6 +33,7 @@ export class UsersService {
 
   //check if it works
   async save(user: User | any): Promise<any> {
+    console.log("hi from save");
     return user.save();
   }
 
