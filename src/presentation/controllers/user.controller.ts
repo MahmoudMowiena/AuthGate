@@ -11,6 +11,8 @@ import {
   Put,
   UploadedFile,
   UseInterceptors,
+  Request,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -20,6 +22,7 @@ import { AuthService } from 'src/infrastructure/services/auth.service';
 import { User } from 'src/domain/entities/user.entity';
 import { ImageService } from 'src/infrastructure/services/image.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UserController {
@@ -118,4 +121,43 @@ export class UserController {
   async uploadImage(@Param('id') id: string, @UploadedFile() image: Express.Multer.File) {
     return await this.userService.addImage(id, image);
   }
+
+  // @Patch()
+  // @UseGuards(AuthGuard)
+  // async update(
+  //   @Body() updateUserDto: userModel,
+  //   @Request() req: any,
+  // ): Promise<userModel> {
+  //   try {
+  //     const userId = req.user.userId;
+  //     const updatedUser = await this.userService.update(userId, updateUserDto);
+  //     if (!updatedUser) {
+  //       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  //     }
+  //     return updatedUser;
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       'Failed to update user',
+  //       HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
+
+  // @Delete()
+  // @UseGuards(AuthGuard)
+  // async remove(@Request() req: any): Promise<userModel> {
+  //   try {
+  //     const userId = req.user.userId;
+  //     const user = await this.userService.remove(userId);
+  //     if (!user) {
+  //       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  //     }
+  //     return user;
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       'Failed to delete user',
+  //       HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
 }

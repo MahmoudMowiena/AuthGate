@@ -10,19 +10,20 @@ import {
   HttpStatus,
   UseInterceptors,
   UploadedFile,
+  Headers,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import { ProjectService } from 'src/infrastructure/services/project.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-
+import { AuthGuard } from '../guards/auth.guard';
+import { AuthService } from 'src/infrastructure/services/auth.service';
 
 @Controller('tenants')
 export class TenantController {
-  constructor(
-    private readonly tenantsService: TenantsService,
-    private readonly projectService: ProjectService,
-  ) {}
+  constructor(private readonly tenantsService: TenantsService) {}
 
   @Get()
   async findAll(): Promise<tenantModel[]> {
@@ -61,14 +62,16 @@ export class TenantController {
     }
   }
 
-  @Patch(':id')
+  @Patch()
+  @UseGuards(AuthGuard)
   async update(
-    @Param('id') id: string,
     @Body() updateTenantDto: tenantModel,
+    @Request() req: any,
   ): Promise<tenantModel> {
     try {
+      const tenantId = req.user.tenantId;
       const updatedTenant = await this.tenantsService.update(
-        id,
+        tenantId,
         updateTenantDto,
       );
       if (!updatedTenant) {
@@ -83,10 +86,12 @@ export class TenantController {
     }
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string): Promise<tenantModel> {
+  @Delete()
+  @UseGuards(AuthGuard)
+  async remove(@Request() req: any): Promise<tenantModel> {
     try {
-      const tenant = await this.tenantsService.remove(id);
+      const tenantId = req.user.tenantId;
+      const tenant = await this.tenantsService.remove(tenantId);
       if (!tenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
