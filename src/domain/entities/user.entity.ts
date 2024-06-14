@@ -21,10 +21,10 @@ export class User {
 
   @Prop({
     required: true,
-    match: [
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      'Password must be strong',
-    ],
+    // match: [
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    //   'Password must be strong',
+    // ],
   })
   password: string;
 

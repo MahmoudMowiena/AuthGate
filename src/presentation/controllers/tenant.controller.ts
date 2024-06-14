@@ -13,6 +13,7 @@ import {
   Headers,
   UseGuards,
   Request,
+  Header,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
@@ -20,10 +21,14 @@ import { ProjectService } from 'src/infrastructure/services/project.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '../guards/auth.guard';
 import { AuthService } from 'src/infrastructure/services/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('tenants')
 export class TenantController {
-  constructor(private readonly tenantsService: TenantsService) {}
+  constructor(
+    private readonly tenantsService: TenantsService,
+    private readonly jwtservice: JwtService,
+  ) {}
 
   @Get()
   async findAll(): Promise<tenantModel[]> {
@@ -66,10 +71,11 @@ export class TenantController {
   @UseGuards(AuthGuard)
   async update(
     @Body() updateTenantDto: tenantModel,
-    @Request() req: any,
+    @Headers('Authorization') authHeader: any,
   ): Promise<tenantModel> {
     try {
-      const tenantId = req.user.tenantId;
+      const token = authHeader.split(' ')[1];
+      const tenantId = this.jwtservice.verify(token).sub;
       const updatedTenant = await this.tenantsService.update(
         tenantId,
         updateTenantDto,
@@ -88,9 +94,12 @@ export class TenantController {
 
   @Delete()
   @UseGuards(AuthGuard)
-  async remove(@Request() req: any): Promise<tenantModel> {
+  async remove(
+    @Headers('Authorization') authHeader: any,
+  ): Promise<tenantModel> {
     try {
-      const tenantId = req.user.tenantId;
+      const token = authHeader.split(' ')[1];
+      const tenantId = this.jwtservice.verify(token).sub;
       const tenant = await this.tenantsService.remove(tenantId);
       if (!tenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
@@ -124,7 +133,10 @@ export class TenantController {
 
   @Post('image/:id')
   @UseInterceptors(FileInterceptor('image'))
-  async uploadImage(@Param('id') id: string, @UploadedFile() image: Express.Multer.File) {
+  async uploadImage(
+    @Param('id') id: string,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
     return await this.tenantsService.addImage(id, image);
   }
 }
