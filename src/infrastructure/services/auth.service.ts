@@ -2,6 +2,8 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Scope,
+  ScopeOptions,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -15,6 +17,8 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import { UserProject } from 'src/domain/entities/userProject.entity';
+import { projectModel } from 'src/presentation/dtos/project.model';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -52,7 +56,7 @@ export class AuthService {
 
     if (!isPasswordMatch) throw new UnauthorizedException();
 
-    const payload = { email: user.email, name: user.name, role: role };
+    const payload = { sub: user.id ,email: user.email, name: user.name, role: role };
 
     let signInResponse: SignInUserResponse | SignInTenantResponse;
 

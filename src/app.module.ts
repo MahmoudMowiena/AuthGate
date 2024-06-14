@@ -4,6 +4,7 @@ import { UserModule } from './modules/user.module';
 import { TenantModule } from './modules/tenant.module';
 import { ProjectsModule } from './modules/project.module';
 import { AuthModule } from './modules/auth.module';
+import { ImageService } from './infrastructure/services/image.service';
 
 
 @Module({
