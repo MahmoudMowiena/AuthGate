@@ -5,20 +5,21 @@ import { Project } from "src/domain/entities/project.entity";
 import { Tenant } from "src/domain/entities/tenant.entity";
 import { projectModel } from "src/presentation/dtos/project.model";
 import { v4 as uuidv4 } from 'uuid';
-import { TenantsService } from "./tenants.service";
+
+
+
 
 @Injectable()
 export class ProjectService {
     constructor(
         @InjectModel(Project.name) private projectModel: Model<Project>,
         @InjectModel(Tenant.name) private tenantModel: Model<Tenant>,
-        @Inject(forwardRef(() => TenantsService)) private tenantsService: TenantsService
     ) {}
 
     async create(createProjectDto: projectModel, tenantID: string): Promise<Project> {
-        const { name, callBackUrl } = createProjectDto;
-    
+        const { name, callBackUrl } = createProjectDto;    
         const tenant = await this.tenantModel.findById(tenantID);
+        console.log(tenant);
         if (!tenant) {
           throw new NotFoundException(`Tenant with ID ${tenantID} not found`);
         }
@@ -33,74 +34,79 @@ export class ProjectService {
           name,
           callBackUrl
         });
-    
+       console.log(createdProject);
         try {
-          const project = await createdProject.save();
-          tenant.projects.push(project);
+          tenant.projects.push(createdProject);
           await tenant.save();
-          return project;
+           return createdProject;
         } catch (error) {
           throw new BadRequestException('Failed to create project');
         }
       }
     
-
-    async findAll(): Promise<Project[]> {
-        try {
-            return await this.projectModel.find();
-        } catch (error) {
-            throw new BadRequestException('Failed to retrieve projects');
-        }
-    }
-
-    async findOne(id: string): Promise<Project> {
-        try {
-            const project = await this.projectModel.findById(id);
-            if (!project) {
-                throw new NotFoundException(`Project with ID: ${id} not found`);
-            }
-            return project;
-        } catch (error) {
-            throw new NotFoundException(`Project with ID: ${id} not found`);
-        }
-    }
-
-    // async findProjectIDByClientID(clientID: string): Promise<string> {
-    //     const project = await this.projectModel.findOne({ clientID });
-    //     if (!project) {
-    //         throw new NotFoundException(`Project with clientID: ${clientID} not found`);
-    //     }
-    //     return project._id.toString();
-    // }
-
-    async update(id: string, updateProjectDto: projectModel, tenantID: string): Promise<Project> {
-        const project = await this.projectModel.findOne({ _id: id, tenantID });
-        if (!project) {
-          throw new NotFoundException(`Project with ID: ${id} not found or not associated with the tenant`);
-        }
-    
-        try {
-          Object.assign(project, updateProjectDto);
-          return await project.save();
-        } catch (error) {
-          throw new BadRequestException('Failed to update project');
-        }
+    async findAll(tenantID: string): Promise<Project[]> {
+      const tenant = await this.tenantModel.findById(tenantID);
+      if (!tenant) {
+        throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
       }
+      return tenant.projects;
+    }
+  
+    async findOne(tenantID: string, projectID: string): Promise<Project> {
+      const tenant = await this.tenantModel.findById(tenantID);
+      if (!tenant) {
+        throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
+      }
+  
+      const project = tenant.projects.find(proj => proj._id.toString() === projectID);
+      if (!project) {
+        throw new NotFoundException(`Project with ID: ${projectID} not found in tenant`);
+      }
+  
+      return project;
+    }
+  
+    async update(id: string, updateProjectDto: projectModel, tenantID: string): Promise<Project> {
+      const tenant = await this.tenantModel.findById(tenantID);
+      if (!tenant) {
+        throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
+      }
+  
+      const project = tenant.projects.find(proj => proj._id.toString() === id);
+      if (!project) {
+        throw new NotFoundException(`Project with ID: ${id} not found in tenant`);
+      }
+  
+      Object.assign(project, updateProjectDto);
+  
+      try {
+        await tenant.save();
+        return project;
+      } catch (error) {
+        throw new BadRequestException('Failed to update project');
+      }
+    }
     
 
       async delete(id: string, tenantID: string): Promise<Project> {
-        const project = await this.projectModel.findOne({ _id: id, tenantID });
-        if (!project) {
-          throw new NotFoundException(`Project with ID: ${id} not found or not associated with the tenant`);
+        const tenant = await this.tenantModel.findById(tenantID);
+        if (!tenant) {
+          throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
         }
     
+        const projectIndex = tenant.projects.findIndex(proj => proj._id.toString() === id);
+        if (projectIndex === -1) {
+          throw new NotFoundException(`Project with ID: ${id} not found in tenant`);
+        }
+    
+        const project = tenant.projects.splice(projectIndex, 1)[0];
+    
         try {
-            await this.projectModel.deleteOne({ _id: id, tenantID });
-          return project;
+          await tenant.save();
+          return project as Project;
         } catch (error) {
           throw new BadRequestException('Failed to delete project');
         }
       }
-
     
 }

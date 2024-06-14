@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Header, Headers, Param, Post, Put, Request, UseGuards } from "@nestjs/common";
 import { projectModel } from "../dtos/project.model";
 import { Project } from "src/domain/entities/project.entity";
 import { ProjectService } from "src/infrastructure/services/project.service";
@@ -11,35 +11,35 @@ export class ProjectsController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Post()
-  async create(@Body() createProjectDto: projectModel, @Request() req): Promise<Project> {
-    const tenantID = req.user.id; 
+  async create(@Body() createProjectDto: projectModel, @Headers() head): Promise<Project> {
+    const tenantID = head.user.id; 
     return await this.projectService.create(createProjectDto, tenantID);
   }
 
+
   @Get()
-  async findAll(): Promise<Project[]> {
-    return await this.projectService.findAll();
+  async findAll(@Headers() head): Promise<Project[]> {
+   
+    const tenantID = head.user.tenantId;
+    return await this.projectService.findAll(tenantID);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Project> {
-    return await this.projectService.findOne(id);
+  async findOne(@Headers() head , @Param('id') id: string): Promise<Project> {
+    const tenantID ="666b55375655c9f3f0040105"; 
+    // const tenantID = head.user.tenantId;
+    return await this.projectService.findOne(tenantID, id);
   }
-
-  // @Get('clientid/:clientID')
-  // async findByClientID(@Param('clientID') clientID: string): Promise<{ projectID: string }> {
-  //   const projectID = await this.projectService.findProjectIDByClientID(clientID);
-  //   return { projectID };
-  // }
+  
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateProjectDto: projectModel, @Request() req): Promise<Project> {
-    const tenantID = req.user.id;
+  async update(@Param('id') id: string, @Body() updateProjectDto: projectModel, @Headers() head): Promise<Project> {
+    const tenantID = head.user.id;
     return await this.projectService.update(id, updateProjectDto, tenantID);
   }
   @Delete(':id')
-  async remove(@Param('id') id: string, @Request() req): Promise<Project> {
-    const tenantID = req.user.id;
+  async remove(@Param('id') id: string, @Headers() head): Promise<Project> {
+    const tenantID = head.user.id;
     return await this.projectService.delete(id, tenantID);
   }
   
