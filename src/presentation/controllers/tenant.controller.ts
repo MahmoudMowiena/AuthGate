@@ -8,10 +8,14 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import { ProjectService } from 'src/infrastructure/services/project.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+
 
 @Controller('tenants')
 export class TenantController {
@@ -111,5 +115,11 @@ export class TenantController {
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  @Post('image/:id')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadImage(@Param('id') id: string, @UploadedFile() image: Express.Multer.File) {
+    return await this.tenantsService.addImage(id, image);
   }
 }

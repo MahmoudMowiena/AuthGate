@@ -9,6 +9,8 @@ import {
   Patch,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -16,13 +18,16 @@ import { userModel } from '../dtos/user.model';
 import { UsersService } from 'src/infrastructure/services/users.service';
 import { AuthService } from 'src/infrastructure/services/auth.service';
 import { User } from 'src/domain/entities/user.entity';
+import { ImageService } from 'src/infrastructure/services/image.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
   constructor(
     private userService: UsersService,
     private authservice: AuthService,
-  ) {}
+    private imageService: ImageService
+  ) { }
 
   @Get()
   findAll() {
@@ -106,5 +111,11 @@ export class UserController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Post('image/:id')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadImage(@Param('id') id: string, @UploadedFile() image: Express.Multer.File) {
+    return await this.userService.addImage(id, image);
   }
 }
