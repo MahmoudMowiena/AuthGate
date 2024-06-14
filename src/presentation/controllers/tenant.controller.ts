@@ -84,7 +84,8 @@ export class TenantController {
       if (!updatedTenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
-      return updatedTenant;
+      const tenantListAfterUpdate: any = await this.findAll();
+      return tenantListAfterUpdate;
     } catch (error) {
       throw new HttpException(
         'Failed to update tenant',
@@ -105,7 +106,8 @@ export class TenantController {
       if (!tenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
-      return tenant;
+      const tenantListAfterDelete: any = await this.findAll();
+      return tenantListAfterDelete;
     } catch (error) {
       throw new HttpException(
         'Failed to delete tenant',
