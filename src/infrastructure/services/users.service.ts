@@ -35,23 +35,25 @@ export class UsersService {
   }
 
   async save(user: User | any): Promise<any> {
-    console.log("hi from save");
+    console.log('hi from save');
     return user.save();
   }
 
   async update(id: string, updateUserDto: userModel): Promise<User> {
-    return this.userModel
+    const userListAfterUpdate: any = this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .exec();
+    return userListAfterUpdate;
   }
 
-  async remove(id: string): Promise<User> {
+  async remove(id: string): Promise<any> {
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException('User not found');
     }
     user.deleted = true;
-    return user.save();
+    user.save();
+    return await this.findAll();
   }
 
   async addImage(id: string, image: Express.Multer.File): Promise<User> {

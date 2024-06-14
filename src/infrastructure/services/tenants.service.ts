@@ -29,21 +29,23 @@ export class TenantsService {
     return this.tenantModel.find().exec();
   }
 
-  async update(id: string, updateTenantDto: tenantModel): Promise<Tenant> {
-    return this.tenantModel
+  async update(id: string, updateTenantDto: tenantModel): Promise<any> {
+    const tenantListAfterDelete: any = this.tenantModel
       .findOneAndUpdate({ _id: id, deleted: false }, updateTenantDto, {
         new: true,
       })
       .exec();
+    return tenantListAfterDelete;
   }
 
-  async remove(id: string): Promise<Tenant> {
+  async remove(id: string): Promise<any> {
     const tenant = await this.tenantModel.findById(id).exec();
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
     }
     tenant.deleted = true;
-    return tenant.save();
+    tenant.save();
+    return await this.findAll();
   }
   async authorizeClient(
     clientID: string,

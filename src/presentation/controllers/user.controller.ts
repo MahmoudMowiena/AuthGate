@@ -103,7 +103,8 @@ export class UserController {
       if (!updatedUser) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      return updatedUser;
+      const usersListAfterUpdate: any = await this.findAll();
+      return usersListAfterUpdate;
     } catch (error) {
       throw new HttpException(
         'Failed to update user',
@@ -121,7 +122,8 @@ export class UserController {
       if (!user) {
         throw new HttpException('user not found', HttpStatus.NOT_FOUND);
       }
-      return user;
+      const usersListAfterDelete: any = await this.findAll();
+      return usersListAfterDelete;
     } catch (error) {
       throw new HttpException(
         'Failed to delete user',
