@@ -3,13 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { tenantModel } from '../../presentation/dtos/tenant.model';
 import { Tenant, TenantDocument } from '../../domain/entities/tenant.entity';
-import { Project } from 'src/domain/entities/project.entity';
+import { ImageService } from './image.service';
+
 
 @Injectable()
 export class TenantsService {
+
   constructor(
     @InjectModel(Tenant.name) private tenantModel: Model<TenantDocument>,
-  ) {}
+    private imageService: ImageService
+  ) { }
 
   async create(createTenantDto: tenantModel): Promise<Tenant> {
     const createdTenant = new this.tenantModel(createTenantDto);
@@ -44,7 +47,7 @@ export class TenantsService {
     }
     tenant.deleted = true;
     return tenant.save();
-  } 
+  }
   async authorizeClient(clientID: string, clientSECRET: string): Promise<string> {
     const tenant = await this.tenantModel.findOne({ 'projects.clientID': clientID, 'projects.clientSECRET': clientSECRET }).exec();
     if (!tenant) {
@@ -55,6 +58,18 @@ export class TenantsService {
       throw new Error('Project not found for the given client credentials.');
     }
     return project._id.toString();
+  }
 
+  async addImage(id: string, image: Express.Multer.File): Promise<Tenant> {
+    const tenant = await this.tenantModel.findById(id).exec();
+    
+    if (!tenant) {
+      throw new NotFoundException('Tenant not found');
+    }
+
+    await this.imageService.upload("tenants", id, image);
+
+    tenant.image = image.originalname;
+    return tenant.save();
   }
 }
