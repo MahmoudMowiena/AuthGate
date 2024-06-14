@@ -142,7 +142,6 @@ export class AuthService {
 
   async processAuth(projectId: any, token: string): Promise<any> {
     let userproject: UserProject;
-    let tenant: tenantModel;
     let payload;
     try {
       payload = this.jwtService.verify(token);
