@@ -131,18 +131,22 @@ export class AuthService {
     else throw new BadRequestException();
   }
 
-  async processAuth(projectId: any): Promise<any> {
+  async processAuth(projectId: any, token: string): Promise<any> {
     let userproject: UserProject;
-    const token = '';
     let payload;
+    console.log('hello from process Auth');
     try {
+      console.log('hello from process Auth after try');
       payload = this.jwtService.verify(token);
+      console.log(token);
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }
 
     const userId = payload.sub;
+    console.log(userId);
     const user = await this.usersService.findById(userId);
+    console.log(user);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
@@ -160,16 +164,61 @@ export class AuthService {
         authorizationAccessToken,
         expireDate,
       };
+      console.log(userproject);
     }
 
     user.projects.push(userproject);
     await this.usersService.save(user);
-
-    const callbackUrl = ''; //after merge from dev call get projectbyId and assign
+    console.log('hello after the last awiat');
+    const callbackUrl = 'https:myhome:8070/home'; //after merge from dev call get projectbyId and assign
 
     return {
+      userId,
+      projectID,
       callbackUrl,
       authorizationCode,
     };
   }
+
+  // async processAuth(projectId: any): Promise<any> {
+  //   let userproject: UserProject;
+  //   const token = '';
+  //   let payload;
+  //   try {
+  //     payload = this.jwtService.verify(token);
+  //   } catch (error) {
+  //     throw new UnauthorizedException('Invalid token');
+  //   }
+
+  //   const userId = payload.sub;
+  //   const user = await this.usersService.findById(userId);
+  //   if (!user) {
+  //     throw new UnauthorizedException('User not found');
+  //   }
+
+  //   const projectID = projectId;
+  //   const authorizationCode = uuidv4();
+  //   const authorizationAccessToken = crypto.randomBytes(32).toString('hex');
+  //   const expireDate = new Date();
+  //   expireDate.setHours(expireDate.getHours() + 24);
+
+  //   if (projectID) {
+  //     userproject = {
+  //       projectID,
+  //       authorizationCode,
+  //       authorizationAccessToken,
+  //       expireDate,
+  //     };
+  //   }
+
+  //   user.projects.push(userproject);
+  //   await this.usersService.save(user);
+
+  //   const callbackUrl = ''; //after merge from dev call get projectbyId and assign
+
+  //   return {
+  //     callbackUrl,
+  //     authorizationCode,
+  //   };
+  // }
 }

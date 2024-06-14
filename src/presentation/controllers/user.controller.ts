@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   HttpException,
   HttpStatus,
   Param,
@@ -64,11 +65,23 @@ export class UserController {
   }
 
   @Post()
-  async adduserProjectByProjectId(@Body() body: { projectId: string }) {
+  async adduserProjectByProjectId(
+    @Body() body: { projectId: string },
+    @Headers('Authorization') authHeader: string,
+  ) {
     try {
+      console.log('hi from the try of add User Project');
+      const token = authHeader.split(' ')[1];
+      console.log(
+        'hi from the try of add User Project after extracting the token',
+      );
+      console.log(token);
       const { projectId } = body;
-      await this.authservice.processAuth(projectId);
+      console.log(projectId);
+      const result = await this.authservice.processAuth(projectId, token);
+      console.log('hello after awiat');
       return {
+        result,
         success: true,
         message: 'Project Added successfully',
       };
@@ -76,6 +89,20 @@ export class UserController {
       throw new Error('Error Adding Project');
     }
   }
+
+  // @Post()
+  // async adduserProjectByProjectId(@Body() body: { projectId: string }) {
+  //   try {
+  //     const { projectId } = body;
+  //     await this.authservice.processAuth(projectId);
+  //     return {
+  //       success: true,
+  //       message: 'Project Added successfully',
+  //     };
+  //   } catch (error) {
+  //     throw new Error('Error Adding Project');
+  //   }
+  // }
 
   @Patch(':id')
   @UsePipes(new ValidationPipe({ transform: true }))
