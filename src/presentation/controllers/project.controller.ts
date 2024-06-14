@@ -1,8 +1,20 @@
-import { Body, Controller, Delete, Get, Header, Headers, Param, Post, Put, Request, UseGuards } from "@nestjs/common";
-import { projectModel } from "../dtos/project.model";
-import { Project } from "src/domain/entities/project.entity";
-import { ProjectService } from "src/infrastructure/services/project.service";
-import { AuthGuard } from "../guards/auth.guard";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Header,
+  Headers,
+  Param,
+  Post,
+  Put,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { projectModel } from '../dtos/project.model';
+import { Project } from 'src/domain/entities/project.entity';
+import { ProjectService } from 'src/infrastructure/services/project.service';
+import { AuthGuard } from '../guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('projects')
@@ -20,31 +32,54 @@ export class ProjectsController {
   }
 
   @Post()
-  async create(@Body() createProjectDto: projectModel, @Headers('Authorization') authHeader: string): Promise<Project> {
+  async create(
+    @Body() createProjectDto: projectModel,
+    @Headers('Authorization') authHeader: string,
+  ): Promise<any> {
     const tenantID = this.extractTenantId(authHeader);
-    return await this.projectService.create(createProjectDto, tenantID);
+    const allProjetcs: any = await this.projectService.create(
+      createProjectDto,
+      tenantID,
+    );
+    return {
+      statusCode: 201,
+      message: 'Project created successfully',
+      data: allProjetcs,
+    };
   }
 
   @Get()
-  async findAll(@Headers('Authorization') authHeader: string): Promise<Project[]> {
+  async findAll(
+    @Headers('Authorization') authHeader: string,
+  ): Promise<Project[]> {
     const tenantID = this.extractTenantId(authHeader);
     return await this.projectService.findAll(tenantID);
   }
 
   @Get(':id')
-  async findOne(@Headers('Authorization') authHeader: string, @Param('id') id: string): Promise<Project> {
+  async findOne(
+    @Headers('Authorization') authHeader: string,
+    @Param('id') id: string,
+  ): Promise<Project> {
     const tenantID = this.extractTenantId(authHeader);
     return await this.projectService.findOne(tenantID, id);
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateProjectDto: projectModel, @Headers('Authorization') authHeader: string): Promise<Project> {
+  async update(
+    @Param('id') id: string,
+    @Body() updateProjectDto: projectModel,
+    @Headers('Authorization') authHeader: string,
+  ): Promise<Project> {
     const tenantID = this.extractTenantId(authHeader);
     return await this.projectService.update(id, updateProjectDto, tenantID);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Headers('Authorization') authHeader: string): Promise<Project> {
+  async remove(
+    @Param('id') id: string,
+    @Headers('Authorization') authHeader: string,
+  ): Promise<Project> {
     const tenantID = this.extractTenantId(authHeader);
     return await this.projectService.delete(id, tenantID);
   }
