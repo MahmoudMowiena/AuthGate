@@ -3,25 +3,29 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   HttpException,
   HttpStatus,
   Param,
   Patch,
   Post,
-  Put,
-  UsePipes,
-  ValidationPipe,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { userModel } from '../dtos/user.model';
 import { UsersService } from 'src/infrastructure/services/users.service';
 import { AuthService } from 'src/infrastructure/services/auth.service';
-import { User } from 'src/domain/entities/user.entity';
+import { ImageService } from 'src/infrastructure/services/image.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('users')
 export class UserController {
   constructor(
     private userService: UsersService,
     private authservice: AuthService,
+    private imageService: ImageService,
+    private jwtservice: JwtService,
   ) {}
 
   @Get()
@@ -62,11 +66,23 @@ export class UserController {
   }
 
   @Post()
-  async adduserProjectByProjectId(@Body() body: { projectId: string }) {
+  async adduserProjectByProjectId(
+    @Body() body: { projectId: string },
+    @Headers('Authorization') authHeader: string,
+  ) {
     try {
+      console.log('hi from the try of add User Project');
+      const token = authHeader.split(' ')[1];
+      console.log(
+        'hi from the try of add User Project after extracting the token',
+      );
+      console.log(token);
       const { projectId } = body;
-      await this.authservice.processAuth(projectId);
+      console.log(projectId);
+      const result = await this.authservice.processAuth(projectId, token);
+      console.log('hello after awiat');
       return {
+        result,
         success: true,
         message: 'Project Added successfully',
       };
@@ -75,11 +91,15 @@ export class UserController {
     }
   }
 
-  @Patch(':id')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  async update(@Param('id') id: string, @Body() updateUserDto: userModel) {
+  @Patch()
+  async update(
+    @Body() updateUserDto: userModel,
+    @Headers('Authorization') authHeader: any,
+  ): Promise<userModel> {
     try {
-      const updatedUser = await this.userService.update(id, updateUserDto);
+      const token = authHeader.split(' ')[1];
+      const userId = this.jwtservice.verify(token).sub;
+      const updatedUser = await this.userService.update(userId, updateUserDto);
       if (!updatedUser) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
@@ -92,12 +112,14 @@ export class UserController {
     }
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
+  @Delete()
+  async remove(@Headers('Authorization') authHeader: any): Promise<userModel> {
     try {
-      const user = await this.userService.remove(id);
+      const token = authHeader.split(' ')[1];
+      const userId = this.jwtservice.verify(token).sub;
+      const user = await this.userService.remove(userId);
       if (!user) {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        throw new HttpException('user not found', HttpStatus.NOT_FOUND);
       }
       return user;
     } catch (error) {
@@ -106,5 +128,14 @@ export class UserController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Post('image/:id')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadImage(
+    @Param('id') id: string,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    return await this.userService.addImage(id, image);
   }
 }

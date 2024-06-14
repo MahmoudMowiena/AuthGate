@@ -6,8 +6,6 @@ import { AuthController } from 'src/presentation/controllers/auth.controller';
 import { UserModule } from './user.module';
 import { TenantModule } from './tenant.module';
 import { ProjectsModule } from './project.module';
-import { TenantsService } from 'src/infrastructure/services/tenants.service';
-import { tenantModel } from 'src/presentation/dtos/tenant.model';
 
 @Module({
   imports: [
@@ -17,7 +15,7 @@ import { tenantModel } from 'src/presentation/dtos/tenant.model';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '1d' },
     }),
   ],
   providers: [AuthService],
