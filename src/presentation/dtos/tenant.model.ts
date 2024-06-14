@@ -40,6 +40,12 @@ export class tenantModel {
   readonly website?: string;
   readonly image?: string;
 
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Project)
+  @IsOptional()
+  projects?: Project[];
+
   @IsOptional()
   @IsBoolean()
   deleted?: boolean;

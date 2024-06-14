@@ -56,7 +56,12 @@ export class AuthService {
 
     if (!isPasswordMatch) throw new UnauthorizedException();
 
-    const payload = { sub: user.id ,email: user.email, name: user.name, role: role };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      name: user.name,
+      role: role,
+    };
 
     let signInResponse: SignInUserResponse | SignInTenantResponse;
 
@@ -135,16 +140,15 @@ export class AuthService {
     else throw new BadRequestException();
   }
 
-  async processAuth(projectId: any): Promise<any> {
+  async processAuth(projectId: any, token: string): Promise<any> {
     let userproject: UserProject;
-    const token = '';
+    let tenant: tenantModel;
     let payload;
     try {
       payload = this.jwtService.verify(token);
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }
-
     const userId = payload.sub;
     const user = await this.usersService.findById(userId);
     if (!user) {
@@ -168,10 +172,12 @@ export class AuthService {
 
     user.projects.push(userproject);
     await this.usersService.save(user);
-
-    const callbackUrl = ''; //after merge from dev call get projectbyId and assign
+    const targetproject: projectModel = tenant.projects.find(projectId);
+    const callbackUrl = targetproject.callBackUrl;
 
     return {
+      userId,
+      projectID,
       callbackUrl,
       authorizationCode,
     };
