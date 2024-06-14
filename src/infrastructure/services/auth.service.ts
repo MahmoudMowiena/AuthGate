@@ -172,15 +172,13 @@ export class AuthService {
 
     user.projects.push(userproject);
     await this.usersService.save(user);
-    // const targetproject:projectModel = tenant.projects.find(
-    //   (projectID) => projectID === projectID,
-    // );
-    // const callbackUrl = targetproject.callBackUrl;
+    const targetproject: projectModel = tenant.projects.find(projectId);
+    const callbackUrl = targetproject.callBackUrl;
 
     return {
       userId,
       projectID,
-      //callbackUrl,
+      callbackUrl,
       authorizationCode,
     };
   }
