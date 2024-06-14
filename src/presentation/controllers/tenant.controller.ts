@@ -14,6 +14,7 @@ import {
   UseGuards,
   Request,
   Header,
+  NotFoundException,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
@@ -138,5 +139,13 @@ export class TenantController {
     @UploadedFile() image: Express.Multer.File,
   ) {
     return await this.tenantsService.addImage(id, image);
+  }
+
+  async getTenantByProjectId(projectId: string): Promise<tenantModel> {
+    const tenant = await this.tenantsService.findTenantByProjectId(projectId);
+    if (!tenant) {
+      throw new NotFoundException('Tenant not found');
+    }
+    return tenant;
   }
 }
