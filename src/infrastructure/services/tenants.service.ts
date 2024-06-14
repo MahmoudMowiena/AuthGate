@@ -5,14 +5,12 @@ import { tenantModel } from '../../presentation/dtos/tenant.model';
 import { Tenant, TenantDocument } from '../../domain/entities/tenant.entity';
 import { ImageService } from './image.service';
 
-
 @Injectable()
 export class TenantsService {
-
   constructor(
     @InjectModel(Tenant.name) private tenantModel: Model<TenantDocument>,
-    private imageService: ImageService
-  ) { }
+    private imageService: ImageService,
+  ) {}
 
   async create(createTenantDto: tenantModel): Promise<Tenant> {
     const createdTenant = new this.tenantModel(createTenantDto);
@@ -36,8 +34,6 @@ export class TenantsService {
   //   return tenant.save();
   // }
 
-
-
   async update(id: string, updateTenantDto: tenantModel): Promise<Tenant> {
     return this.tenantModel
       .findOneAndUpdate({ _id: id, deleted: false }, updateTenantDto, {
@@ -54,12 +50,23 @@ export class TenantsService {
     tenant.deleted = true;
     return tenant.save();
   }
-  async authorizeClient(clientID: string, clientSECRET: string): Promise<string> {
-    const tenant = await this.tenantModel.findOne({ 'projects.clientID': clientID, 'projects.clientSECRET': clientSECRET }).exec();
+  async authorizeClient(
+    clientID: string,
+    clientSECRET: string,
+  ): Promise<string> {
+    const tenant = await this.tenantModel
+      .findOne({
+        'projects.clientID': clientID,
+        'projects.clientSECRET': clientSECRET,
+      })
+      .exec();
     if (!tenant) {
       throw new Error('Tenant not found for the given client credentials.');
     }
-    const project = tenant.projects.find(proj => proj.clientID === clientID && proj.clientSECRET === clientSECRET);
+    const project = tenant.projects.find(
+      (proj) =>
+        proj.clientID === clientID && proj.clientSECRET === clientSECRET,
+    );
     if (!project) {
       throw new Error('Project not found for the given client credentials.');
     }
@@ -68,14 +75,18 @@ export class TenantsService {
 
   async addImage(id: string, image: Express.Multer.File): Promise<Tenant> {
     const tenant = await this.tenantModel.findById(id).exec();
-    
+
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
     }
 
-    await this.imageService.upload("tenants", id, image);
+    await this.imageService.upload('tenants', id, image);
 
     tenant.image = image.originalname;
     return tenant.save();
+  }
+
+  async findTenantByProjectId(projectId: string): Promise<tenantModel | null> {
+    return this.tenantModel.findOne({ 'projects.projectId': projectId }).exec();
   }
 }

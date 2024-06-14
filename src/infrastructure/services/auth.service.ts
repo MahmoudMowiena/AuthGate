@@ -172,8 +172,10 @@ export class AuthService {
 
     user.projects.push(userproject);
     await this.usersService.save(user);
-    const targetproject: projectModel = tenant.projects.find(projectId);
-    const callbackUrl = targetproject.callBackUrl;
+    const targetTenant =
+      await this.tenantsService.findTenantByProjectId(projectId);
+    const targetProject: projectModel = targetTenant.projects.find(projectId);
+    const callbackUrl = targetProject.callBackUrl;
 
     return {
       userId,
