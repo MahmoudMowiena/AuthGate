@@ -5,16 +5,18 @@ import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import { TenantController } from 'src/presentation/controllers/tenant.controller';
 import { ProjectsModule } from './project.module';
 import { ImageService } from 'src/infrastructure/services/image.service';
+import { AuthModule } from './auth.module';
+import { AuthService } from 'src/infrastructure/services/auth.service';
+import { UserModule } from './user.module';
 
 @Module({
-  imports:[
-    MongooseModule.forFeature([
-            {name:Tenant.name, schema:TenantSchema}
-    ]),
-    forwardRef(() => ProjectsModule)
-    ],
+  imports: [
+    MongooseModule.forFeature([{ name: Tenant.name, schema: TenantSchema }]),
+    forwardRef(() => ProjectsModule),
+    forwardRef(() => UserModule),
+  ],
   controllers: [TenantController],
-  providers: [TenantsService, ImageService],
-  exports: [TenantsService,MongooseModule,ImageService],
+  providers: [TenantsService, ImageService, AuthService],
+  exports: [TenantsService, MongooseModule, ImageService],
 })
 export class TenantModule {}

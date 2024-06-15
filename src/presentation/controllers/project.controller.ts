@@ -18,7 +18,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('projects')
-@UseGuards(AuthGuard)
+//@UseGuards(AuthGuard)
 export class ProjectsController {
   constructor(
     private readonly projectService: ProjectService,
@@ -53,12 +53,9 @@ export class ProjectsController {
   }
 
   @Get(':id')
-  async findOne(
-    @Headers('Authorization') authHeader: string,
-    @Param('id') id: string,
-  ): Promise<Project> {
-    const tenantID = this.extractTenantId(authHeader);
-    return await this.projectService.findOne(tenantID, id);
+  async findOne(@Param('id') id: string): Promise<Project> {
+    //const tenantID = this.extractTenantId(authHeader);
+    return await this.projectService.findOne(id);
   }
 
   @Put(':id')

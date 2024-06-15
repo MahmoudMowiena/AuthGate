@@ -22,7 +22,7 @@ export class User {
   @Prop({
     required: true,
     // match: [
-    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
     //   'Password must be strong',
     // ],
   })
@@ -61,7 +61,7 @@ export class User {
 export const userSchema = SchemaFactory.createForClass(User);
 
 userSchema.pre('save', function (next) {
-  if (this.password !== this.confirmPassword) {
+  if (this.isModified('password') && this.password !== this.confirmPassword) {
     next(new Error('Passwords do not match'));
   } else {
     next();
