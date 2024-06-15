@@ -12,12 +12,12 @@ import {
 } from 'class-validator';
 import { Project } from 'src/domain/entities/project.entity';
 
-export class tenantModel {
+export class updateTenantModel {
   @IsNotEmpty()
-  readonly name: string;
+  name: string;
 
   @IsEmail()
-  readonly email: string;
+  email: string;
 
   @IsNotEmpty()
   @Matches(
@@ -26,7 +26,7 @@ export class tenantModel {
       message: 'Password too weak',
     },
   )
-  password: string;
+  newPassword: string;
 
   @IsNotEmpty()
   @Matches(
@@ -35,11 +35,22 @@ export class tenantModel {
       message: 'Password too weak',
     },
   )
-  confirmPassword: string;
+  confirmNewPassword: string;
 
   @IsOptional()
   @IsString()
   image?: string;
+
+  //@IsOptional()
+  @IsString()
+  password: string;
+
+  //@IsOptional()
+  @IsString()
+  confirmPassword: string;
+
+  @IsString()
+  oldPassword?: string;
 
   @IsOptional()
   @IsNumber()

@@ -114,11 +114,11 @@ export class UserController {
   }
 
   @Delete()
-  async remove(@Headers('Authorization') authHeader: any): Promise<userModel> {
+  async remove(id: string): Promise<userModel> {
     try {
-      const token = authHeader.split(' ')[1];
-      const userId = this.jwtservice.verify(token).sub;
-      const user = await this.userService.remove(userId);
+      //const token = authHeader.split(' ')[1];
+      //const userId = this.jwtservice.verify(token).sub;
+      const user = await this.userService.remove(id);
       if (!user) {
         throw new HttpException('user not found', HttpStatus.NOT_FOUND);
       }

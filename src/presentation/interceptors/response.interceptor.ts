@@ -30,16 +30,16 @@ export class ResponseInterceptor implements NestInterceptor {
 
     switch (method) {
       case 'POST':
-        return statusCode === 201
-          ? 'Resource created successfully'
+        return statusCode === 200 || 201
+          ? 'successfully completed'
           : 'Error creating resource';
       case 'PUT':
       case 'PATCH':
-        return statusCode === 200
+        return statusCode === 200 || 201
           ? 'Resource updated successfully'
           : 'Error updating resource';
       case 'DELETE':
-        return statusCode === 200
+        return statusCode === 200 || 201
           ? 'Resource deleted successfully'
           : 'Error deleting resource';
       default:

@@ -15,6 +15,7 @@ import {
   Request,
   Header,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
@@ -23,12 +24,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '../guards/auth.guard';
 import { AuthService } from 'src/infrastructure/services/auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { updateTenantModel } from '../dtos/updateTenant.model';
 
 @Controller('tenants')
 export class TenantController {
   constructor(
     private readonly tenantsService: TenantsService,
     private readonly jwtservice: JwtService,
+    private readonly authservice: AuthService,
   ) {}
 
   @Get()
@@ -96,13 +99,11 @@ export class TenantController {
 
   @Delete()
   @UseGuards(AuthGuard)
-  async remove(
-    @Headers('Authorization') authHeader: any,
-  ): Promise<tenantModel> {
+  async remove(id: string): Promise<tenantModel> {
     try {
-      const token = authHeader.split(' ')[1];
-      const tenantId = this.jwtservice.verify(token).sub;
-      const tenant = await this.tenantsService.remove(tenantId);
+      //const token = authHeader.split(' ')[1];
+      //const tenantId = this.jwtservice.verify(token).sub;
+      const tenant = await this.tenantsService.remove(id);
       if (!tenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }

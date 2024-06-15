@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { tenantModel } from '../../presentation/dtos/tenant.model';
 import { Tenant, TenantDocument } from '../../domain/entities/tenant.entity';
 import { ImageService } from './image.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class TenantsService {
@@ -83,7 +84,7 @@ export class TenantsService {
     return tenant.save();
   }
 
-  async findTenantByProjectId(projectId: string): Promise<tenantModel | null> {
-    return this.tenantModel.findOne({ 'projects.projectId': projectId }).exec();
+  async findTenantByProjectId(projectId: string): Promise<any | null> {
+    return this.tenantModel.findOne({ 'projects._id': projectId }).exec();
   }
 }

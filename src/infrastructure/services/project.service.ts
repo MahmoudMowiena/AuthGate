@@ -59,13 +59,12 @@ export class ProjectService {
     return tenant.projects;
   }
 
-  async findOne(tenantID: string, projectID: string): Promise<Project> {
-    const tenant = await this.tenantModel.findById(tenantID);
-    if (!tenant) {
-      throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
-    }
+  async findOne(projectID: string): Promise<Project> {
+    const targetTenant = await this.tenantModel
+      .findOne({ 'projects._id': projectID })
+      .exec();
 
-    const project = tenant.projects.find(
+    const project = targetTenant.projects.find(
       (proj) => proj._id.toString() === projectID,
     );
     if (!project) {
