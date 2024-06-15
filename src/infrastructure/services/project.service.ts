@@ -96,7 +96,8 @@ export class ProjectService {
 
     try {
       await tenant.save();
-      return project;
+      const projectsAfterUpdate: any = tenant.projects;
+      return projectsAfterUpdate;
     } catch (error) {
       throw new BadRequestException('Failed to update project');
     }
@@ -119,7 +120,8 @@ export class ProjectService {
 
     try {
       await tenant.save();
-      return project as Project;
+      const projectsAfterDelete: any = tenant.projects;
+      return projectsAfterDelete;
     } catch (error) {
       throw new BadRequestException('Failed to delete project');
     }

@@ -41,11 +41,7 @@ export class ProjectsController {
       createProjectDto,
       tenantID,
     );
-    return {
-      statusCode: 201,
-      message: 'Project created successfully',
-      data: allProjetcs,
-    };
+    return allProjetcs;
   }
 
   @Get()
@@ -70,17 +66,23 @@ export class ProjectsController {
     @Param('id') id: string,
     @Body() updateProjectDto: projectModel,
     @Headers('Authorization') authHeader: string,
-  ): Promise<Project> {
+  ): Promise<any> {
     const tenantID = this.extractTenantId(authHeader);
-    return await this.projectService.update(id, updateProjectDto, tenantID);
+    const projectList: any = await this.projectService.update(
+      id,
+      updateProjectDto,
+      tenantID,
+    );
+    return projectList;
   }
 
   @Delete(':id')
   async remove(
     @Param('id') id: string,
     @Headers('Authorization') authHeader: string,
-  ): Promise<Project> {
+  ): Promise<any> {
     const tenantID = this.extractTenantId(authHeader);
-    return await this.projectService.delete(id, tenantID);
+    const projectList: any = await this.projectService.delete(id, tenantID);
+    return projectList;
   }
 }
