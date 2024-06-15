@@ -82,6 +82,8 @@ export class AuthService {
         email: user.email,
         phone: user.phone,
         image: user.image,
+        website: user.website,
+        address: user.address,
         role: 'tenant',
       };
     }
@@ -140,7 +142,15 @@ export class AuthService {
     else throw new BadRequestException();
   }
 
+  // async validatePassword(
+  //   password: string,
+  //   hashedPassword: string,
+  // ): Promise<boolean> {
+  //   return await bcrypt.compare(password, hashedPassword);
+  // }
+
   async processAuth(projectId: any, token: string): Promise<any> {
+    console.log('i am in process auth');
     let userproject: UserProject;
     let payload;
     try {
@@ -150,6 +160,8 @@ export class AuthService {
     }
     const userId = payload.sub;
     const user = await this.usersService.findById(userId);
+    console.log(user);
+
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
@@ -168,12 +180,21 @@ export class AuthService {
         expireDate,
       };
     }
+    console.log(userproject);
 
     user.projects.push(userproject);
     await this.usersService.save(user);
+    console.log('i am in process auth after save');
+
     const targetTenant =
       await this.tenantsService.findTenantByProjectId(projectId);
-    const targetProject: projectModel = targetTenant.projects.find(projectId);
+    console.log(targetTenant);
+    const targetProject: projectModel | any = targetTenant.projects.find(
+      (project) => project._id.toString() === projectId,
+    );
+
+    console.log(targetProject);
+
     const callbackUrl = targetProject.callBackUrl;
 
     return {
