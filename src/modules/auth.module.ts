@@ -6,6 +6,7 @@ import { AuthController } from 'src/presentation/controllers/auth.controller';
 import { UserModule } from './user.module';
 import { TenantModule } from './tenant.module';
 import { ProjectsModule } from './project.module';
+import { GithubAuthStrategy } from 'src/infrastructure/Strategies/githubAuth.strategy';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { ProjectsModule } from './project.module';
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, GithubAuthStrategy],
   controllers: [AuthController],
   exports: [AuthService],
 })

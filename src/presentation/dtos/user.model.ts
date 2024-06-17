@@ -39,6 +39,10 @@ export class userModel {
 
   @IsOptional()
   @IsString()
+  githubId?: string;
+
+  @IsOptional()
+  @IsString()
   image?: string;
 
   @IsOptional()
