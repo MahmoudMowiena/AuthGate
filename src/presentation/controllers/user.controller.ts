@@ -18,6 +18,7 @@ import { AuthService } from 'src/infrastructure/services/auth.service';
 import { ImageService } from 'src/infrastructure/services/image.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtService } from '@nestjs/jwt';
+import { updateUserModel } from '../dtos/updateUser.model';
 
 @Controller('users')
 export class UserController {
@@ -71,16 +72,9 @@ export class UserController {
     @Headers('Authorization') authHeader: string,
   ) {
     try {
-      console.log('hi from the try of add User Project');
       const token = authHeader.split(' ')[1];
-      console.log(
-        'hi from the try of add User Project after extracting the token',
-      );
-      console.log(token);
       const { projectId } = body;
-      console.log(projectId);
       const result = await this.authservice.processAuth(projectId, token);
-      console.log('hello after awiat');
       return {
         result,
         success: true,
@@ -113,11 +107,34 @@ export class UserController {
     }
   }
 
-  @Delete()
-  async remove(id: string): Promise<userModel> {
+  @Patch('updateWithPassword')
+  async updateWithPassword(
+    @Body() updateUserDto: updateUserModel,
+    @Headers('Authorization') authHeader: any,
+  ): Promise<userModel> {
     try {
-      //const token = authHeader.split(' ')[1];
-      //const userId = this.jwtservice.verify(token).sub;
+      const token = authHeader.split(' ')[1];
+      const userId = this.jwtservice.verify(token).sub;
+      const updatedUser = await this.userService.updateWithPassword(
+        userId,
+        updateUserDto,
+      );
+      if (!updatedUser) {
+        throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+      }
+      const userListAfterUpdate: any = await this.findAll();
+      return userListAfterUpdate;
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to update user',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<userModel> {
+    try {
       const user = await this.userService.remove(id);
       if (!user) {
         throw new HttpException('user not found', HttpStatus.NOT_FOUND);

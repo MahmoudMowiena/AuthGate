@@ -1,10 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { tenantModel } from '../../presentation/dtos/tenant.model';
 import { Tenant, TenantDocument } from '../../domain/entities/tenant.entity';
 import { ImageService } from './image.service';
 import * as bcrypt from 'bcrypt';
+import { updateTenantModel } from 'src/presentation/dtos/updateTenant.model';
 
 @Injectable()
 export class TenantsService {
@@ -19,7 +24,7 @@ export class TenantsService {
   }
 
   async findById(id: string): Promise<tenantModel> {
-    return await this.tenantModel.findById(id).exec();
+    return await this.tenantModel.findById(id).populate('projects').exec();
   }
 
   async findByEmail(email: string): Promise<tenantModel> {
@@ -27,16 +32,48 @@ export class TenantsService {
   }
 
   async findAll(): Promise<Tenant[]> {
-    return this.tenantModel.find().exec();
+    return this.tenantModel.find().populate('projects').exec();
   }
 
   async update(id: string, updateTenantDto: tenantModel): Promise<any> {
-    const tenantListAfterDelete: any = this.tenantModel
+    const tenantListAfterUpdate: any = this.tenantModel
       .findOneAndUpdate({ _id: id, deleted: false }, updateTenantDto, {
         new: true,
       })
       .exec();
-    return tenantListAfterDelete;
+    return tenantListAfterUpdate;
+  }
+
+  async updateWithPassword(
+    id: string,
+    updateTenantDto: updateTenantModel,
+  ): Promise<any> {
+    const tenant = await this.tenantModel.findById(id).exec();
+    if (!tenant) {
+      throw new NotFoundException('Tenant not found');
+    }
+
+    if (updateTenantDto.oldPassword) {
+      const isMatch = await bcrypt.compare(
+        updateTenantDto.oldPassword,
+        tenant.password,
+      );
+      if (!isMatch) {
+        throw new BadRequestException('Old password is incorrect');
+      }
+    }
+
+    if (updateTenantDto.newPassword && updateTenantDto.confirmNewPassword) {
+      if (updateTenantDto.newPassword !== updateTenantDto.confirmNewPassword) {
+        throw new BadRequestException('New passwords do not match');
+      }
+      const salt = await bcrypt.genSalt();
+      tenant.password = await bcrypt.hash(updateTenantDto.newPassword, salt);
+      tenant.confirmPassword = tenant.password;
+    }
+
+    Object.assign(tenant, updateTenantDto);
+    return tenant.save();
   }
 
   async remove(id: string): Promise<any> {
@@ -45,8 +82,7 @@ export class TenantsService {
       throw new NotFoundException('Tenant not found');
     }
     tenant.deleted = true;
-    tenant.save();
-    return await this.findAll();
+    return tenant.save();
   }
   async authorizeClient(
     clientID: string,

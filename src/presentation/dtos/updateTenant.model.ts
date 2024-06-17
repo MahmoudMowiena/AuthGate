@@ -4,7 +4,6 @@ import {
   IsBoolean,
   IsEmail,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   Matches,
@@ -13,64 +12,55 @@ import {
 import { Project } from 'src/domain/entities/project.entity';
 
 export class updateTenantModel {
-  @IsNotEmpty()
-  name: string;
+  @IsOptional()
+  @IsString()
+  readonly name?: string;
 
+  @IsOptional()
   @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  @Matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-    {
-      message: 'Password too weak',
-    },
-  )
-  newPassword: string;
-
-  @IsNotEmpty()
-  @Matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-    {
-      message: 'Password too weak',
-    },
-  )
-  confirmNewPassword: string;
+  readonly email?: string;
 
   @IsOptional()
   @IsString()
-  image?: string;
-
-  //@IsOptional()
-  @IsString()
-  password: string;
-
-  //@IsOptional()
-  @IsString()
-  confirmPassword: string;
-
-  @IsString()
-  oldPassword?: string;
-
-  @IsOptional()
-  @IsNumber()
-  phone?: string;
+  readonly phone?: string;
 
   @IsOptional()
   @IsString()
-  address?: string;
+  readonly address?: string;
 
   @IsOptional()
   @IsString()
-  website?: string;
+  readonly website?: string;
 
+  @IsOptional()
+  @IsString()
+  readonly image?: string;
+
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => Project)
-  @IsOptional()
-  projects?: Project[];
+  readonly projects?: Project[];
 
   @IsOptional()
   @IsBoolean()
-  deleted?: boolean;
+  readonly deleted?: boolean;
+
+  @IsOptional()
+  @IsString()
+  readonly oldPassword?: string;
+
+  @IsOptional()
+  @IsString()
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    {
+      message: 'Password too weak',
+    },
+  )
+  readonly newPassword?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly confirmNewPassword?: string;
 }

@@ -25,6 +25,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { AuthService } from 'src/infrastructure/services/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { updateTenantModel } from '../dtos/updateTenant.model';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('tenants')
 export class TenantController {
@@ -97,12 +98,35 @@ export class TenantController {
     }
   }
 
-  @Delete()
+  @Patch('updateWithPassword')
   @UseGuards(AuthGuard)
-  async remove(id: string): Promise<tenantModel> {
+  async updateWithPassword(
+    @Body() updateTenantDto: updateTenantModel,
+    @Headers('Authorization') authHeader: any,
+  ): Promise<tenantModel> {
     try {
-      //const token = authHeader.split(' ')[1];
-      //const tenantId = this.jwtservice.verify(token).sub;
+      const token = authHeader.split(' ')[1];
+      const tenantId = this.jwtservice.verify(token).sub;
+      const updatedTenant = await this.tenantsService.updateWithPassword(
+        tenantId,
+        updateTenantDto,
+      );
+      if (!updatedTenant) {
+        throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
+      }
+      const tenantListAfterUpdate: any = await this.findAll();
+      return tenantListAfterUpdate;
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to update tenant',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<tenantModel> {
+    try {
       const tenant = await this.tenantsService.remove(id);
       if (!tenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
