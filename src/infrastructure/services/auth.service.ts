@@ -216,7 +216,9 @@ export class AuthService {
     let user = await this.usersService.findByGitHubId(id);
     if (!user) {
       // If user doesn't exist, create a new one
-      const email = `${id}provided@github.com`;
+      let email;
+      if (emails) email = emails && emails[0] && emails[0].value;
+      else email = `${id}provided@github.com`;
       const hashedPassword = await bcrypt.hash(uuidv4(), 10);
 
       user = await this.usersService.create({
