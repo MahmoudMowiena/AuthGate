@@ -1,14 +1,50 @@
-import { IsString, IsEmail, IsOptional } from 'class-validator';
+import { Exclude, Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+  ValidateNested,
+} from 'class-validator';
+import { Project } from 'src/domain/entities/project.entity';
 
 export class tenantModel {
-  @IsString()
-  name: string;
+  @IsNotEmpty()
+  readonly name: string;
 
   @IsEmail()
-  email: string;
+  readonly email: string;
+
+  @IsNotEmpty()
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    {
+      message: 'Password too weak',
+    },
+  )
+  //@Exclude()
+  password: string;
+
+  @IsNotEmpty()
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    {
+      message: 'Password too weak',
+    },
+  )
+  //@Exclude()
+  confirmPassword: string;
 
   @IsOptional()
   @IsString()
+  image?: string;
+
+  @IsOptional()
+  @IsNumber()
   phone?: string;
 
   @IsOptional()
@@ -19,7 +55,13 @@ export class tenantModel {
   @IsString()
   website?: string;
 
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Project)
   @IsOptional()
-  @IsString()
-  logo?: string;
+  projects?: Project[];
+
+  @IsOptional()
+  @IsBoolean()
+  deleted?: boolean;
 }
