@@ -142,25 +142,18 @@ export class AuthService {
     else throw new BadRequestException();
   }
 
-  // async validatePassword(
-  //   password: string,
-  //   hashedPassword: string,
-  // ): Promise<boolean> {
-  //   return await bcrypt.compare(password, hashedPassword);
-  // }
-
   async processAuth(projectId: any, token: string): Promise<any> {
-    console.log('i am in process auth');
     let userproject: UserProject;
     let payload;
+
     try {
       payload = this.jwtService.verify(token);
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }
+
     const userId = payload.sub;
     const user = await this.usersService.findById(userId);
-    console.log(user);
 
     if (!user) {
       throw new UnauthorizedException('User not found');
@@ -180,20 +173,31 @@ export class AuthService {
         expireDate,
       };
     }
-    console.log(userproject);
 
-    user.projects.push(userproject);
+    const userProject = user.projects.find(
+      (project) => project.projectID === projectID,
+    );
+
+    if (!userProject) {
+      user.projects.push(userproject);
+    }
+
     await this.usersService.save(user);
-    console.log('i am in process auth after save');
 
     const targetTenant =
       await this.tenantsService.findTenantByProjectId(projectId);
-    console.log(targetTenant);
+
+    if (!targetTenant) {
+      throw new ConflictException('Tenant not found for the given project ID');
+    }
+
     const targetProject: projectModel | any = targetTenant.projects.find(
       (project) => project._id.toString() === projectId,
     );
 
-    console.log(targetProject);
+    if (!targetProject) {
+      throw new ConflictException('Project not found in tenant');
+    }
 
     const callbackUrl = targetProject.callBackUrl;
 

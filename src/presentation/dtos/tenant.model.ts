@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -26,6 +26,7 @@ export class tenantModel {
       message: 'Password too weak',
     },
   )
+  //@Exclude()
   password: string;
 
   @IsNotEmpty()
@@ -35,6 +36,7 @@ export class tenantModel {
       message: 'Password too weak',
     },
   )
+  //@Exclude()
   confirmPassword: string;
 
   @IsOptional()
