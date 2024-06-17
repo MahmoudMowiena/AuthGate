@@ -35,6 +35,9 @@ export class UsersService {
   async findByEmail(email: string): Promise<userModel> {
     return this.userModel.findOne({ email }).populate('projects').exec();
   }
+  async findByGitHubId(githubId: string): Promise<User> {
+    return this.userModel.findOne({ githubId }).exec();
+  }
 
   async save(user: User | any): Promise<any> {
     return user.save();

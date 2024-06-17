@@ -51,6 +51,9 @@ export class User {
   @Prop()
   age: number;
 
+  @Prop({ unique: true })
+  githubId: string;
+
   @Prop({ default: false })
   deleted: boolean;
 
