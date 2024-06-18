@@ -61,6 +61,9 @@ export class tenantModel {
   @IsOptional()
   projects?: Project[];
 
+  @IsString()
+  role: string;
+
   @IsOptional()
   @IsBoolean()
   deleted?: boolean;

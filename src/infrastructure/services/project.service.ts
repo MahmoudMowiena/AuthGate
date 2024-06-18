@@ -116,6 +116,7 @@ export class ProjectService {
     }
 
     const project = tenant.projects.splice(projectIndex, 1)[0];
+    project.deleted = true;
 
     try {
       await tenant.save();

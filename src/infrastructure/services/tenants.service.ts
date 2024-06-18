@@ -10,6 +10,8 @@ import { Tenant, TenantDocument } from '../../domain/entities/tenant.entity';
 import { ImageService } from './image.service';
 import * as bcrypt from 'bcrypt';
 import { updateTenantModel } from 'src/presentation/dtos/updateTenant.model';
+import { jwtConstants } from '../../constants'
+
 
 @Injectable()
 export class TenantsService {
@@ -24,7 +26,7 @@ export class TenantsService {
   }
 
   async findById(id: string): Promise<tenantModel> {
-    return await this.tenantModel.findById(id).populate('projects').exec();
+    return await this.tenantModel.findById(id).exec();
   }
 
   async findByEmail(email: string): Promise<tenantModel> {
@@ -32,7 +34,7 @@ export class TenantsService {
   }
 
   async findAll(): Promise<Tenant[]> {
-    return this.tenantModel.find().populate('projects').exec();
+    return this.tenantModel.find().exec();
   }
 
   async update(id: string, updateTenantDto: tenantModel): Promise<any> {
@@ -116,7 +118,8 @@ export class TenantsService {
 
     await this.imageService.upload('tenants', id, image);
 
-    tenant.image = image.originalname;
+    tenant.image = jwtConstants.imageUrl + 'tenants/' + `${id}/` + image.originalname;
+
     return tenant.save();
   }
 

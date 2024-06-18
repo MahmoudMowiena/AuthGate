@@ -68,7 +68,7 @@ export class AuthService {
 
     if (role === 'user') {
       signInResponse = {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         phone: user.phone,
@@ -78,7 +78,7 @@ export class AuthService {
       };
     } else if (role === 'tenant') {
       signInResponse = {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         phone: user.phone,
@@ -103,6 +103,7 @@ export class AuthService {
     const unhashedConfirmPassword = userSignUpDto.confirmPassword;
     userSignUpDto.password = hashedPassword;
     userSignUpDto.confirmPassword = hashedPassword;
+    userSignUpDto.role = 'user';
 
     if (unhashedPassword !== unhashedConfirmPassword) {
       throw new BadRequestException('Passwords do not match');
@@ -129,6 +130,7 @@ export class AuthService {
     const unhashedConfirmPassword = tenantSignUpDto.confirmPassword;
     tenantSignUpDto.password = hashedPassword;
     tenantSignUpDto.confirmPassword = hashedPassword;
+    tenantSignUpDto.role = 'tenant';
     if (unhashedPassword !== unhashedConfirmPassword) {
       throw new BadRequestException('Passwords do not match');
     }
@@ -154,7 +156,7 @@ export class AuthService {
     }
 
     const userId = payload.sub;
-    const user = await this.usersService.findById(userId);
+    const user = await this.usersService.findId(userId);
 
     if (!user) {
       throw new UnauthorizedException('User not found');
