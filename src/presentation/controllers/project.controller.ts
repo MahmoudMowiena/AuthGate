@@ -54,7 +54,6 @@ export class ProjectsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Project> {
-    //const tenantID = this.extractTenantId(authHeader);
     return await this.projectService.findOne(id);
   }
 

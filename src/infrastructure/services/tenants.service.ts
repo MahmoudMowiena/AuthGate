@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -38,6 +39,14 @@ export class TenantsService {
   }
 
   async update(id: string, updateTenantDto: tenantModel): Promise<any> {
+    const email = updateTenantDto.email;
+    const name = (await this.findById(id)).name;
+    if (this.findByEmail(email)) {
+      throw new BadRequestException('email already exist, try to login');
+    }
+    if (name) {
+      throw new BadRequestException('name already in use, try another name');
+    }
     const tenantListAfterUpdate: any = this.tenantModel
       .findOneAndUpdate({ _id: id, deleted: false }, updateTenantDto, {
         new: true,
@@ -53,6 +62,14 @@ export class TenantsService {
     const tenant = await this.tenantModel.findById(id).exec();
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
+    }
+    const email = updateTenantDto.email;
+    const name = (await this.findById(id)).name;
+    if (this.findByEmail(email)) {
+      throw new BadRequestException('email already exist, try to login');
+    }
+    if (name) {
+      throw new BadRequestException('name already in use, try another name');
     }
 
     if (updateTenantDto.oldPassword) {
