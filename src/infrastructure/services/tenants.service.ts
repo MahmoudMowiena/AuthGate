@@ -24,7 +24,7 @@ export class TenantsService {
   }
 
   async findById(id: string): Promise<tenantModel> {
-    return await this.tenantModel.findById(id).populate('projects').exec();
+    return await this.tenantModel.findById(id).exec();
   }
 
   async findByEmail(email: string): Promise<tenantModel> {
@@ -32,7 +32,7 @@ export class TenantsService {
   }
 
   async findAll(): Promise<Tenant[]> {
-    return this.tenantModel.find().populate('projects').exec();
+    return this.tenantModel.find().exec();
   }
 
   async update(id: string, updateTenantDto: tenantModel): Promise<any> {

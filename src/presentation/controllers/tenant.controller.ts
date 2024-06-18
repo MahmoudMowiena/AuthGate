@@ -21,7 +21,7 @@ import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import { ProjectService } from 'src/infrastructure/services/project.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthGuard } from '../guards/auth.guard';
+import { AuthenticationGuard } from '../guards/auth.guard';
 import { AuthService } from 'src/infrastructure/services/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { updateTenantModel } from '../dtos/updateTenant.model';
@@ -73,7 +73,7 @@ export class TenantController {
   }
 
   @Patch()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthenticationGuard)
   async update(
     @Body() updateTenantDto: tenantModel,
     @Headers('Authorization') authHeader: any,
@@ -99,7 +99,7 @@ export class TenantController {
   }
 
   @Patch('updateWithPassword')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthenticationGuard)
   async updateWithPassword(
     @Body() updateTenantDto: updateTenantModel,
     @Headers('Authorization') authHeader: any,

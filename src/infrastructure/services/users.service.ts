@@ -11,12 +11,17 @@ import { User, UserDocument } from '../../domain/entities/user.entity';
 import { ImageService } from 'src/infrastructure/services/image.service';
 import { updateUserModel } from 'src/presentation/dtos/updateUser.model';
 import * as bcrypt from 'bcrypt';
+import { ProjectService } from './project.service';
+import { TenantsService } from './tenants.service';
+import { projectModel } from 'src/presentation/dtos/project.model';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private imageService: ImageService,
+    private projectservice: ProjectService,
+    private tenantservice: TenantsService,
   ) {}
 
   async create(createUserDto: userModel): Promise<User> {
@@ -25,15 +30,53 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().populate('projects').exec();
+    const users = this.userModel.find().exec();
+    for (const user of await users) {
+      user.projects = await this.getUserProjects(user.projects);
+    }
+
+    return users;
+  }
+
+  async findId(id: string): Promise<userModel> {
+    return await this.userModel.findById(id).exec();
   }
 
   async findById(id: string): Promise<userModel> {
-    return this.userModel.findById(id).populate('projects').exec();
+    const user = this.userModel.findById(id).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    (await user).projects = await this.getUserProjects((await user).projects);
+    return user;
   }
 
   async findByEmail(email: string): Promise<userModel> {
-    return this.userModel.findOne({ email }).populate('projects').exec();
+    return this.userModel.findOne({ email }).exec();
+  }
+
+  private async getUserProjects(projectRef: any[]): Promise<any[]> {
+    const targetProject = [];
+
+    for (const projRef of projectRef) {
+      const tenant = await this.tenantservice.findTenantByProjectId(
+        projRef.projectID,
+      );
+      if (tenant) {
+        const project = tenant.projects.find(
+          (p) => p._id.toString() === projRef.projectID,
+        );
+        if (project) {
+          targetProject.push(project);
+        }
+      }
+    }
+
+    return targetProject;
+  }
+  async findByGitHubId(githubId: string): Promise<User> {
+    return this.userModel.findOne({ githubId }).exec();
   }
 
   async save(user: User | any): Promise<any> {

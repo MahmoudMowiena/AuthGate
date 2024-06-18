@@ -14,11 +14,11 @@ import {
 import { projectModel } from '../dtos/project.model';
 import { Project } from 'src/domain/entities/project.entity';
 import { ProjectService } from 'src/infrastructure/services/project.service';
-import { AuthGuard } from '../guards/auth.guard';
+import { AuthenticationGuard } from '../guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('projects')
-//@UseGuards(AuthGuard)
+//@UseGuards(AuthenticationGuard)
 export class ProjectsController {
   constructor(
     private readonly projectService: ProjectService,
