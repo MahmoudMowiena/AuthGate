@@ -43,6 +43,10 @@ export class userModel {
 
   @IsOptional()
   @IsString()
+  googleId?: string;
+
+  @IsOptional()
+  @IsString()
   image?: string;
 
   @IsOptional()

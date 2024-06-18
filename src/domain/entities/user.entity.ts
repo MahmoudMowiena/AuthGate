@@ -55,6 +55,9 @@ export class User {
   @Prop({ unique: true })
   githubId: string;
 
+  @Prop({ unique: true })
+  googleId: string;
+
   @Prop({ default: false })
   deleted: boolean;
 

@@ -84,4 +84,17 @@ export class AuthController {
     const user = req.user;
     return this.authService.signInWithGitHub(user);
   }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async loginWithGoogle() {
+    // Initiates Google OAuth flow
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthCallback(@Req() req) {
+    const user = req.user;
+    return this.authService.signInWithGoogle(user);
+  }
 }

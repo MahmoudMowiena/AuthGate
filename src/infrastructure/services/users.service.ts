@@ -14,7 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { ProjectService } from './project.service';
 import { TenantsService } from './tenants.service';
 import { projectModel } from 'src/presentation/dtos/project.model';
-import { jwtConstants } from '../../constants'
+import { jwtConstants } from '../../constants';
 
 @Injectable()
 export class UsersService {
@@ -80,6 +80,10 @@ export class UsersService {
     return this.userModel.findOne({ githubId }).exec();
   }
 
+  async findByGoogleId(googleId: string): Promise<User> {
+    return this.userModel.findOne({ googleId }).exec();
+  }
+
   async save(user: User | any): Promise<any> {
     return user.save();
   }
@@ -140,7 +144,8 @@ export class UsersService {
 
     await this.imageService.upload('users', id, image);
 
-    user.image = jwtConstants.imageUrl + 'users/' + `${id}/` + image.originalname;
+    user.image =
+      jwtConstants.imageUrl + 'users/' + `${id}/` + image.originalname;
     return user.save();
   }
 }
