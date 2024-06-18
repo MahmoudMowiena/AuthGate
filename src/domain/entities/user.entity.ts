@@ -52,8 +52,11 @@ export class User {
   @Prop()
   age: number;
 
-  @Prop({ unique: true })
-  githubId: string;
+  @Prop({ unique: true, sparse: true })
+  googleId?: string;
+
+  @Prop({ unique: true, sparse: true })
+  githubId?: string;
 
   @Prop({ default: false })
   deleted: boolean;

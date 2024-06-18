@@ -224,7 +224,7 @@ export class AuthService {
   }
   async validateGitHubUser(profile: any): Promise<any> {
     const { id, username, displayName, emails, photos } = profile;
-
+    console.log(profile);
     // Find user by GitHub ID
     let user = await this.usersService.findByGitHubId(id);
     if (!user) {
@@ -248,6 +248,53 @@ export class AuthService {
     return user;
   }
   async signInWithGitHub(
+    user: User,
+  ): Promise<{ access_token: string; user: any }> {
+    const payload = {
+      sub: user._id,
+      email: user.email,
+      name: user.name,
+      role: 'user',
+    };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        image: user.image,
+        age: user.age,
+        role: 'user',
+      },
+    };
+  }
+  async validateGoogleUser(profile: any): Promise<any> {
+    const { id, displayName, emails, photos } = profile;
+
+    // Find user by Google ID
+    let user = await this.usersService.findByGoogleId(id);
+
+    if (!user) {
+      // If user doesn't exist, create a new one
+      const email = emails && emails[0] && emails[0].value;
+      const hashedPassword = await bcrypt.hash(uuidv4(), 10);
+
+      user = await this.usersService.create({
+        name: displayName,
+        email: email,
+        googleId: id,
+        image: photos && photos[0] && photos[0].value,
+        password: hashedPassword,
+        confirmPassword: hashedPassword,
+        role: 'user',
+      });
+    }
+
+    return user;
+  }
+
+  async signInWithGoogle(
     user: User,
   ): Promise<{ access_token: string; user: any }> {
     const payload = {

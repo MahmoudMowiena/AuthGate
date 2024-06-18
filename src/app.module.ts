@@ -6,6 +6,7 @@ import { ProjectsModule } from './modules/project.module';
 import { AuthModule } from './modules/auth.module';
 import { ImageService } from './infrastructure/services/image.service';
 import { ConfigModule } from '@nestjs/config';
+import { IndexManagementService } from './infrastructure/services/indexManagement.service';
 
 @Module({
   imports: [
