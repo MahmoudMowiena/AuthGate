@@ -1,10 +1,12 @@
-import { Type } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
+  IsString,
   Matches,
   ValidateNested,
 } from 'class-validator';
@@ -24,6 +26,7 @@ export class tenantModel {
       message: 'Password too weak',
     },
   )
+  //@Exclude()
   password: string;
 
   @IsNotEmpty()
@@ -33,12 +36,33 @@ export class tenantModel {
       message: 'Password too weak',
     },
   )
+  //@Exclude()
   confirmPassword: string;
 
-  readonly phone?: string;
-  readonly address?: string;
-  readonly website?: string;
-  readonly image?: string;
+  @IsOptional()
+  @IsString()
+  image?: string;
+
+  @IsOptional()
+  @IsNumber()
+  phone?: string;
+
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
+  @IsString()
+  website?: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Project)
+  @IsOptional()
+  projects?: Project[];
+
+  @IsString()
+  role: string;
 
   @IsOptional()
   @IsBoolean()

@@ -4,10 +4,9 @@ import { IsString, IsNotEmpty, IsUrl, IsOptional } from 'class-validator';
 
 @Schema({ timestamps: true })
 export class Project extends Document {
-  
   @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
   _id: Types.ObjectId;
-  
+
   @Prop()
   @IsString()
   @IsOptional()
@@ -28,6 +27,9 @@ export class Project extends Document {
   @IsUrl()
   @IsNotEmpty()
   callBackUrl: string;
+
+  @Prop({ default: false })
+  deleted: boolean;
 }
 
 export const projectSchema = SchemaFactory.createForClass(Project);

@@ -13,17 +13,27 @@ import {
   Headers,
   UseGuards,
   Request,
+  Header,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import { ProjectService } from 'src/infrastructure/services/project.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthGuard } from '../guards/auth.guard';
+import { AuthenticationGuard } from '../guards/auth.guard';
 import { AuthService } from 'src/infrastructure/services/auth.service';
+import { JwtService } from '@nestjs/jwt';
+import { updateTenantModel } from '../dtos/updateTenant.model';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('tenants')
 export class TenantController {
-  constructor(private readonly tenantsService: TenantsService) {}
+  constructor(
+    private readonly tenantsService: TenantsService,
+    private readonly jwtservice: JwtService,
+    private readonly authservice: AuthService,
+  ) {}
 
   @Get()
   async findAll(): Promise<tenantModel[]> {
@@ -63,13 +73,14 @@ export class TenantController {
   }
 
   @Patch()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthenticationGuard)
   async update(
     @Body() updateTenantDto: tenantModel,
-    @Request() req: any,
+    @Headers('Authorization') authHeader: any,
   ): Promise<tenantModel> {
     try {
-      const tenantId = req.user.tenantId;
+      const token = authHeader.split(' ')[1];
+      const tenantId = this.jwtservice.verify(token).sub;
       const updatedTenant = await this.tenantsService.update(
         tenantId,
         updateTenantDto,
@@ -77,7 +88,8 @@ export class TenantController {
       if (!updatedTenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
-      return updatedTenant;
+      const tenantListAfterUpdate: any = await this.findAll();
+      return tenantListAfterUpdate;
     } catch (error) {
       throw new HttpException(
         'Failed to update tenant',
@@ -86,16 +98,41 @@ export class TenantController {
     }
   }
 
-  @Delete()
-  @UseGuards(AuthGuard)
-  async remove(@Request() req: any): Promise<tenantModel> {
+  @Patch('updateWithPassword')
+  @UseGuards(AuthenticationGuard)
+  async updateWithPassword(
+    @Body() updateTenantDto: updateTenantModel,
+    @Headers('Authorization') authHeader: any,
+  ): Promise<tenantModel> {
     try {
-      const tenantId = req.user.tenantId;
-      const tenant = await this.tenantsService.remove(tenantId);
+      const token = authHeader.split(' ')[1];
+      const tenantId = this.jwtservice.verify(token).sub;
+      const updatedTenant = await this.tenantsService.updateWithPassword(
+        tenantId,
+        updateTenantDto,
+      );
+      if (!updatedTenant) {
+        throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
+      }
+      const tenantListAfterUpdate: any = await this.findAll();
+      return tenantListAfterUpdate;
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to update tenant',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<tenantModel> {
+    try {
+      const tenant = await this.tenantsService.remove(id);
       if (!tenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
-      return tenant;
+      const tenantListAfterDelete: any = await this.findAll();
+      return tenantListAfterDelete;
     } catch (error) {
       throw new HttpException(
         'Failed to delete tenant',
@@ -124,7 +161,18 @@ export class TenantController {
 
   @Post('image/:id')
   @UseInterceptors(FileInterceptor('image'))
-  async uploadImage(@Param('id') id: string, @UploadedFile() image: Express.Multer.File) {
+  async uploadImage(
+    @Param('id') id: string,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
     return await this.tenantsService.addImage(id, image);
+  }
+
+  async getTenantByProjectId(projectId: string): Promise<tenantModel> {
+    const tenant = await this.tenantsService.findTenantByProjectId(projectId);
+    if (!tenant) {
+      throw new NotFoundException('Tenant not found');
+    }
+    return tenant;
   }
 }
