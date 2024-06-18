@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { ProjectService } from './project.service';
 import { TenantsService } from './tenants.service';
 import { projectModel } from 'src/presentation/dtos/project.model';
+import { jwtConstants } from '../../constants'
 
 @Injectable()
 export class UsersService {
@@ -84,6 +86,14 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: userModel): Promise<User> {
+    const email = updateUserDto.email;
+    const name = (await this.findById(id)).name;
+    if (this.findByEmail(email)) {
+      throw new BadRequestException('email already exist, try to login');
+    }
+    if (name) {
+      throw new BadRequestException('name already in use, try another name');
+    }
     const userListAfterUpdate: any = this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .exec();
@@ -97,6 +107,14 @@ export class UsersService {
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+    const email = updateUserDto.email;
+    const name = (await this.findById(id)).name;
+    if (this.findByEmail(email)) {
+      throw new BadRequestException('email already exist, try to login');
+    }
+    if (name) {
+      throw new BadRequestException('name already in use, try another name');
     }
 
     if (updateUserDto.oldPassword) {
@@ -139,7 +157,7 @@ export class UsersService {
 
     await this.imageService.upload('users', id, image);
 
-    user.image = image.originalname;
+    user.image = jwtConstants.imageUrl + 'users/' + `${id}/` + image.originalname;
     return user.save();
   }
 }
