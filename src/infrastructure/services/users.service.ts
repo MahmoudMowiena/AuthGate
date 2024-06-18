@@ -75,6 +75,9 @@ export class UsersService {
 
     return targetProject;
   }
+  async findByGitHubId(githubId: string): Promise<User> {
+    return this.userModel.findOne({ githubId }).exec();
+  }
 
   async save(user: User | any): Promise<any> {
     return user.save();

@@ -18,6 +18,7 @@ import * as crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import { UserProject } from 'src/domain/entities/userProject.entity';
 import { projectModel } from 'src/presentation/dtos/project.model';
+import { User } from 'src/domain/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -208,6 +209,52 @@ export class AuthService {
       projectID,
       callbackUrl,
       authorizationCode,
+    };
+  }
+  async validateGitHubUser(profile: any): Promise<any> {
+    const { id, username, displayName, emails, photos } = profile;
+
+    // Find user by GitHub ID
+    let user = await this.usersService.findByGitHubId(id);
+    if (!user) {
+      // If user doesn't exist, create a new one
+      let email;
+      if (emails) email = emails && emails[0] && emails[0].value;
+      else email = `${id}provided@github.com`;
+      const hashedPassword = await bcrypt.hash(uuidv4(), 10);
+
+      user = await this.usersService.create({
+        name: displayName || username,
+        email: email,
+        githubId: id,
+        image: photos && photos[0] && photos[0].value,
+        password: hashedPassword,
+        confirmPassword: hashedPassword,
+      });
+    }
+
+    return user;
+  }
+  async signInWithGitHub(
+    user: User,
+  ): Promise<{ access_token: string; user: any }> {
+    const payload = {
+      sub: user._id,
+      email: user.email,
+      name: user.name,
+      role: 'user',
+    };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        image: user.image,
+        age: user.age,
+        role: 'user',
+      },
     };
   }
 }
