@@ -39,6 +39,14 @@ export class userModel {
 
   @IsOptional()
   @IsString()
+  githubId?: string;
+
+  @IsOptional()
+  @IsString()
+  googleId?: string;
+
+  @IsOptional()
+  @IsString()
   image?: string;
 
   @IsOptional()
@@ -48,6 +56,9 @@ export class userModel {
   @IsOptional()
   @IsArray()
   projects?: UserProject[];
+
+  @IsString()
+  role: string;
 
   @IsOptional()
   @IsBoolean()

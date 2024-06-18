@@ -1,24 +1,31 @@
-import { IsEmail, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class SignInTenantResponse {
-    
-    @IsString()
-    id: string;
-    
-    @IsString()
-    name: string;
+  @IsString()
+  _id: string;
 
-    @IsEmail()
-    email: string;
+  @IsString()
+  name: string;
 
-    @IsOptional()
-    @IsString()
-    phone?: string;
+  @IsEmail()
+  email: string;
 
-    @IsOptional()
-    @IsString()
-    image?: string;
+  @IsOptional()
+  @IsString()
+  phone?: string;
 
-    @IsString()
-    role: 'tenant';
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
+  @IsString()
+  website?: string;
+
+  @IsOptional()
+  @IsString()
+  image?: string;
+
+  @IsString()
+  role: string;
 }
