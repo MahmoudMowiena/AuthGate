@@ -27,5 +27,5 @@ export class SignInTenantResponse {
   image?: string;
 
   @IsString()
-  role: 'tenant';
+  role: string;
 }
