@@ -44,11 +44,11 @@ export class AuthService {
     user: SignInUserResponse | SignInTenantResponse;
   }> {
     let user: any = await this.usersService.findByEmail(email);
-    let role = 'user';
+    //let role = 'user';
 
     if (!user) {
       user = await this.tenantsService.findByEmail(email);
-      role = 'tenant';
+      //role = 'tenant';
     }
 
     if (!user) throw new UnauthorizedException();
@@ -61,12 +61,12 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       name: user.name,
-      role: role,
+      role: user.role,
     };
 
     let signInResponse: SignInUserResponse | SignInTenantResponse;
 
-    if (role === 'user') {
+    if (user.role === 'user') {
       signInResponse = {
         _id: user._id,
         name: user.name,
@@ -76,7 +76,7 @@ export class AuthService {
         age: user.age,
         role: 'user',
       };
-    } else if (role === 'tenant') {
+    } else if (user.role === 'tenant') {
       signInResponse = {
         _id: user._id,
         name: user.name,
@@ -86,6 +86,17 @@ export class AuthService {
         website: user.website,
         address: user.address,
         role: 'tenant',
+      };
+    } else if (user.role === 'admin') {
+      signInResponse = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        image: user.image,
+        website: user.website,
+        address: user.address,
+        role: 'admin',
       };
     }
 
@@ -230,6 +241,7 @@ export class AuthService {
         image: photos && photos[0] && photos[0].value,
         password: hashedPassword,
         confirmPassword: hashedPassword,
+        role: 'user',
       });
     }
 
