@@ -213,7 +213,7 @@ export class AuthService {
   }
   async validateGitHubUser(profile: any): Promise<any> {
     const { id, username, displayName, emails, photos } = profile;
-
+    console.log(profile);
     // Find user by GitHub ID
     let user = await this.usersService.findByGitHubId(id);
     if (!user) {
