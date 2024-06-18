@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { ProjectService } from './project.service';
 import { TenantsService } from './tenants.service';
 import { projectModel } from 'src/presentation/dtos/project.model';
+import { jwtConstants } from '../../constants'
 
 @Injectable()
 export class UsersService {
@@ -139,7 +140,7 @@ export class UsersService {
 
     await this.imageService.upload('users', id, image);
 
-    user.image = image.originalname;
+    user.image = jwtConstants.imageUrl + 'users/' + `${id}/` + image.originalname;
     return user.save();
   }
 }
