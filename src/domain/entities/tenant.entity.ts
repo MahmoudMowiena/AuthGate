@@ -7,6 +7,7 @@ import {
   InternalServerErrorException,
   NotAcceptableException,
 } from '@nestjs/common';
+import { IsString } from 'class-validator';
 
 export type TenantDocument = Tenant & Document;
 
@@ -60,6 +61,9 @@ export class Tenant {
 
   @Prop({ type: [projectSchema], default: [] })
   projects: Project[];
+
+  @Prop()
+  role: string;
 
   @Prop({ default: false })
   deleted: boolean;

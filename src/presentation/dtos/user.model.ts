@@ -49,6 +49,9 @@ export class userModel {
   @IsArray()
   projects?: UserProject[];
 
+  @IsString()
+  role: string;
+
   @IsOptional()
   @IsBoolean()
   deleted?: boolean;

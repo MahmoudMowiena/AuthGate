@@ -2,7 +2,7 @@ import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class SignInTenantResponse {
   @IsString()
-  id: string;
+  _id: string;
 
   @IsString()
   name: string;

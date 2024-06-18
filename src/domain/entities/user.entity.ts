@@ -1,6 +1,7 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Types } from 'mongoose';
 import { UserProject } from './userProject.entity';
+import { IsString } from 'class-validator';
 
 export type UserDocument = User & Document;
 
@@ -53,6 +54,9 @@ export class User {
 
   @Prop({ default: false })
   deleted: boolean;
+
+  @Prop()
+  role: string;
 
   @Prop({ type: [UserProject] })
   projects: UserProject[];
