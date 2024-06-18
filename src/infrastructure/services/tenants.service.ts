@@ -10,6 +10,8 @@ import { Tenant, TenantDocument } from '../../domain/entities/tenant.entity';
 import { ImageService } from './image.service';
 import * as bcrypt from 'bcrypt';
 import { updateTenantModel } from 'src/presentation/dtos/updateTenant.model';
+import { jwtConstants } from '../../constants'
+
 
 @Injectable()
 export class TenantsService {
@@ -116,7 +118,8 @@ export class TenantsService {
 
     await this.imageService.upload('tenants', id, image);
 
-    tenant.image = image.originalname;
+    tenant.image = jwtConstants.imageUrl + 'tenants/' + `${id}/` + image.originalname;
+
     return tenant.save();
   }
 
