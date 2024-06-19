@@ -2,6 +2,8 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
+  NotFoundException,
   Scope,
   ScopeOptions,
   UnauthorizedException,
@@ -44,14 +46,14 @@ export class AuthService {
     user: SignInUserResponse | SignInTenantResponse;
   }> {
     let user: any = await this.usersService.findByEmail(email);
-    //let role = 'user';
 
     if (!user) {
       user = await this.tenantsService.findByEmail(email);
-      //role = 'tenant';
     }
 
-    if (!user) throw new UnauthorizedException();
+    if (!user || user.deleted) {
+      throw new UnauthorizedException('Account not found or has been deleted');
+    }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
 
@@ -224,24 +226,23 @@ export class AuthService {
   }
   async validateGitHubUser(profile: any): Promise<any> {
     const { id, username, displayName, emails, photos } = profile;
-    console.log(profile);
     // Find user by GitHub ID
     let user = await this.usersService.findByGitHubId(id);
     if (!user) {
       // If user doesn't exist, create a new one
-      let email;
-      if (emails) email = emails && emails[0] && emails[0].value;
-      else email = `${id}provided@github.com`;
+      // let email;
+      // if (emails) email = emails && emails[0] && emails[0].value;
+      // else email = `${id}provided@github.com`;
       const hashedPassword = await bcrypt.hash(uuidv4(), 10);
 
-      user = await this.usersService.create({
+      user = await this.usersService.createGithubUser({
         name: displayName || username,
-        email: email,
         githubId: id,
         image: photos && photos[0] && photos[0].value,
         password: hashedPassword,
         confirmPassword: hashedPassword,
         role: 'user',
+        email: '',
       });
     }
 
@@ -259,7 +260,7 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         phone: user.phone,
@@ -274,7 +275,6 @@ export class AuthService {
 
     // Find user by Google ID
     let user = await this.usersService.findByGoogleId(id);
-
     if (!user) {
       // If user doesn't exist, create a new one
       const email = emails && emails[0] && emails[0].value;
@@ -306,7 +306,7 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         phone: user.phone,

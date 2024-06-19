@@ -19,6 +19,7 @@ import { ImageService } from 'src/infrastructure/services/image.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtService } from '@nestjs/jwt';
 import { updateUserModel } from '../dtos/updateUser.model';
+import { ProjectService } from 'src/infrastructure/services/project.service';
 
 @Controller('users')
 export class UserController {
@@ -27,6 +28,7 @@ export class UserController {
     private authservice: AuthService,
     private imageService: ImageService,
     private jwtservice: JwtService,
+    private projectservice: ProjectService,
   ) {}
 
   @Get()
@@ -74,7 +76,11 @@ export class UserController {
     try {
       const token = authHeader.split(' ')[1];
       const { projectId } = body;
-      const result = await this.authservice.processAuth(projectId, token);
+      let result: any;
+      const targetProject = await this.projectservice.findOne(projectId);
+      if (targetProject.deleted === false) {
+        result = await this.authservice.processAuth(projectId, token);
+      }
       return {
         result,
         success: true,
@@ -97,12 +103,11 @@ export class UserController {
       if (!updatedUser) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      const usersListAfterUpdate: any = await this.findAll();
-      return usersListAfterUpdate;
+      return updatedUser;
     } catch (error) {
       throw new HttpException(
-        'Failed to update user',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.message || 'Failed to update user',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -120,14 +125,36 @@ export class UserController {
         updateUserDto,
       );
       if (!updatedUser) {
-        throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      const userListAfterUpdate: any = await this.findAll();
-      return userListAfterUpdate;
+      return updatedUser;
     } catch (error) {
       throw new HttpException(
         error.message || 'Failed to update user',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Patch(':id/undelete')
+  async undelete(
+    @Param('id') id: string,
+    @Headers('Authorization') authHeader: string,
+  ): Promise<any> {
+    try {
+      const token = authHeader.split(' ')[1];
+      const payload = this.jwtservice.verify(token);
+      if (payload.role === 'admin') {
+        const user = await this.userService.undelete(id);
+        if (!user) {
+          throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+        }
+        return await this.findAll();
+      }
+    } catch (error) {
+      throw new HttpException(
+        'Failed to undelete user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
