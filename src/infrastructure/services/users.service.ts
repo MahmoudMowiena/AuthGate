@@ -31,6 +31,11 @@ export class UsersService {
     return createdUser.save();
   }
 
+  async createGithubUser(createUserDto: userModel): Promise<User> {
+    const createdUser = new this.userModel(createUserDto);
+    return createdUser.save({ validateBeforeSave: false });
+  }
+
   async findAll(): Promise<User[]> {
     const users = this.userModel.find().exec();
     for (const user of await users) {
