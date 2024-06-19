@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsUrl, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsUrl,
+  IsOptional,
+  IsBoolean,
+} from 'class-validator';
 
 export class projectModel {
   @IsString()
@@ -21,4 +27,8 @@ export class projectModel {
   @IsUrl()
   @IsNotEmpty()
   callBackUrl: string;
+
+  @IsOptional()
+  @IsBoolean()
+  deleted?: boolean;
 }

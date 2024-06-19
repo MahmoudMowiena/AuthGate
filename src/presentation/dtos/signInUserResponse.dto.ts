@@ -23,5 +23,5 @@ export class SignInUserResponse {
   age?: number;
 
   @IsString()
-  role: 'user';
+  role: string;
 }

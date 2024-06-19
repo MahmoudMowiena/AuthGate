@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -10,8 +12,7 @@ import { Tenant, TenantDocument } from '../../domain/entities/tenant.entity';
 import { ImageService } from './image.service';
 import * as bcrypt from 'bcrypt';
 import { updateTenantModel } from 'src/presentation/dtos/updateTenant.model';
-import { jwtConstants } from '../../constants'
-
+import { jwtConstants } from '../../constants';
 
 @Injectable()
 export class TenantsService {
@@ -38,12 +39,50 @@ export class TenantsService {
   }
 
   async update(id: string, updateTenantDto: tenantModel): Promise<any> {
-    const tenantListAfterUpdate: any = this.tenantModel
-      .findOneAndUpdate({ _id: id, deleted: false }, updateTenantDto, {
-        new: true,
-      })
-      .exec();
-    return tenantListAfterUpdate;
+    let newEmail: any;
+    let newName: any;
+    let targetTenant: tenantModel;
+
+    try {
+      if (updateTenantDto.email !== null) {
+        newEmail = updateTenantDto.email;
+        targetTenant = await this.findByEmail(newEmail);
+        if (targetTenant && targetTenant.email === newEmail) {
+          throw new ConflictException('Email already exists, try to login');
+        }
+      }
+
+      if (updateTenantDto.name !== null) {
+        newName = updateTenantDto.name;
+        const tenants = await this.findAll();
+        for (const item of tenants) {
+          if (item.name === newName) {
+            throw new ConflictException('Name already in use, try another one');
+          }
+        }
+      }
+
+      const tenantAfterUpdate = await this.tenantModel
+        .findOneAndUpdate({ _id: id, deleted: false }, updateTenantDto, {
+          new: true,
+        })
+        .exec();
+
+      if (!tenantAfterUpdate) {
+        throw new NotFoundException('Tenant not found or already deleted');
+      }
+
+      return tenantAfterUpdate;
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw new ConflictException(error.message);
+      } else if (error instanceof NotFoundException) {
+        throw new NotFoundException(error.message);
+      } else {
+        console.error('Error updating tenant:', error);
+        throw new InternalServerErrorException('Failed to update tenant');
+      }
+    }
   }
 
   async updateWithPassword(
@@ -55,27 +94,58 @@ export class TenantsService {
       throw new NotFoundException('Tenant not found');
     }
 
-    if (updateTenantDto.oldPassword) {
-      const isMatch = await bcrypt.compare(
-        updateTenantDto.oldPassword,
-        tenant.password,
-      );
-      if (!isMatch) {
-        throw new BadRequestException('Old password is incorrect');
+    try {
+      if (updateTenantDto.email !== null) {
+        const newEmail = updateTenantDto.email;
+        const targetTenant = await this.findByEmail(newEmail);
+        if (targetTenant && targetTenant.email === newEmail) {
+          throw new ConflictException('Email already exists, try to login');
+        }
+      }
+
+      if (updateTenantDto.name !== null) {
+        const newName = updateTenantDto.name;
+        const tenants = await this.findAll();
+        if (tenants.some((item) => item.name === newName)) {
+          throw new ConflictException('Name already in use, try another one');
+        }
+      }
+
+      if (updateTenantDto.oldPassword) {
+        const isMatch = await bcrypt.compare(
+          updateTenantDto.oldPassword,
+          tenant.password,
+        );
+        if (!isMatch) {
+          throw new BadRequestException('Old password is incorrect');
+        }
+      }
+
+      if (updateTenantDto.newPassword && updateTenantDto.confirmNewPassword) {
+        if (
+          updateTenantDto.newPassword !== updateTenantDto.confirmNewPassword
+        ) {
+          throw new BadRequestException('New passwords do not match');
+        }
+        const salt = await bcrypt.genSalt();
+        tenant.password = await bcrypt.hash(updateTenantDto.newPassword, salt);
+        tenant.confirmPassword = tenant.password;
+      }
+
+      Object.assign(tenant, updateTenantDto);
+      return await tenant.save();
+    } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      } else {
+        console.error('Error updating tenant with password:', error);
+        throw new InternalServerErrorException('Failed to update tenant');
       }
     }
-
-    if (updateTenantDto.newPassword && updateTenantDto.confirmNewPassword) {
-      if (updateTenantDto.newPassword !== updateTenantDto.confirmNewPassword) {
-        throw new BadRequestException('New passwords do not match');
-      }
-      const salt = await bcrypt.genSalt();
-      tenant.password = await bcrypt.hash(updateTenantDto.newPassword, salt);
-      tenant.confirmPassword = tenant.password;
-    }
-
-    Object.assign(tenant, updateTenantDto);
-    return tenant.save();
   }
 
   async remove(id: string): Promise<any> {
@@ -84,8 +154,18 @@ export class TenantsService {
       throw new NotFoundException('Tenant not found');
     }
     tenant.deleted = true;
-    return tenant.save();
+    return await tenant.save();
   }
+
+  async undelete(id: string): Promise<any> {
+    const tenant = await this.tenantModel.findById(id).exec();
+    if (!tenant) {
+      throw new NotFoundException('Tenant not found');
+    }
+    tenant.deleted = false;
+    return await tenant.save();
+  }
+
   async authorizeClient(
     clientID: string,
     clientSECRET: string,
@@ -118,7 +198,8 @@ export class TenantsService {
 
     await this.imageService.upload('tenants', id, image);
 
-    tenant.image = jwtConstants.imageUrl + 'tenants/' + `${id}/` + image.originalname;
+    tenant.image =
+      jwtConstants.imageUrl + 'tenants/' + `${id}/` + image.originalname;
 
     return tenant.save();
   }

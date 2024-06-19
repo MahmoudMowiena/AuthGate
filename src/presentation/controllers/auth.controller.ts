@@ -8,6 +8,7 @@ import {
   Post,
   Req,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthenticationGuard } from '../guards/auth.guard';
@@ -20,6 +21,7 @@ import { User } from 'src/domain/entities/user.entity';
 import { Types } from 'mongoose';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -80,8 +82,33 @@ export class AuthController {
   }
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))
-  async githubAuthCallback(@Req() req) {
-    const user = req.user;
-    return this.authService.signInWithGitHub(user);
+  async githubAuthCallback(@Req() req, @Res() res: Response) {
+    const user1 = req.user;
+    const { access_token, user } =
+      await this.authService.signInWithGoogle(user1);
+
+    // Redirect to the Angular frontend with tokens in query parameters
+    const redirectUrl = `http://localhost:4200/auth/github/callback?token=${access_token}&user=${JSON.stringify(user)}`;
+
+    return res.redirect(redirectUrl);
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async loginWithGoogle() {
+    // Initiates Google OAuth flow
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthCallback(@Req() req, @Res() res: Response) {
+    const user1 = req.user;
+    const { access_token, user } =
+      await this.authService.signInWithGoogle(user1);
+
+    // Redirect to the Angular frontend with tokens in query parameters
+    const redirectUrl = `http://localhost:4200/auth/google/callback?token=${access_token}&user=${JSON.stringify(user)}`;
+
+    return res.redirect(redirectUrl);
   }
 }
