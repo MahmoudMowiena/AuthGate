@@ -7,6 +7,7 @@ import { UserModule } from './user.module';
 import { TenantModule } from './tenant.module';
 import { ProjectsModule } from './project.module';
 import { GithubAuthStrategy } from 'src/infrastructure/Strategies/githubAuth.strategy';
+import { GoogleAuthStrategy } from 'src/infrastructure/Strategies/googleAuth.strategy';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { GithubAuthStrategy } from 'src/infrastructure/Strategies/githubAuth.str
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  providers: [AuthService, GithubAuthStrategy],
+  providers: [AuthService, GithubAuthStrategy, GoogleAuthStrategy],
   controllers: [AuthController],
   exports: [AuthService],
 })

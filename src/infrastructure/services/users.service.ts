@@ -35,6 +35,11 @@ export class UsersService {
     return createdUser.save();
   }
 
+  async createGithubUser(createUserDto: userModel): Promise<User> {
+    const createdUser = new this.userModel(createUserDto);
+    return createdUser.save({ validateBeforeSave: false });
+  }
+
   async findAll(): Promise<User[]> {
     const users = this.userModel.find().exec();
     for (const user of await users) {
@@ -81,6 +86,10 @@ export class UsersService {
   }
   async findByGitHubId(githubId: string): Promise<User> {
     return this.userModel.findOne({ githubId }).exec();
+  }
+
+  async findByGoogleId(googleId: string): Promise<User> {
+    return this.userModel.findOne({ googleId }).exec();
   }
 
   async save(user: User | any): Promise<any> {
