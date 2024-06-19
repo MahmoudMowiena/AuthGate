@@ -9,6 +9,7 @@ import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import { TenantModule } from './tenant.module';
 import { ImageService } from 'src/infrastructure/services/image.service';
 import { ProjectsModule } from './project.module';
+import { IndexManagementService } from 'src/infrastructure/services/indexManagement.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { ProjectsModule } from './project.module';
     MongooseModule.forFeature([{ name: User.name, schema: userSchema }]),
     forwardRef(() => ProjectsModule),
   ],
-  providers: [AuthService, UsersService, ImageService],
+  providers: [AuthService, UsersService, ImageService, IndexManagementService],
   controllers: [UserController],
   exports: [UsersService, ImageService],
 })
