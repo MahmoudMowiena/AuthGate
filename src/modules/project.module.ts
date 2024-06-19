@@ -7,14 +7,14 @@ import { projectModel } from 'src/presentation/dtos/project.model';
 import { TenantModule } from './tenant.module';
 import { UserModule } from './user.module';
 
-
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Project.name, schema: projectSchema }]),
     forwardRef(() => TenantModule),
+    forwardRef(() => UserModule),
   ],
   controllers: [ProjectsController],
   providers: [ProjectService],
-  exports: [ProjectService,MongooseModule],
+  exports: [ProjectService, MongooseModule],
 })
 export class ProjectsModule {}

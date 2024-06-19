@@ -1,7 +1,9 @@
 import {
   BadRequestException,
   ConflictException,
+  HttpException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -15,7 +17,9 @@ import * as bcrypt from 'bcrypt';
 import { ProjectService } from './project.service';
 import { TenantsService } from './tenants.service';
 import { projectModel } from 'src/presentation/dtos/project.model';
-import { jwtConstants } from '../../constants'
+import { jwtConstants } from '../../constants';
+import { error } from 'console';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class UsersService {
@@ -36,7 +40,6 @@ export class UsersService {
     for (const user of await users) {
       user.projects = await this.getUserProjects(user.projects);
     }
-
     return users;
   }
 
@@ -74,7 +77,6 @@ export class UsersService {
         }
       }
     }
-
     return targetProject;
   }
   async findByGitHubId(githubId: string): Promise<User> {
@@ -86,58 +88,96 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: userModel): Promise<User> {
-    const email = updateUserDto.email;
-    const name = (await this.findById(id)).name;
-    if (this.findByEmail(email)) {
-      throw new BadRequestException('email already exist, try to login');
+    let newEmail: any;
+    let targetUser: userModel;
+
+    try {
+      if (updateUserDto.email !== null) {
+        newEmail = updateUserDto.email;
+        targetUser = await this.findByEmail(newEmail);
+      }
+
+      if (targetUser && targetUser.email === newEmail) {
+        throw new ConflictException('Email already exists, try to login');
+      }
+
+      const userAfterUpdate: any = await this.userModel
+        .findByIdAndUpdate(id, updateUserDto, { new: true })
+        .exec();
+
+      if (!userAfterUpdate) {
+        throw new NotFoundException('User not found');
+      }
+
+      return userAfterUpdate;
+    } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      } else {
+        console.error('Error updating user:', error);
+        throw new InternalServerErrorException('Failed to update user');
+      }
     }
-    if (name) {
-      throw new BadRequestException('name already in use, try another name');
-    }
-    const userListAfterUpdate: any = this.userModel
-      .findByIdAndUpdate(id, updateUserDto, { new: true })
-      .exec();
-    return userListAfterUpdate;
   }
 
   async updateWithPassword(
     id: string,
     updateUserDto: updateUserModel,
   ): Promise<any> {
+    let newEmail: any;
+    let targetUser: userModel;
     const user = await this.userModel.findById(id).exec();
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const email = updateUserDto.email;
-    const name = (await this.findById(id)).name;
-    if (this.findByEmail(email)) {
-      throw new BadRequestException('email already exist, try to login');
-    }
-    if (name) {
-      throw new BadRequestException('name already in use, try another name');
-    }
 
-    if (updateUserDto.oldPassword) {
-      const isMatch = await bcrypt.compare(
-        updateUserDto.oldPassword,
-        user.password,
-      );
-      if (!isMatch) {
-        throw new BadRequestException('Old password is incorrect');
+    try {
+      if (updateUserDto.email !== null) {
+        newEmail = updateUserDto.email;
+        targetUser = await this.findByEmail(newEmail);
+      }
+
+      if (targetUser && targetUser.email === newEmail) {
+        throw new ConflictException('Email already exists, try to login');
+      }
+
+      if (updateUserDto.oldPassword) {
+        const isMatch = await bcrypt.compare(
+          updateUserDto.oldPassword,
+          user.password,
+        );
+        if (!isMatch) {
+          throw new BadRequestException('Old password is incorrect');
+        }
+      }
+
+      if (updateUserDto.newPassword && updateUserDto.confirmNewPassword) {
+        if (updateUserDto.newPassword !== updateUserDto.confirmNewPassword) {
+          throw new BadRequestException('New passwords do not match');
+        }
+        const salt = await bcrypt.genSalt();
+        user.password = await bcrypt.hash(updateUserDto.newPassword, salt);
+        user.confirmPassword = user.password;
+      }
+
+      Object.assign(user, updateUserDto);
+      return await user.save();
+    } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      } else {
+        console.error('Error updating user with password:', error);
+        throw new InternalServerErrorException('Failed to update user');
       }
     }
-
-    if (updateUserDto.newPassword && updateUserDto.confirmNewPassword) {
-      if (updateUserDto.newPassword !== updateUserDto.confirmNewPassword) {
-        throw new BadRequestException('New passwords do not match');
-      }
-      const salt = await bcrypt.genSalt();
-      user.password = await bcrypt.hash(updateUserDto.newPassword, salt);
-      user.confirmPassword = user.password;
-    }
-
-    Object.assign(user, updateUserDto);
-    return user.save();
   }
 
   async remove(id: string): Promise<any> {
@@ -146,7 +186,16 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
     user.deleted = true;
-    return user.save();
+    return await user.save();
+  }
+
+  async undelete(id: string): Promise<any> {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+    user.deleted = false;
+    return await user.save();
   }
 
   async addImage(id: string, image: Express.Multer.File): Promise<User> {
@@ -157,7 +206,8 @@ export class UsersService {
 
     await this.imageService.upload('users', id, image);
 
-    user.image = jwtConstants.imageUrl + 'users/' + `${id}/` + image.originalname;
+    user.image =
+      jwtConstants.imageUrl + 'users/' + `${id}/` + image.originalname;
     return user.save();
   }
 }

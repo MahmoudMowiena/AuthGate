@@ -16,6 +16,7 @@ import {
   Header,
   NotFoundException,
   BadRequestException,
+  ConflictException,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
@@ -42,34 +43,20 @@ export class TenantController {
 
   @Get(':id')
   async getById(@Param('id') id: string): Promise<tenantModel> {
-    try {
-      const tenant = await this.tenantsService.findById(id);
-      if (!tenant) {
-        throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
-      }
-      return tenant;
-    } catch (error) {
-      throw new HttpException(
-        'Failed to retrieve tenant',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    const tenant = await this.tenantsService.findById(id);
+    if (!tenant) {
+      throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
     }
+    return tenant;
   }
 
   @Get('email/:email')
   async getByEmail(@Param('email') email: string): Promise<tenantModel> {
-    try {
-      const tenant = await this.tenantsService.findByEmail(email);
-      if (!tenant) {
-        throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
-      }
-      return tenant;
-    } catch (error) {
-      throw new HttpException(
-        'Failed to retrieve tenant',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    const tenant = await this.tenantsService.findByEmail(email);
+    if (!tenant) {
+      throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
     }
+    return tenant;
   }
 
   @Patch()
@@ -88,12 +75,17 @@ export class TenantController {
       if (!updatedTenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
-      const tenantListAfterUpdate: any = await this.findAll();
-      return tenantListAfterUpdate;
+      return updatedTenant;
     } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof NotFoundException
+      ) {
+        throw new HttpException(error.message, error.getStatus());
+      }
       throw new HttpException(
-        'Failed to update tenant',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.message || 'Failed to update tenant',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -114,12 +106,34 @@ export class TenantController {
       if (!updatedTenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
-      const tenantListAfterUpdate: any = await this.findAll();
-      return tenantListAfterUpdate;
+      return updatedTenant;
     } catch (error) {
       throw new HttpException(
         error.message || 'Failed to update tenant',
         error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Patch(':id/undelete')
+  async undelete(
+    @Param('id') id: string,
+    @Headers('Authorization') authHeader: string,
+  ): Promise<any> {
+    try {
+      const token = authHeader.split(' ')[1];
+      const payload = this.jwtservice.verify(token);
+      if (payload.role === 'admin') {
+        const tenant = await this.tenantsService.undelete(id);
+        if (!tenant) {
+          throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
+        }
+        return await this.findAll();
+      }
+    } catch (error) {
+      throw new HttpException(
+        'Failed to undelete tenant',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

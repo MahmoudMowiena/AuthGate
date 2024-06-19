@@ -44,19 +44,21 @@ export class ProjectService {
     try {
       tenant.projects.push(createdProject);
       await tenant.save();
-      const allProjetcs: any = tenant.projects;
-      return allProjetcs;
+      //const allProjetcs: any = tenant.projects;
+      return createdProject;
     } catch (error) {
       throw new BadRequestException('Failed to create project');
     }
   }
 
-  async findAll(tenantID: string): Promise<Project[]> {
+  async findAllPerTenant(tenantID: string): Promise<Project[]> {
     const tenant = await this.tenantModel.findById(tenantID);
     if (!tenant) {
       throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
     }
-    return tenant.projects;
+    if (tenant.projects.length >= 1) {
+      return tenant.projects;
+    }
   }
 
   async findOne(projectID: string): Promise<Project> {
@@ -72,7 +74,6 @@ export class ProjectService {
         `Project with ID: ${projectID} not found in tenant`,
       );
     }
-
     return project;
   }
 
@@ -95,33 +96,54 @@ export class ProjectService {
 
     try {
       await tenant.save();
-      const projectsAfterUpdate: any = tenant.projects;
-      return projectsAfterUpdate;
+      //const projectsAfterUpdate: any = tenant.projects;
+      return project;
     } catch (error) {
       throw new BadRequestException('Failed to update project');
     }
   }
 
-  async delete(id: string, tenantID: string): Promise<Project> {
+  async undelete(id: string, tenantID: string): Promise<any> {
     const tenant = await this.tenantModel.findById(tenantID);
     if (!tenant) {
       throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
     }
 
-    const projectIndex = tenant.projects.findIndex(
-      (proj) => proj._id.toString() === id,
-    );
-    if (projectIndex === -1) {
+    const project = tenant.projects.find((proj) => proj._id.toString() === id);
+    if (!project) {
       throw new NotFoundException(`Project with ID: ${id} not found in tenant`);
     }
 
-    const project = tenant.projects.splice(projectIndex, 1)[0];
-    project.deleted = true;
-
+    project.deleted = false;
     try {
       await tenant.save();
-      const projectsAfterDelete: any = tenant.projects;
-      return projectsAfterDelete;
+      return tenant.projects;
+    } catch (error) {
+      throw new BadRequestException('Failed to undelete project');
+    }
+  }
+
+  async delete(id: string, tenantID: string): Promise<any> {
+    const tenant = await this.tenantModel.findById(tenantID);
+    if (!tenant) {
+      throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
+    }
+
+    if (!tenant.projects || !Array.isArray(tenant.projects)) {
+      throw new BadRequestException(
+        'Projects list is not available for this tenant',
+      );
+    }
+
+    const project = tenant.projects.find((proj) => proj._id.toString() === id);
+    if (!project) {
+      throw new NotFoundException(`Project with ID: ${id} not found in tenant`);
+    }
+
+    project.deleted = true;
+    try {
+      await tenant.save();
+      return tenant.projects;
     } catch (error) {
       throw new BadRequestException('Failed to delete project');
     }
