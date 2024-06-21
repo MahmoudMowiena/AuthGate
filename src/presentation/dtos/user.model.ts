@@ -8,6 +8,7 @@ import {
   Matches,
   IsArray,
   IsBoolean,
+  IsDate,
 } from 'class-validator';
 import { UserProject } from 'src/domain/entities/userProject.entity';
 
@@ -25,6 +26,14 @@ export class userModel {
   })
   password: string;
   confirmPassword: string;
+
+  @IsOptional()
+  @IsString()
+  resetPasswordToken?: string;
+
+  @IsOptional()
+  @IsDate()
+  resetPasswordExpires?: Date;
 
   @Matches(/^\S+@\S+\.\S+$/, {
     message: 'email pattern is invalid',
