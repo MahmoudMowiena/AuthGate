@@ -343,7 +343,11 @@ export class AuthService {
     );
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<void> {
+  async resetPassword(
+    token: string,
+    newPassword: string,
+    confirmNewPassword: string,
+  ): Promise<void> {
     const decoded = this.jwtService.verify(token, {
       secret: process.env.PASSWORD_RESET_JWT_SECRET,
     });
@@ -358,11 +362,15 @@ export class AuthService {
     ) {
       throw new Error('Invalid or expired token');
     }
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    user.confirmPassword = hashedPassword;
-    user.resetPasswordToken = null;
-    user.resetPasswordExpires = null;
+    if (newPassword === confirmNewPassword) {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      user.confirmPassword = hashedPassword;
+      user.resetPasswordToken = null;
+      user.resetPasswordExpires = null;
+    } else {
+      throw new Error("Passwords don't match");
+    }
 
     await this.usersService.save(user);
   }
