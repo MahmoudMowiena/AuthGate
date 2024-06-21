@@ -9,6 +9,7 @@ import {
   IsOptional,
   IsString,
   Matches,
+  MinLength,
   ValidateNested,
 } from 'class-validator';
 import { Project } from 'src/domain/entities/project.entity';
@@ -20,24 +21,14 @@ export class tenantModel {
   @IsEmail()
   readonly email: string;
 
-  @IsNotEmpty()
-  @Matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-    {
-      message: 'Password too weak',
-    },
-  )
-  //@Exclude()
+  @IsString()
+  @MinLength(8)
+  @IsNotEmpty({ message: 'password is required' })
+  @Matches(/^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,}$/, {
+    message:
+      'Password must include a number, lowercase, uppercase, special character',
+  })
   password: string;
-
-  @IsNotEmpty()
-  @Matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-    {
-      message: 'Password too weak',
-    },
-  )
-  //@Exclude()
   confirmPassword: string;
 
   @IsOptional()

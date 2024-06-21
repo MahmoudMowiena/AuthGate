@@ -2,6 +2,8 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
+  NotFoundException,
   Scope,
   ScopeOptions,
   UnauthorizedException,
@@ -46,14 +48,14 @@ export class AuthService {
     user: SignInUserResponse | SignInTenantResponse;
   }> {
     let user: any = await this.usersService.findByEmail(email);
-    //let role = 'user';
 
     if (!user) {
       user = await this.tenantsService.findByEmail(email);
-      //role = 'tenant';
     }
 
-    if (!user) throw new UnauthorizedException();
+    if (!user || user.deleted) {
+      throw new UnauthorizedException('Account not found or has been deleted');
+    }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
 
