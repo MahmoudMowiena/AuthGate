@@ -121,7 +121,12 @@ export class AuthController {
   async resetPassword(
     @Body('token') token: string,
     @Body('newPassword') newPassword: string,
+    @Body('confirmNewPassword') confirmNewPassword: string,
   ): Promise<void> {
-    await this.authService.resetPassword(token, newPassword);
+    await this.authService.resetPassword(
+      token,
+      newPassword,
+      confirmNewPassword,
+    );
   }
 }
