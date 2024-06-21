@@ -111,4 +111,17 @@ export class AuthController {
 
     return res.redirect(redirectUrl);
   }
+
+  @Post('reset-password/request')
+  async sendPasswordResetEmail(@Body('email') email: string): Promise<void> {
+    await this.authService.sendResetPasswordResetEmail(email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(
+    @Body('token') token: string,
+    @Body('newPassword') newPassword: string,
+  ): Promise<void> {
+    await this.authService.resetPassword(token, newPassword);
+  }
 }
