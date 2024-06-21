@@ -22,7 +22,7 @@ export class ProjectService {
   async create(
     createProjectDto: projectModel,
     tenantID: string,
-  ): Promise<Project> {
+  ): Promise<Project[]> {
     const { name, callBackUrl } = createProjectDto;
     const tenant = await this.tenantModel.findById(tenantID);
     console.log(tenant);
@@ -44,7 +44,8 @@ export class ProjectService {
     try {
       tenant.projects.push(createdProject);
       await tenant.save();
-      return createdProject;
+      const projectList = await this.findAllPerTenant(tenantID);
+      return projectList;
     } catch (error) {
       throw new BadRequestException('Failed to create project');
     }
@@ -104,8 +105,8 @@ export class ProjectService {
 
     try {
       await tenant.save();
-      //const projectsAfterUpdate: any = tenant.projects;
-      return project;
+      const projectsAfterUpdate: any = tenant.projects;
+      return projectsAfterUpdate;
     } catch (error) {
       throw new BadRequestException('Failed to update project');
     }
@@ -125,7 +126,7 @@ export class ProjectService {
     project.deleted = false;
     try {
       await tenant.save({ validateModifiedOnly: true });
-      return tenant.projects;
+      return project;
     } catch (error) {
       throw new BadRequestException('Failed to undelete project');
     }
