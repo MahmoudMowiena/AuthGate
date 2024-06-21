@@ -44,7 +44,6 @@ export class ProjectService {
     try {
       tenant.projects.push(createdProject);
       await tenant.save();
-      //const allProjetcs: any = tenant.projects;
       return createdProject;
     } catch (error) {
       throw new BadRequestException('Failed to create project');
@@ -83,8 +82,17 @@ export class ProjectService {
     tenantID: string,
   ): Promise<Project> {
     const tenant = await this.tenantModel.findById(tenantID);
+    if (tenant) {
+      if (!tenant.projects.find((proj) => proj._id.toString() === id)) {
+        throw new NotFoundException(
+          `you are not able to delete this project, because you don't own it`,
+        );
+      }
+    }
     if (!tenant) {
-      throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
+      throw new NotFoundException(
+        `you are not able to delete this project, due to your authorization role`,
+      );
     }
 
     const project = tenant.projects.find((proj) => proj._id.toString() === id);
@@ -116,7 +124,7 @@ export class ProjectService {
 
     project.deleted = false;
     try {
-      await tenant.save();
+      await tenant.save({ validateModifiedOnly: true });
       return tenant.projects;
     } catch (error) {
       throw new BadRequestException('Failed to undelete project');
@@ -142,7 +150,7 @@ export class ProjectService {
 
     project.deleted = true;
     try {
-      await tenant.save();
+      await tenant.save({ validateModifiedOnly: true });
       return tenant.projects;
     } catch (error) {
       throw new BadRequestException('Failed to delete project');
