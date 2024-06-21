@@ -51,7 +51,6 @@ export class User {
   @Prop({
     match: [/^(?:\+20|0)?1[0125]\d{8}$/, 'Please use a valid phone number'],
   })
-
   phone: string;
 
   @Prop()
