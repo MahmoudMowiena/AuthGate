@@ -362,7 +362,7 @@ export class AuthService {
       user.resetPasswordToken !== token ||
       user.resetPasswordExpires < new Date()
     ) {
-      throw new Error('Invalid or expired token');
+      throw new BadRequestException('Invalid or expired token');
     }
     if (newPassword === confirmNewPassword) {
       const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -371,7 +371,7 @@ export class AuthService {
       user.resetPasswordToken = null;
       user.resetPasswordExpires = null;
     } else {
-      throw new Error("Passwords don't match");
+      throw new BadRequestException("Passwords don't match");
     }
 
     await this.usersService.save(user);
