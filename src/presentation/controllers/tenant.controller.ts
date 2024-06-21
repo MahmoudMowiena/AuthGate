@@ -139,14 +139,13 @@ export class TenantController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<tenantModel> {
+  async remove(@Param('id') id: string): Promise<any> {
     try {
       const tenant = await this.tenantsService.remove(id);
       if (!tenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
-      const tenantListAfterDelete: any = await this.findAll();
-      return tenantListAfterDelete;
+      return await this.findAll();
     } catch (error) {
       throw new HttpException(
         'Failed to delete tenant',

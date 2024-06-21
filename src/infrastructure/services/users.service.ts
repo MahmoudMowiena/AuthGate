@@ -93,7 +93,7 @@ export class UsersService {
   }
 
   async save(user: User | any): Promise<any> {
-    return user.save();
+    return await user.save();
   }
 
   async update(id: string, updateUserDto: userModel): Promise<User> {
@@ -159,6 +159,7 @@ export class UsersService {
           updateUserDto.oldPassword,
           user.password,
         );
+        console.log('it matches');
         if (!isMatch) {
           throw new BadRequestException('Old password is incorrect');
         }
@@ -195,7 +196,8 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
     user.deleted = true;
-    return await user.save();
+    await user.save({ validateModifiedOnly: true });
+    return user;
   }
 
   async undelete(id: string): Promise<any> {
@@ -204,7 +206,8 @@ export class UsersService {
       throw new NotFoundException('user not found');
     }
     user.deleted = false;
-    return await user.save();
+    await user.save({ validateModifiedOnly: true });
+    return user;
   }
 
   async addImage(id: string, image: Express.Multer.File): Promise<User> {
