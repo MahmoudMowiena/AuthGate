@@ -11,6 +11,7 @@ import { UserModule } from './user.module';
   imports: [
     MongooseModule.forFeature([{ name: Project.name, schema: projectSchema }]),
     forwardRef(() => TenantModule),
+    forwardRef(() => UserModule),
   ],
   controllers: [ProjectsController],
   providers: [ProjectService],

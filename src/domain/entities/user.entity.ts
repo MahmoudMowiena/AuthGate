@@ -22,22 +22,24 @@ export class User {
 
   @Prop({
     required: true,
-    // match: [
-    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-    //   'Password must be strong',
-    // ],
+    validate: [
+      {
+        validator: (value: string) =>
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(value),
+        message:
+          'Password must contain at least one uppercase letter, one lowercase letter, and one digit, and be at least 8 characters long',
+      },
+      {
+        validator: function (this: User, value: string) {
+          return value === this.confirmPassword;
+        },
+        message: 'Passwords do not match',
+      },
+    ],
   })
   password: string;
 
-  @Prop({
-    required: true,
-    validate: {
-      validator: function (this: User, value: string) {
-        return value === this.password;
-      },
-      message: 'Passwords do not match',
-    },
-  })
+  @Prop({ required: true })
   confirmPassword: string;
 
   @Prop()
@@ -46,7 +48,10 @@ export class User {
   @Prop()
   resetPasswordExpires?: Date;
 
-  @Prop()
+  @Prop({
+    match: [/^(?:\+20|0)?1[0125]\d{8}$/, 'Please use a valid phone number'],
+  })
+
   phone: string;
 
   @Prop()
@@ -55,7 +60,10 @@ export class User {
   @Prop()
   image: string;
 
-  @Prop()
+  @Prop({
+    min: [13, 'Age must be at least 13'],
+    max: [100, 'Age must be at most 100'],
+  })
   age: number;
 
   @Prop({ unique: true, sparse: true })
