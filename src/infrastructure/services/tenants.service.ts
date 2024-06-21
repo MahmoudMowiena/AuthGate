@@ -154,7 +154,8 @@ export class TenantsService {
       throw new NotFoundException('Tenant not found');
     }
     tenant.deleted = true;
-    return await tenant.save();
+    await tenant.save({ validateModifiedOnly: true });
+    return tenant;
   }
 
   async undelete(id: string): Promise<any> {
@@ -163,7 +164,8 @@ export class TenantsService {
       throw new NotFoundException('Tenant not found');
     }
     tenant.deleted = false;
-    return await tenant.save();
+    await tenant.save({ validateModifiedOnly: true });
+    return tenant;
   }
 
   async authorizeClient(

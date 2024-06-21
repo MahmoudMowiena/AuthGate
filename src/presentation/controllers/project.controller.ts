@@ -67,7 +67,7 @@ export class ProjectsController {
     }
   }
 
-  @Get(':targetTenant')
+  @Get('targetTenant')
   async getAllPerTenant(
     @Headers('Authorization') authHeader: string,
   ): Promise<Project[]> {
@@ -101,7 +101,7 @@ export class ProjectsController {
     @Headers('Authorization') authHeader: string,
   ): Promise<any> {
     const userID = this.extractTenantId(authHeader);
-    const user = await this.tenantservice.findById(userID);
+    const user = await this.userservice.findById(userID);
 
     if (!user) {
       throw new NotFoundException('User not found');

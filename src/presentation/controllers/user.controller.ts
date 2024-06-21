@@ -1,11 +1,13 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
   Headers,
   HttpException,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -20,6 +22,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtService } from '@nestjs/jwt';
 import { updateUserModel } from '../dtos/updateUser.model';
 import { ProjectService } from 'src/infrastructure/services/project.service';
+import { error } from 'console';
 
 @Controller('users')
 export class UserController {
@@ -78,16 +81,32 @@ export class UserController {
       const { projectId } = body;
       let result: any;
       const targetProject = await this.projectservice.findOne(projectId);
+
       if (targetProject.deleted === false) {
         result = await this.authservice.processAuth(projectId, token);
+      } else {
+        throw new HttpException(
+          'project not found, or has been deleted',
+          HttpStatus.NOT_FOUND,
+        );
       }
+
       return {
         result,
         success: true,
         message: 'Project Added successfully',
       };
     } catch (error) {
-      throw new Error('Error Adding Project');
+      if (
+        error instanceof ConflictException ||
+        error instanceof NotFoundException
+      ) {
+        throw new HttpException(error.message, error.getStatus());
+      }
+      throw new HttpException(
+        error.message || 'Failed to add project',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -160,14 +179,13 @@ export class UserController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<userModel> {
+  async remove(@Param('id') id: string): Promise<any> {
     try {
       const user = await this.userService.remove(id);
       if (!user) {
         throw new HttpException('user not found', HttpStatus.NOT_FOUND);
       }
-      const usersListAfterDelete: any = await this.findAll();
-      return usersListAfterDelete;
+      return await this.findAll();
     } catch (error) {
       throw new HttpException(
         'Failed to delete user',

@@ -29,12 +29,12 @@ export class Tenant {
   @Prop({
     required: true,
     validate: [
-      {
-        validator: (value: string) =>
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(value),
-        message:
-          'Password must contain at least one uppercase letter, one lowercase letter, and one digit, and be at least 8 characters long',
-      },
+      // {
+      //   validator: (value: string) =>
+      //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(value),
+      //   message:
+      //     'Password must contain at least one uppercase letter, one lowercase letter, and one digit, and be at least 8 characters long',
+      // },
       {
         validator: function (this: Tenant, value: string) {
           return value === this.confirmPassword;
@@ -57,17 +57,16 @@ export class Tenant {
   @Prop({
     match: [/^(?:\+20|0)?1[0125]\d{8}$/, 'Please use a valid phone number'],
   })
-
   phone?: string;
 
   @Prop()
   address?: string;
 
   @Prop({
-    match: [
-      /^www\.[a-zA-Z0-9-]+(\.[a-zA-Z]+)+$/,
-      'Please use a valid website URL',
-    ],
+    // match: [
+    //   /^www\.[a-zA-Z0-9-]+(\.[a-zA-Z]+)+$/,
+    //   'Please use a valid website URL',
+    // ],
   })
   website?: string;
 
