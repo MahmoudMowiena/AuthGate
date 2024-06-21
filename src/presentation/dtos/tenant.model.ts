@@ -2,6 +2,7 @@ import { Exclude, Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsNumber,
@@ -29,6 +30,14 @@ export class tenantModel {
   })
   password: string;
   confirmPassword: string;
+
+  @IsOptional()
+  @IsString()
+  resetPasswordToken?: string;
+
+  @IsOptional()
+  @IsDate()
+  resetPasswordExpires?: Date;
 
   @IsOptional()
   @IsString()

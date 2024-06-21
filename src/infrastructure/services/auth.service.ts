@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserProject } from 'src/domain/entities/userProject.entity';
 import { projectModel } from 'src/presentation/dtos/project.model';
 import { User } from 'src/domain/entities/user.entity';
+import { EmailService } from './email.service';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +29,7 @@ export class AuthService {
     private usersService: UsersService,
     private tenantsService: TenantsService,
     private jwtService: JwtService,
+    private emailService: EmailService,
   ) {}
 
   verifyToken(token: string): any {
@@ -315,5 +317,55 @@ export class AuthService {
         role: 'user',
       },
     };
+  }
+
+  async sendResetPasswordResetEmail(email: string): Promise<void> {
+    let user: any = await this.usersService.findByEmail(email);
+    if (!user) {
+      user = await this.tenantsService.findByEmail(email);
+    }
+    if (!user) {
+      throw new Error(`User ${email} not found`);
+    }
+
+    //generate a unique token for reset link
+    const resetToken = this.jwtService.sign(
+      { email },
+      { secret: process.env.PASSWORD_RESET_JWT_SECRET, expiresIn: '1h' },
+    );
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = new Date(Date.now() + 3600000);
+    await this.usersService.save(user);
+    //reset link
+    const resetLink = `http://localhost:4200/reset-password/${resetToken}`;
+    await this.emailService.sendMail(
+      user.email,
+      'Password Reset Request',
+      `Click the following link to reset your password:\n ${resetLink}`,
+    );
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const decoded = this.jwtService.verify(token, {
+      secret: process.env.PASSWORD_RESET_JWT_SECRET,
+    });
+    let user: any = await this.usersService.findByEmail(decoded.email);
+    if (!user) {
+      user = await this.tenantsService.findByEmail(decoded.email);
+    }
+    if (
+      !user ||
+      user.resetPasswordToken !== token ||
+      user.resetPasswordExpires < new Date()
+    ) {
+      throw new Error('Invalid or expired token');
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.confirmPassword = hashedPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+
+    await this.usersService.save(user);
   }
 }
