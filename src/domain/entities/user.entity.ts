@@ -41,6 +41,12 @@ export class User {
   confirmPassword: string;
 
   @Prop()
+  resetPasswordToken?: string;
+
+  @Prop()
+  resetPasswordExpires?: Date;
+
+  @Prop()
   phone: string;
 
   @Prop()
