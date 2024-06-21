@@ -127,21 +127,47 @@ export class ProjectsController {
     let tenant: any = '';
     const userID = this.extractTenantId(authHeader);
     const user = await this.tenantservice.findById(userID);
-    if (!user) {
-      throw new NotFoundException('User not found');
+    if (user && user.role === 'tenant' && user) {
+      return await this.projectService.delete(id, userID);
+    } else {
+      const user = await this.userservice.findById(userID);
+      console.log(user);
+
+      if (user && user.role === 'admin') {
+        tenant = await this.tenantservice.findTenantByProjectId(id);
+        if (!tenant) {
+          throw new NotFoundException('Tenant not found for given project ID');
+        }
+        let tenantId = tenant._id;
+        return await this.projectService.delete(id, tenantId);
+      }
+      // throw new NotFoundException('User not found');
     }
 
-    if (user.role === 'tenant') {
-      return await this.projectService.delete(id, userID);
-    } else if (user.role === 'admin') {
-      tenant = await this.tenantservice.findTenantByProjectId(id);
-      if (!tenant) {
-        throw new NotFoundException('Tenant not found for given project ID');
-      }
-      let tenantId = tenant._id;
-      return await this.projectService.delete(id, tenantId);
-    } else {
-      throw new BadRequestException('Invalid user role');
-    }
+    // @Delete(':id')
+    // async remove(
+    //   @Param('id') id: string,
+    //   @Headers('Authorization') authHeader: string,
+    // ): Promise<any> {
+    //   let tenant: any = '';
+    //   const userID = this.extractTenantId(authHeader);
+    //   const user = await this.tenantservice.findById(userID);
+    //   if (!user) {
+    //     throw new NotFoundException('User not found');
+    //   }
+
+    //   if (user.role === 'tenant') {
+    //     return await this.projectService.delete(id, userID);
+    //   } else if (user.role === 'admin') {
+    //     tenant = await this.tenantservice.findTenantByProjectId(id);
+    //     if (!tenant) {
+    //       throw new NotFoundException('Tenant not found for given project ID');
+    //     }
+    //     let tenantId = tenant._id;
+    //     return await this.projectService.delete(id, tenantId);
+    //   } else {
+    //     throw new BadRequestException('Invalid user role');
+    //   }
+    // }
   }
 }

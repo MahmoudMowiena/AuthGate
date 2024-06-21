@@ -99,14 +99,20 @@ export class UsersService {
   async update(id: string, updateUserDto: userModel): Promise<User> {
     let newEmail: any;
     let targetUser: userModel;
+    let user: any;
 
     try {
+      user = await this.findById(id);
       if (updateUserDto.email !== null) {
         newEmail = updateUserDto.email;
         targetUser = await this.findByEmail(newEmail);
       }
 
-      if (targetUser && targetUser.email === newEmail) {
+      if (
+        targetUser &&
+        targetUser.email === newEmail &&
+        user.email != newEmail
+      ) {
         throw new ConflictException('Email already exists, try to login');
       }
 

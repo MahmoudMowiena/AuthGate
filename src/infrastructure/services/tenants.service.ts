@@ -42,23 +42,27 @@ export class TenantsService {
     let newEmail: any;
     let newName: any;
     let targetTenant: tenantModel;
+    let user: any;
 
     try {
       if (updateTenantDto.email !== null) {
+        user = await this.findById(id);
         newEmail = updateTenantDto.email;
         targetTenant = await this.findByEmail(newEmail);
-        if (targetTenant && targetTenant.email === newEmail) {
+        if (
+          targetTenant &&
+          targetTenant.email === newEmail &&
+          user.email != newEmail
+        ) {
           throw new ConflictException('Email already exists, try to login');
         }
       }
 
-      if (updateTenantDto.name !== null) {
-        newName = updateTenantDto.name;
-        const tenants = await this.findAll();
-        for (const item of tenants) {
-          if (item.name === newName) {
-            throw new ConflictException('Name already in use, try another one');
-          }
+      newName = updateTenantDto.name;
+      const tenants = await this.findAll();
+      for (const item of tenants) {
+        if (item.name === newName && user.name != newName) {
+          throw new ConflictException('Name already in use, try another one');
         }
       }
 
