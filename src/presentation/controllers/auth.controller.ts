@@ -59,14 +59,18 @@ export class AuthController {
   @Post('authcode')
   async exchangeCodeWithToken(
     @Body() obj: { authCode: string },
-  ) : Promise<{ auth_token: string }> {
+  ) {
     const { authCode } = obj;
+
+    //console.log(authCode)
 
     const users = await this.usersService.findAllWithUserProjects();
 
     const userWithProject = users.find(user =>
       user.projects.some(project => project.authorizationCode === authCode)
     );
+
+    //console.log(userWithProject)
 
     const targetUserProject = userWithProject?.projects.find(project =>
       project.authorizationCode === authCode
