@@ -161,10 +161,8 @@ export class AuthService {
   }
 
   async processAuth(projectId: any, token: string): Promise<any> {
-    let userproject: UserProject;
+    // let userProject: UserProject;
     let payload;
-
-    
 
     try {
       payload = this.jwtService.verify(token);
@@ -195,21 +193,23 @@ export class AuthService {
     const expireDate = new Date();
     expireDate.setHours(expireDate.getHours() + 24);
 
-    if (projectID) {
-      userproject = {
-        projectID,
-        authorizationCode,
-        authorizationAccessToken,
-        expireDate,
-      };
-    }
-
-    const userProject = user.projects.find(
+    const existingUserProject: UserProject = user.projects.find(
       (project) => project.projectID === projectID,
     );
 
-    if (!userProject) {
-      user.projects.push(userproject);
+    const newUserProject = {
+      projectID,
+      authorizationCode,
+      authorizationAccessToken,
+      expireDate,
+    };
+
+    if (existingUserProject) {
+      existingUserProject.authorizationAccessToken = newUserProject.authorizationAccessToken;
+      existingUserProject.authorizationCode = newUserProject.authorizationCode;
+      existingUserProject.expireDate = newUserProject.expireDate;
+    } else {
+      user.projects.push(newUserProject);
     }
 
     await this.usersService.save(user);
@@ -230,6 +230,8 @@ export class AuthService {
     }
 
     const callbackUrl = targetProject.callBackUrl;
+
+    console.log("Inside processAuth:" + authorizationCode);
 
     return {
       userId,
