@@ -17,19 +17,19 @@ import { SignInRequest } from '../dtos/signInRequest.dto';
 import { userModel } from '../dtos/user.model';
 import { tenantModel } from '../dtos/tenant.model';
 import { UsersService } from 'src/infrastructure/services/users.service';
-import { User } from 'src/domain/entities/user.entity';
-import { Types } from 'mongoose';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { TenantsService } from 'src/infrastructure/services/tenants.service';
+import { UserProject } from 'src/domain/entities/userProject.entity';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+    private tenantsService: TenantsService
+  ) { }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -58,20 +58,22 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('authcode')
   async exchangeCodeWithToken(
-    @Body() obj: { projectId: string; userId: string; authCode: string },
-  ) {
-    const { projectId, userId, authCode } = obj;
-    const user: userModel = await this.usersService.findById(userId);
-    if (!user) throw new BadRequestException('user does not exist');
+    @Body() obj: { authCode: string },
+  ) : Promise<{ auth_token: string }> {
+    const { authCode } = obj;
 
-    const userProject = user.projects.find(
-      (project) => project.projectID.toString() === projectId,
+    const users = await this.usersService.findAllWithUserProjects();
+
+    const userWithProject = users.find(user =>
+      user.projects.some(project => project.authorizationCode === authCode)
     );
 
-    if (userProject.authorizationCode == authCode) {
-      return {
-        auth_token: userProject.authorizationAccessToken,
-      };
+    const targetUserProject = userWithProject?.projects.find(project =>
+      project.authorizationCode === authCode
+    );
+
+    return {
+      auth_token: targetUserProject.authorizationAccessToken,
     }
   }
 
@@ -128,5 +130,13 @@ export class AuthController {
       newPassword,
       confirmNewPassword,
     );
+  }
+
+  @Post('istenant')
+  async isTenant(
+    @Body('clientId') clientId: string,
+    @Body('clientSecret') clientSecret: string,
+  ) {
+    this.tenantsService.authorizeClient(clientId, clientSecret);
   }
 }
