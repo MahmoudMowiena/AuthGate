@@ -19,7 +19,7 @@ export class TenantsService {
   constructor(
     @InjectModel(Tenant.name) private tenantModel: Model<TenantDocument>,
     private imageService: ImageService,
-  ) {}
+  ) { }
 
   async create(createTenantDto: tenantModel): Promise<Tenant> {
     const createdTenant = new this.tenantModel(createTenantDto);
@@ -180,8 +180,8 @@ export class TenantsService {
       .findOne({
         'projects.clientID': clientID,
         'projects.clientSECRET': clientSECRET,
-      })
-      .exec();
+      });
+      
     if (!tenant) {
       throw new Error('Tenant not found for the given client credentials.');
     }
@@ -209,6 +209,7 @@ export class TenantsService {
 
     return tenant.save();
   }
+
 
   async findTenantByProjectId(projectId: string): Promise<any | null> {
     return this.tenantModel.findOne({ 'projects._id': projectId }).exec();

@@ -12,28 +12,23 @@ import {
   UploadedFile,
   Headers,
   UseGuards,
-  Request,
-  Header,
   NotFoundException,
   BadRequestException,
   ConflictException,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
-import { ProjectService } from 'src/infrastructure/services/project.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthenticationGuard } from '../guards/auth.guard';
 import { AuthService } from 'src/infrastructure/services/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { updateTenantModel } from '../dtos/updateTenant.model';
-import { plainToInstance } from 'class-transformer';
 
 @Controller('tenants')
 export class TenantController {
   constructor(
     private readonly tenantsService: TenantsService,
     private readonly jwtservice: JwtService,
-    private readonly authservice: AuthService,
   ) {}
 
   @Get()

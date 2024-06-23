@@ -30,7 +30,7 @@ export class AuthService {
     private tenantsService: TenantsService,
     private jwtService: JwtService,
     private emailService: EmailService,
-  ) {}
+  ) { }
 
   verifyToken(token: string): any {
     try {
@@ -164,6 +164,8 @@ export class AuthService {
     let userproject: UserProject;
     let payload;
 
+    
+
     try {
       payload = this.jwtService.verify(token);
     } catch (error) {
@@ -173,13 +175,23 @@ export class AuthService {
     const userId = payload.sub;
     const user = await this.usersService.findId(userId);
 
+    const newPayload = {
+      email: user.email,
+      name: user.name,
+      phone: user.phone,
+      image: user.image,
+      age: user.age
+    }
+
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
     const projectID = projectId;
     const authorizationCode = uuidv4();
-    const authorizationAccessToken = crypto.randomBytes(32).toString('hex');
+    // const authorizationAccessToken = crypto.randomBytes(32).toString('hex');
+    const authorizationAccessToken = await this.jwtService.signAsync(newPayload);
+
     const expireDate = new Date();
     expireDate.setHours(expireDate.getHours() + 24);
 
@@ -250,6 +262,7 @@ export class AuthService {
 
     return user;
   }
+
   async signInWithGitHub(
     user: User,
   ): Promise<{ access_token: string; user: any }> {
@@ -272,6 +285,7 @@ export class AuthService {
       },
     };
   }
+
   async validateGoogleUser(profile: any): Promise<any> {
     const { id, displayName, emails, photos } = profile;
 
@@ -354,9 +368,11 @@ export class AuthService {
       secret: process.env.PASSWORD_RESET_JWT_SECRET,
     });
     let user: any = await this.usersService.findByEmail(decoded.email);
+
     if (!user) {
       user = await this.tenantsService.findByEmail(decoded.email);
     }
+
     if (
       !user ||
       user.resetPasswordToken !== token ||
@@ -364,6 +380,7 @@ export class AuthService {
     ) {
       throw new BadRequestException('Invalid or expired token');
     }
+
     if (newPassword === confirmNewPassword) {
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       user.password = hashedPassword;
