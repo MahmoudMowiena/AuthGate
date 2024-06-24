@@ -19,7 +19,7 @@ export class TenantsService {
   constructor(
     @InjectModel(Tenant.name) private tenantModel: Model<TenantDocument>,
     private imageService: ImageService,
-  ) {}
+  ) { }
 
   async create(createTenantDto: tenantModel): Promise<Tenant> {
     const createdTenant = new this.tenantModel(createTenantDto);
@@ -42,23 +42,27 @@ export class TenantsService {
     let newEmail: any;
     let newName: any;
     let targetTenant: tenantModel;
+    let user: any;
 
     try {
       if (updateTenantDto.email !== null) {
+        user = await this.findById(id);
         newEmail = updateTenantDto.email;
         targetTenant = await this.findByEmail(newEmail);
-        if (targetTenant && targetTenant.email === newEmail) {
+        if (
+          targetTenant &&
+          targetTenant.email === newEmail &&
+          user.email != newEmail
+        ) {
           throw new ConflictException('Email already exists, try to login');
         }
       }
 
-      if (updateTenantDto.name !== null) {
-        newName = updateTenantDto.name;
-        const tenants = await this.findAll();
-        for (const item of tenants) {
-          if (item.name === newName) {
-            throw new ConflictException('Name already in use, try another one');
-          }
+      newName = updateTenantDto.name;
+      const tenants = await this.findAll();
+      for (const item of tenants) {
+        if (item.name === newName && user.name != newName) {
+          throw new ConflictException('Name already in use, try another one');
         }
       }
 
@@ -176,8 +180,8 @@ export class TenantsService {
       .findOne({
         'projects.clientID': clientID,
         'projects.clientSECRET': clientSECRET,
-      })
-      .exec();
+      });
+      
     if (!tenant) {
       throw new Error('Tenant not found for the given client credentials.');
     }
@@ -205,6 +209,7 @@ export class TenantsService {
 
     return tenant.save();
   }
+
 
   async findTenantByProjectId(projectId: string): Promise<any | null> {
     return this.tenantModel.findOne({ 'projects._id': projectId }).exec();
