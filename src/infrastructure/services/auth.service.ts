@@ -319,6 +319,82 @@ export class AuthService {
     };
   }
 
+  // async validateFacebookUser(profile: any): Promise<any> {
+  //   const user = await this.usersService.findByFacebookId(profile.facebookId);
+  //   const { facebookId, email, firstName, lastName, picture } = profile;
+  //   console.log(profile);
+  //   if (!user) {
+  //     // If user doesn't exist, create a new one
+  //     const hashedPassword = await bcrypt.hash(uuidv4(), 10);
+  //     const newUser = await this.usersService.create({
+  //       email: profile.email,
+  //       name: `${profile.firstName} ${profile.lastName}`,
+  //       facebookId: profile.facebookId,
+  //       image: profile.picture,
+  //       password: hashedPassword,
+  //       confirmPassword: hashedPassword,
+  //       role: 'user',
+  //     });
+  //     return newUser;
+  //   }
+  //   return user;
+  // }
+
+  async validateFacebookUser(profile: any): Promise<any> {
+    const { facebookId, email, firstName, lastName, picture } = profile;
+    let user: any = await this.usersService.findByFacebookId(facebookId);
+    if (!user && email) {
+      user = await this.usersService.findByEmail(email);
+      if (user) {
+        user.facebookId = facebookId;
+        if (user.name === undefined || user.name === '' || user.name === null)
+          user.name = `${firstName} ${lastName}`;
+        if (
+          user.image === undefined ||
+          user.image === '' ||
+          user.image === null
+        )
+          user.image = picture;
+        await this.usersService.save(user);
+      } else {
+        const hashedPassword = await bcrypt.hash(uuidv4(), 10);
+        user = await this.usersService.create({
+          email: profile.email,
+          name: `${firstName} ${lastName}`,
+          facebookId: facebookId,
+          image: picture,
+          password: hashedPassword,
+          confirmPassword: hashedPassword,
+          role: 'user',
+        });
+      }
+    } else if (!user) {
+      throw new UnauthorizedException('Unable to authenticate with Facebook');
+    }
+    return user;
+  }
+
+  async signInWithFacebook(user: User) {
+    const payload = {
+      sub: user._id,
+      email: user.email,
+      name: user.name,
+      role: 'user',
+    };
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        image: user.image,
+        age: user.age,
+        role: 'user',
+      },
+    };
+  }
+
   async sendResetPasswordResetEmail(email: string): Promise<void> {
     let user: any = await this.usersService.findByEmail(email);
     if (!user) {

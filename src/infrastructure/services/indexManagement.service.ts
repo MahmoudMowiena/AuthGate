@@ -30,12 +30,25 @@ export class IndexManagementService implements OnModuleInit {
       }
     }
 
+    try {
+      await this.userModel.collection.dropIndex('facebookId_1');
+    } catch (error) {
+      if (error.code !== 27) {
+        // 27 is the code for "index not found"
+        throw error;
+      }
+    }
+
     await this.userModel.collection.createIndex(
       { googleId: 1 },
       { unique: true, sparse: true },
     );
     await this.userModel.collection.createIndex(
       { githubId: 1 },
+      { unique: true, sparse: true },
+    );
+    await this.userModel.collection.createIndex(
+      { facebookId: 1 },
       { unique: true, sparse: true },
     );
   }
