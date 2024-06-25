@@ -56,6 +56,10 @@ export class userModel {
 
   @IsOptional()
   @IsString()
+  facebookId?: string;
+
+  @IsOptional()
+  @IsString()
   image?: string;
 
   @IsOptional()
