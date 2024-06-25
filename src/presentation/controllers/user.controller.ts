@@ -91,16 +91,12 @@ export class UserController {
         );
       }
 
-      console.log("Project Added");
-      console.log(result);
-
       return {
         result,
         success: true,
         message: 'Project Added successfully',
       };
     } catch (error) {
-      console.log("Catch clause")
       if (
         error instanceof ConflictException ||
         error instanceof NotFoundException

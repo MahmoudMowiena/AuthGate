@@ -161,7 +161,6 @@ export class AuthService {
   }
 
   async processAuth(projectId: any, token: string): Promise<any> {
-    // let userProject: UserProject;
     let payload;
 
     try {
@@ -187,15 +186,15 @@ export class AuthService {
 
     const projectID = projectId;
     const authorizationCode = uuidv4();
-    // const authorizationAccessToken = crypto.randomBytes(32).toString('hex');
     const authorizationAccessToken = await this.jwtService.signAsync(newPayload);
 
     const expireDate = new Date();
     expireDate.setHours(expireDate.getHours() + 24);
 
-    const existingUserProject: UserProject = user.projects.find(
+    const existingUserProject: UserProject = user.projects?.find(
       (project) => project.projectID === projectID,
     );
+
 
     const newUserProject = {
       projectID,
@@ -231,8 +230,6 @@ export class AuthService {
 
     const callbackUrl = targetProject.callBackUrl;
 
-    console.log("Inside processAuth:" + authorizationCode);
-
     return {
       userId,
       projectID,
@@ -240,6 +237,7 @@ export class AuthService {
       authorizationCode,
     };
   }
+
   async validateGitHubUser(profile: any): Promise<any> {
     const { id, username, displayName, emails, photos } = profile;
     // Find user by GitHub ID
