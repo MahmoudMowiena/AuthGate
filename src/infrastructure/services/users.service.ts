@@ -94,6 +94,10 @@ export class UsersService {
     return this.userModel.findOne({ googleId }).exec();
   }
 
+  async findByFacebookId(facebookId: string): Promise<User> {
+    return this.userModel.findOne({ facebookId }).exec();
+  }
+
   async save(user: User | any): Promise<any> {
     return await user.save();
   }

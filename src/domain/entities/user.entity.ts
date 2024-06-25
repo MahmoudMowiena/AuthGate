@@ -71,6 +71,9 @@ export class User {
   @Prop({ unique: true, sparse: true })
   githubId?: string;
 
+  @Prop({ unique: true, sparse: true })
+  facebookId?: string;
+
   @Prop({ default: false })
   deleted: boolean;
 

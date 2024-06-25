@@ -118,6 +118,25 @@ export class AuthController {
     return res.redirect(redirectUrl);
   }
 
+  @Get('facebook')
+  @UseGuards(AuthGuard('facebook'))
+  async loginWithFacebook() {
+    // Initiates Facebook OAuth flow
+  }
+
+  @Get('facebook/callback')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookAuthCallback(@Req() req, @Res() res: Response) {
+    const user1 = req.user;
+    const { access_token, user } =
+      await this.authService.signInWithGoogle(user1);
+
+    // Redirect to the Angular frontend with tokens in query parameters
+    const redirectUrl = `http://localhost:4200/auth/facebook/callback?token=${access_token}&user=${JSON.stringify(user)}`;
+
+    return res.redirect(redirectUrl);
+  }
+
   @Post('reset-password/request')
   async sendPasswordResetEmail(@Body('email') email: string): Promise<void> {
     await this.authService.sendResetPasswordResetEmail(email);
