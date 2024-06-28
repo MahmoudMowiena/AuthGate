@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   ConflictException,
-  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -9,17 +8,13 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { userModel } from '../../presentation/dtos/user.model';
-import { userProjectModel } from 'src/presentation/dtos/userProject.dto';
 import { User, UserDocument } from '../../domain/entities/user.entity';
 import { ImageService } from 'src/infrastructure/services/image.service';
 import { updateUserModel } from 'src/presentation/dtos/updateUser.model';
 import * as bcrypt from 'bcrypt';
 import { ProjectService } from './project.service';
 import { TenantsService } from './tenants.service';
-import { projectModel } from 'src/presentation/dtos/project.model';
 import { jwtConstants } from '../../constants';
-import { error } from 'console';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +23,7 @@ export class UsersService {
     private imageService: ImageService,
     private projectservice: ProjectService,
     private tenantservice: TenantsService,
-  ) {}
+  ) { }
 
   async create(createUserDto: userModel): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
@@ -41,10 +36,15 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    const users = this.userModel.find().exec();
-    for (const user of await users) {
+    const users = await this.userModel.find().exec();
+    for (const user of users) {
       user.projects = await this.getUserProjects(user.projects);
     }
+    return users;
+  }
+
+  async findAllWithUserProjects(): Promise<User[]> {
+    const users = await this.userModel.find().populate('projects');
     return users;
   }
 
@@ -53,17 +53,18 @@ export class UsersService {
   }
 
   async findById(id: string): Promise<userModel> {
-    const user = this.userModel.findById(id).exec();
+    const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    (await user).projects = await this.getUserProjects((await user).projects);
+    user.projects = await this.getUserProjects(user.projects);
+
     return user;
   }
 
   async findByEmail(email: string): Promise<userModel> {
-    return this.userModel.findOne({ email }).exec();
+    return await this.userModel.findOne({ email }).exec();
   }
 
   private async getUserProjects(projectRef: any[]): Promise<any[]> {
@@ -84,12 +85,17 @@ export class UsersService {
     }
     return targetProject;
   }
+
   async findByGitHubId(githubId: string): Promise<User> {
     return this.userModel.findOne({ githubId }).exec();
   }
 
   async findByGoogleId(googleId: string): Promise<User> {
     return this.userModel.findOne({ googleId }).exec();
+  }
+
+  async findByFacebookId(facebookId: string): Promise<User> {
+    return this.userModel.findOne({ facebookId }).exec();
   }
 
   async save(user: User | any): Promise<any> {

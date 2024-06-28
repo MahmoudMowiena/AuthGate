@@ -17,19 +17,21 @@ import { SignInRequest } from '../dtos/signInRequest.dto';
 import { userModel } from '../dtos/user.model';
 import { tenantModel } from '../dtos/tenant.model';
 import { UsersService } from 'src/infrastructure/services/users.service';
-import { User } from 'src/domain/entities/user.entity';
-import { Types } from 'mongoose';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { TenantsService } from 'src/infrastructure/services/tenants.service';
+import { UserProject } from 'src/domain/entities/userProject.entity';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+    private tenantsService: TenantsService
+  ) { }
+
+  private readonly frontendUrl = 'http://localhost:4200';
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -58,20 +60,22 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('authcode')
   async exchangeCodeWithToken(
-    @Body() obj: { projectId: string; userId: string; authCode: string },
+    @Body() obj: { authCode: string },
   ) {
-    const { projectId, userId, authCode } = obj;
-    const user: userModel = await this.usersService.findById(userId);
-    if (!user) throw new BadRequestException('user does not exist');
+    const { authCode } = obj;
 
-    const userProject = user.projects.find(
-      (project) => project.projectID.toString() === projectId,
+    const users = await this.usersService.findAllWithUserProjects();
+
+    const userWithProject = users.find(user =>
+      user.projects.some(project => project.authorizationCode === authCode)
     );
 
-    if (userProject.authorizationCode == authCode) {
-      return {
-        auth_token: userProject.authorizationAccessToken,
-      };
+    const targetUserProject = userWithProject?.projects.find(project =>
+      project.authorizationCode === authCode
+    );
+
+    return {
+      auth_token: targetUserProject.authorizationAccessToken,
     }
   }
 
@@ -88,7 +92,7 @@ export class AuthController {
       await this.authService.signInWithGitHub(user1);
 
     // Redirect to the Angular frontend with tokens in query parameters
-    const redirectUrl = `http://localhost:4200/auth/github/callback?token=${access_token}&user=${JSON.stringify(user)}`;
+    const redirectUrl = `${this.frontendUrl}/auth/github/callback?token=${access_token}&user=${JSON.stringify(user)}`;
 
     return res.redirect(redirectUrl);
   }
@@ -107,7 +111,26 @@ export class AuthController {
       await this.authService.signInWithGoogle(user1);
 
     // Redirect to the Angular frontend with tokens in query parameters
-    const redirectUrl = `http://localhost:4200/auth/google/callback?token=${access_token}&user=${JSON.stringify(user)}`;
+    const redirectUrl = `${this.frontendUrl}/auth/google/callback?token=${access_token}&user=${JSON.stringify(user)}`;
+
+    return res.redirect(redirectUrl);
+  }
+
+  @Get('facebook')
+  @UseGuards(AuthGuard('facebook'))
+  async loginWithFacebook() {
+    // Initiates Facebook OAuth flow
+  }
+
+  @Get('facebook/callback')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookAuthCallback(@Req() req, @Res() res: Response) {
+    const user1 = req.user;
+    const { access_token, user } =
+      await this.authService.signInWithGoogle(user1);
+
+    // Redirect to the Angular frontend with tokens in query parameters
+    const redirectUrl = `${this.frontendUrl}/auth/facebook/callback?token=${access_token}&user=${JSON.stringify(user)}`;
 
     return res.redirect(redirectUrl);
   }
@@ -128,5 +151,13 @@ export class AuthController {
       newPassword,
       confirmNewPassword,
     );
+  }
+
+  @Post('istenant')
+  async isTenant(
+    @Body('clientId') clientId: string,
+    @Body('clientSecret') clientSecret: string,
+  ) {
+    this.tenantsService.authorizeClient(clientId, clientSecret);
   }
 }
