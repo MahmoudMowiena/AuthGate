@@ -32,13 +32,13 @@ export class AuthService {
     private emailService: EmailService,
   ) { }
 
-  verifyToken(token: string): any {
-    try {
-      return this.jwtService.verify(token);
-    } catch (error) {
-      throw new UnauthorizedException('Invalid token');
-    }
-  }
+  // verifyToken(token: string): any {
+  //   try {
+  //     return this.jwtService.verify(token);
+  //   } catch (error) {
+  //     throw new UnauthorizedException('Invalid token');
+  //   }
+  // }
 
   async signIn(
     email: string,
@@ -98,8 +98,7 @@ export class AuthService {
         email: user.email,
         phone: user.phone,
         image: user.image,
-        website: user.website,
-        address: user.address,
+        age: user.age,
         role: 'admin',
       };
     }
@@ -175,11 +174,19 @@ export class AuthService {
       image: user.image,
       age: user.age
     };
-
-    // const projectID = projectId;
-    const authorizationCode = uuidv4();
+    const projectID = projectId;
+    const authorizationCode = crypto.randomBytes(16).toString('hex');
     const authorizationAccessToken: string = await this.jwtService.signAsync(newPayload);
     const expireDate: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    if (projectID) {
+      userproject = {
+        projectID,
+        authorizationCode,
+        authorizationAccessToken,
+        expireDate,
+      };
+    }
 
     const newUserProject = {
       projectID,
@@ -356,6 +363,7 @@ export class AuthService {
         phone: user.phone,
         image: user.image,
         age: user.age,
+        githubId: user.githubId,
         role: 'user',
       },
     };
@@ -403,6 +411,7 @@ export class AuthService {
         phone: user.phone,
         image: user.image,
         age: user.age,
+        googleId: user.googleId,
         role: 'user',
       },
     };

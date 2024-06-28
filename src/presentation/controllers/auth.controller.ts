@@ -89,7 +89,7 @@ export class AuthController {
   async githubAuthCallback(@Req() req, @Res() res: Response) {
     const user1 = req.user;
     const { access_token, user } =
-      await this.authService.signInWithGoogle(user1);
+      await this.authService.signInWithGitHub(user1);
 
     // Redirect to the Angular frontend with tokens in query parameters
     const redirectUrl = `${this.frontendUrl}/auth/github/callback?token=${access_token}&user=${JSON.stringify(user)}`;
