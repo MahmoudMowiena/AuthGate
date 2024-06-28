@@ -30,15 +30,15 @@ export class AuthService {
     private tenantsService: TenantsService,
     private jwtService: JwtService,
     private emailService: EmailService,
-  ) {}
+  ) { }
 
-  verifyToken(token: string): any {
-    try {
-      return this.jwtService.verify(token);
-    } catch (error) {
-      throw new UnauthorizedException('Invalid token');
-    }
-  }
+  // verifyToken(token: string): any {
+  //   try {
+  //     return this.jwtService.verify(token);
+  //   } catch (error) {
+  //     throw new UnauthorizedException('Invalid token');
+  //   }
+  // }
 
   async signIn(
     email: string,
@@ -98,8 +98,7 @@ export class AuthService {
         email: user.email,
         phone: user.phone,
         image: user.image,
-        website: user.website,
-        address: user.address,
+        age: user.age,
         role: 'admin',
       };
     }
@@ -160,28 +159,25 @@ export class AuthService {
     else throw new BadRequestException();
   }
 
-  async processAuth(projectId: any, token: string): Promise<any> {
-    let userproject: UserProject;
-    let payload;
-
-    try {
-      payload = this.jwtService.verify(token);
-    } catch (error) {
-      throw new UnauthorizedException('Invalid token');
-    }
-
-    const userId = payload.sub;
-    const user = await this.usersService.findId(userId);
+  async processAuth(projectID: any, userId: string): Promise<any> {
+    
+    const user: userModel = await this.usersService.findId(userId);
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new NotFoundException('User not found');
     }
 
+    const newPayload = {
+      email: user.email,
+      name: user.name,
+      phone: user.phone,
+      image: user.image,
+      age: user.age
+    };
     const projectID = projectId;
-    const authorizationCode = uuidv4();
-    const authorizationAccessToken = crypto.randomBytes(32).toString('hex');
-    const expireDate = new Date();
-    expireDate.setHours(expireDate.getHours() + 24);
+    const authorizationCode = crypto.randomBytes(16).toString('hex');
+    const authorizationAccessToken: string = await this.jwtService.signAsync(newPayload);
+    const expireDate: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     if (projectID) {
       userproject = {
@@ -192,25 +188,36 @@ export class AuthService {
       };
     }
 
-    const userProject = user.projects.find(
+    const newUserProject = {
+      projectID,
+      authorizationCode,
+      authorizationAccessToken,
+      expireDate,
+    };
+
+    const existingUserProject: UserProject = user.projects?.find(
       (project) => project.projectID === projectID,
     );
 
-    if (!userProject) {
-      user.projects.push(userproject);
+    if (existingUserProject) {
+      existingUserProject.authorizationAccessToken = newUserProject.authorizationAccessToken;
+      existingUserProject.authorizationCode = newUserProject.authorizationCode;
+      existingUserProject.expireDate = newUserProject.expireDate;
+    } else {
+      user.projects.push(newUserProject);
     }
 
     await this.usersService.save(user);
 
     const targetTenant =
-      await this.tenantsService.findTenantByProjectId(projectId);
+      await this.tenantsService.findTenantByProjectId(projectID);
 
     if (!targetTenant) {
       throw new ConflictException('Tenant not found for the given project ID');
     }
 
     const targetProject: projectModel | any = targetTenant.projects.find(
-      (project) => project._id.toString() === projectId,
+      (project) => project._id.toString() === projectID,
     );
 
     if (!targetProject) {
@@ -226,6 +233,93 @@ export class AuthService {
       authorizationCode,
     };
   }
+
+
+  // async processAuth(projectID: any, userId: string): Promise<any> {
+  //   const user = await this.findUserById(userId);
+  //   const { authorizationCode, authorizationAccessToken, expireDate } = await this.generateAuthDetails(user);
+  //   this.updateUserProject(user, projectID, authorizationCode, authorizationAccessToken, expireDate);
+  //   await this.saveUser(user);
+  //   const { callbackUrl } = await this.getTenantProjectDetails(projectID);
+
+  //   return this.prepareResponse(userId, projectID, callbackUrl, authorizationCode);
+  // }
+
+  // private async findUserById(userId: string): Promise<userModel> {
+  //   const user: userModel = await this.usersService.findId(userId);
+  //   if (!user) {
+  //     throw new NotFoundException('User not found');
+  //   }
+  //   return user;
+  // }
+
+  // private async generateAuthDetails(user: User) {
+  //   const newPayload = {
+  //     email: user.email,
+  //     name: user.name,
+  //     phone: user.phone,
+  //     image: user.image,
+  //     age: user.age
+  //   };
+  //   const authorizationCode = uuidv4();
+  //   const authorizationAccessToken = await this.jwtService.signAsync(newPayload);
+  //   const expireDate: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  //   return { authorizationCode, authorizationAccessToken, expireDate };
+  // }
+
+  // private updateUserProject(user: User, projectID: any, authorizationCode: string, authorizationAccessToken: string, expireDate: Date): void {
+  //   const newUserProject = {
+  //     projectID,
+  //     authorizationCode,
+  //     authorizationAccessToken,
+  //     expireDate,
+  //   };
+
+  //   const existingUserProject: UserProject = user.projects?.find(
+  //     (project) => project.projectID === projectID,
+  //   );
+
+  //   if (existingUserProject) {
+  //     existingUserProject.authorizationAccessToken = newUserProject.authorizationAccessToken;
+  //     existingUserProject.authorizationCode = newUserProject.authorizationCode;
+  //     existingUserProject.expireDate = newUserProject.expireDate;
+  //   } else {
+  //     user.projects.push(newUserProject);
+  //   }
+  // }
+
+  // private async saveUser(user: User): Promise<void> {
+  //   await this.usersService.save(user);
+  // }
+
+  // private async getTenantProjectDetails(projectID: any) {
+  //   const targetTenant = await this.tenantsService.findTenantByProjectId(projectID);
+  //   if (!targetTenant) {
+  //     throw new ConflictException('Tenant not found for the given project ID');
+  //   }
+
+  //   const targetProject: projectModel | any = targetTenant.projects.find(
+  //     (project) => project.projectID === projectID,
+  //   );
+
+  //   if (!targetProject) {
+  //     throw new ConflictException('Project not found in tenant');
+  //   }
+
+  //   return targetProject;
+  // }
+
+  // private prepareResponse(userId: string, projectID: any, callbackUrl: string, authorizationCode: string): any {
+  //   return {
+  //     userId,
+  //     projectID,
+  //     callbackUrl,
+  //     authorizationCode,
+  //   };
+  // }
+
+
   async validateGitHubUser(profile: any): Promise<any> {
     const { id, username, displayName, emails, photos } = profile;
     // Find user by GitHub ID
@@ -250,6 +344,7 @@ export class AuthService {
 
     return user;
   }
+
   async signInWithGitHub(
     user: User,
   ): Promise<{ access_token: string; user: any }> {
@@ -268,10 +363,12 @@ export class AuthService {
         phone: user.phone,
         image: user.image,
         age: user.age,
+        githubId: user.githubId,
         role: 'user',
       },
     };
   }
+
   async validateGoogleUser(profile: any): Promise<any> {
     const { id, displayName, emails, photos } = profile;
 
@@ -307,6 +404,83 @@ export class AuthService {
     };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        image: user.image,
+        age: user.age,
+        googleId: user.googleId,
+        role: 'user',
+      },
+    };
+  }
+
+  // async validateFacebookUser(profile: any): Promise<any> {
+  //   const user = await this.usersService.findByFacebookId(profile.facebookId);
+  //   const { facebookId, email, firstName, lastName, picture } = profile;
+  //   console.log(profile);
+  //   if (!user) {
+  //     // If user doesn't exist, create a new one
+  //     const hashedPassword = await bcrypt.hash(uuidv4(), 10);
+  //     const newUser = await this.usersService.create({
+  //       email: profile.email,
+  //       name: `${profile.firstName} ${profile.lastName}`,
+  //       facebookId: profile.facebookId,
+  //       image: profile.picture,
+  //       password: hashedPassword,
+  //       confirmPassword: hashedPassword,
+  //       role: 'user',
+  //     });
+  //     return newUser;
+  //   }
+  //   return user;
+  // }
+
+  async validateFacebookUser(profile: any): Promise<any> {
+    const { facebookId, email, firstName, lastName, picture } = profile;
+    let user: any = await this.usersService.findByFacebookId(facebookId);
+    if (!user && email) {
+      user = await this.usersService.findByEmail(email);
+      if (user) {
+        user.facebookId = facebookId;
+        if (user.name === undefined || user.name === '' || user.name === null)
+          user.name = `${firstName} ${lastName}`;
+        if (
+          user.image === undefined ||
+          user.image === '' ||
+          user.image === null
+        )
+          user.image = picture;
+        await this.usersService.save(user);
+      } else {
+        const hashedPassword = await bcrypt.hash(uuidv4(), 10);
+        user = await this.usersService.create({
+          email: profile.email,
+          name: `${firstName} ${lastName}`,
+          facebookId: facebookId,
+          image: picture,
+          password: hashedPassword,
+          confirmPassword: hashedPassword,
+          role: 'user',
+        });
+      }
+    } else if (!user) {
+      throw new UnauthorizedException('Unable to authenticate with Facebook');
+    }
+    return user;
+  }
+
+  async signInWithFacebook(user: User) {
+    const payload = {
+      sub: user._id,
+      email: user.email,
+      name: user.name,
+      role: 'user',
+    };
+    return {
+      access_token: this.jwtService.sign(payload),
       user: {
         _id: user._id,
         name: user.name,
@@ -354,16 +528,19 @@ export class AuthService {
       secret: process.env.PASSWORD_RESET_JWT_SECRET,
     });
     let user: any = await this.usersService.findByEmail(decoded.email);
+
     if (!user) {
       user = await this.tenantsService.findByEmail(decoded.email);
     }
+
     if (
       !user ||
       user.resetPasswordToken !== token ||
       user.resetPasswordExpires < new Date()
     ) {
-      throw new Error('Invalid or expired token');
+      throw new BadRequestException('Invalid or expired token');
     }
+
     if (newPassword === confirmNewPassword) {
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       user.password = hashedPassword;
@@ -371,7 +548,7 @@ export class AuthService {
       user.resetPasswordToken = null;
       user.resetPasswordExpires = null;
     } else {
-      throw new Error("Passwords don't match");
+      throw new BadRequestException("Passwords don't match");
     }
 
     await this.usersService.save(user);

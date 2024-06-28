@@ -19,7 +19,7 @@ export class TenantsService {
   constructor(
     @InjectModel(Tenant.name) private tenantModel: Model<TenantDocument>,
     private imageService: ImageService,
-  ) {}
+  ) { }
 
   async create(createTenantDto: tenantModel): Promise<Tenant> {
     const createdTenant = new this.tenantModel(createTenantDto);
@@ -27,47 +27,52 @@ export class TenantsService {
   }
 
   async findById(id: string): Promise<tenantModel> {
-    return await this.tenantModel.findById(id).exec();
+    return await this.tenantModel.findById(id);
   }
 
   async findByEmail(email: string): Promise<tenantModel> {
-    return this.tenantModel.findOne({ email }).exec();
+    return this.tenantModel.findOne({ email });
   }
 
   async findAll(): Promise<Tenant[]> {
-    return this.tenantModel.find().exec();
+    return this.tenantModel.find();
   }
 
   async update(id: string, updateTenantDto: tenantModel): Promise<any> {
     let newEmail: any;
     let newName: any;
     let targetTenant: tenantModel;
+    let user: any;
 
     try {
       if (updateTenantDto.email !== null) {
+        user = await this.findById(id);
         newEmail = updateTenantDto.email;
         targetTenant = await this.findByEmail(newEmail);
-        if (targetTenant && targetTenant.email === newEmail) {
+        if (
+          targetTenant &&
+          targetTenant.email === newEmail &&
+          user.email != newEmail
+        ) {
           throw new ConflictException('Email already exists, try to login');
         }
       }
 
-      if (updateTenantDto.name !== null) {
-        newName = updateTenantDto.name;
-        const tenants = await this.findAll();
-        for (const item of tenants) {
-          if (item.name === newName) {
-            throw new ConflictException('Name already in use, try another one');
-          }
+      newName = updateTenantDto.name;
+      const tenants = await this.findAll();
+      for (const item of tenants) {
+        if (item.name === newName && user.name != newName) {
+          throw new ConflictException('Name already in use, try another one');
         }
       }
 
-      const tenantAfterUpdate = await this.tenantModel
-        .findOneAndUpdate({ _id: id, deleted: false }, updateTenantDto, {
+      const tenantAfterUpdate = await this.tenantModel.findOneAndUpdate(
+        { _id: id, deleted: false },
+        updateTenantDto,
+        {
           new: true,
-        })
-        .exec();
-
+        },
+      );
       if (!tenantAfterUpdate) {
         throw new NotFoundException('Tenant not found or already deleted');
       }
@@ -89,7 +94,7 @@ export class TenantsService {
     id: string,
     updateTenantDto: updateTenantModel,
   ): Promise<any> {
-    const tenant = await this.tenantModel.findById(id).exec();
+    const tenant = await this.tenantModel.findById(id);
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
     }
@@ -149,7 +154,7 @@ export class TenantsService {
   }
 
   async remove(id: string): Promise<any> {
-    const tenant = await this.tenantModel.findById(id).exec();
+    const tenant = await this.tenantModel.findById(id);
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
     }
@@ -159,7 +164,7 @@ export class TenantsService {
   }
 
   async undelete(id: string): Promise<any> {
-    const tenant = await this.tenantModel.findById(id).exec();
+    const tenant = await this.tenantModel.findById(id);
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
     }
@@ -176,8 +181,8 @@ export class TenantsService {
       .findOne({
         'projects.clientID': clientID,
         'projects.clientSECRET': clientSECRET,
-      })
-      .exec();
+      });
+      
     if (!tenant) {
       throw new Error('Tenant not found for the given client credentials.');
     }
@@ -192,7 +197,7 @@ export class TenantsService {
   }
 
   async addImage(id: string, image: Express.Multer.File): Promise<Tenant> {
-    const tenant = await this.tenantModel.findById(id).exec();
+    const tenant = await this.tenantModel.findById(id);
 
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
@@ -206,7 +211,8 @@ export class TenantsService {
     return tenant.save();
   }
 
+
   async findTenantByProjectId(projectId: string): Promise<any | null> {
-    return this.tenantModel.findOne({ 'projects._id': projectId }).exec();
+    return this.tenantModel.findOne({ 'projects._id': projectId });
   }
 }
