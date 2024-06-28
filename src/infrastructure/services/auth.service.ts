@@ -160,17 +160,13 @@ export class AuthService {
     else throw new BadRequestException();
   }
 
-  async processAuth(projectId: any, token: string): Promise<any> {
-    let payload;
+  async processAuth(projectID: any, userId: string): Promise<any> {
+    
+    const user: userModel = await this.usersService.findId(userId);
 
-    try {
-      payload = this.jwtService.verify(token);
-    } catch (error) {
-      throw new UnauthorizedException('Invalid token');
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
-
-    const userId = payload.sub;
-    const user = await this.usersService.findId(userId);
 
     const newPayload = {
       email: user.email,
@@ -178,23 +174,12 @@ export class AuthService {
       phone: user.phone,
       image: user.image,
       age: user.age
-    }
+    };
 
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-
-    const projectID = projectId;
+    // const projectID = projectId;
     const authorizationCode = uuidv4();
-    const authorizationAccessToken = await this.jwtService.signAsync(newPayload);
-
-    const expireDate = new Date();
-    expireDate.setHours(expireDate.getHours() + 24);
-
-    const existingUserProject: UserProject = user.projects?.find(
-      (project) => project.projectID === projectID,
-    );
-
+    const authorizationAccessToken: string = await this.jwtService.signAsync(newPayload);
+    const expireDate: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     const newUserProject = {
       projectID,
@@ -202,6 +187,10 @@ export class AuthService {
       authorizationAccessToken,
       expireDate,
     };
+
+    const existingUserProject: UserProject = user.projects?.find(
+      (project) => project.projectID === projectID,
+    );
 
     if (existingUserProject) {
       existingUserProject.authorizationAccessToken = newUserProject.authorizationAccessToken;
@@ -214,14 +203,14 @@ export class AuthService {
     await this.usersService.save(user);
 
     const targetTenant =
-      await this.tenantsService.findTenantByProjectId(projectId);
+      await this.tenantsService.findTenantByProjectId(projectID);
 
     if (!targetTenant) {
       throw new ConflictException('Tenant not found for the given project ID');
     }
 
     const targetProject: projectModel | any = targetTenant.projects.find(
-      (project) => project._id.toString() === projectId,
+      (project) => project._id.toString() === projectID,
     );
 
     if (!targetProject) {
@@ -237,6 +226,92 @@ export class AuthService {
       authorizationCode,
     };
   }
+
+
+  // async processAuth(projectID: any, userId: string): Promise<any> {
+  //   const user = await this.findUserById(userId);
+  //   const { authorizationCode, authorizationAccessToken, expireDate } = await this.generateAuthDetails(user);
+  //   this.updateUserProject(user, projectID, authorizationCode, authorizationAccessToken, expireDate);
+  //   await this.saveUser(user);
+  //   const { callbackUrl } = await this.getTenantProjectDetails(projectID);
+
+  //   return this.prepareResponse(userId, projectID, callbackUrl, authorizationCode);
+  // }
+
+  // private async findUserById(userId: string): Promise<userModel> {
+  //   const user: userModel = await this.usersService.findId(userId);
+  //   if (!user) {
+  //     throw new NotFoundException('User not found');
+  //   }
+  //   return user;
+  // }
+
+  // private async generateAuthDetails(user: User) {
+  //   const newPayload = {
+  //     email: user.email,
+  //     name: user.name,
+  //     phone: user.phone,
+  //     image: user.image,
+  //     age: user.age
+  //   };
+  //   const authorizationCode = uuidv4();
+  //   const authorizationAccessToken = await this.jwtService.signAsync(newPayload);
+  //   const expireDate: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  //   return { authorizationCode, authorizationAccessToken, expireDate };
+  // }
+
+  // private updateUserProject(user: User, projectID: any, authorizationCode: string, authorizationAccessToken: string, expireDate: Date): void {
+  //   const newUserProject = {
+  //     projectID,
+  //     authorizationCode,
+  //     authorizationAccessToken,
+  //     expireDate,
+  //   };
+
+  //   const existingUserProject: UserProject = user.projects?.find(
+  //     (project) => project.projectID === projectID,
+  //   );
+
+  //   if (existingUserProject) {
+  //     existingUserProject.authorizationAccessToken = newUserProject.authorizationAccessToken;
+  //     existingUserProject.authorizationCode = newUserProject.authorizationCode;
+  //     existingUserProject.expireDate = newUserProject.expireDate;
+  //   } else {
+  //     user.projects.push(newUserProject);
+  //   }
+  // }
+
+  // private async saveUser(user: User): Promise<void> {
+  //   await this.usersService.save(user);
+  // }
+
+  // private async getTenantProjectDetails(projectID: any) {
+  //   const targetTenant = await this.tenantsService.findTenantByProjectId(projectID);
+  //   if (!targetTenant) {
+  //     throw new ConflictException('Tenant not found for the given project ID');
+  //   }
+
+  //   const targetProject: projectModel | any = targetTenant.projects.find(
+  //     (project) => project.projectID === projectID,
+  //   );
+
+  //   if (!targetProject) {
+  //     throw new ConflictException('Project not found in tenant');
+  //   }
+
+  //   return targetProject;
+  // }
+
+  // private prepareResponse(userId: string, projectID: any, callbackUrl: string, authorizationCode: string): any {
+  //   return {
+  //     userId,
+  //     projectID,
+  //     callbackUrl,
+  //     authorizationCode,
+  //   };
+  // }
+
 
   async validateGitHubUser(profile: any): Promise<any> {
     const { id, username, displayName, emails, photos } = profile;

@@ -31,6 +31,8 @@ export class AuthController {
     private tenantsService: TenantsService
   ) { }
 
+  private readonly frontendUrl = 'http://localhost:4200';
+
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Body() signInDto: SignInRequest) {
@@ -62,15 +64,11 @@ export class AuthController {
   ) {
     const { authCode } = obj;
 
-    //console.log(authCode)
-
     const users = await this.usersService.findAllWithUserProjects();
 
     const userWithProject = users.find(user =>
       user.projects.some(project => project.authorizationCode === authCode)
     );
-
-    //console.log(userWithProject)
 
     const targetUserProject = userWithProject?.projects.find(project =>
       project.authorizationCode === authCode
@@ -94,7 +92,7 @@ export class AuthController {
       await this.authService.signInWithGoogle(user1);
 
     // Redirect to the Angular frontend with tokens in query parameters
-    const redirectUrl = `http://localhost:4200/auth/github/callback?token=${access_token}&user=${JSON.stringify(user)}`;
+    const redirectUrl = `${this.frontendUrl}/auth/github/callback?token=${access_token}&user=${JSON.stringify(user)}`;
 
     return res.redirect(redirectUrl);
   }
@@ -113,7 +111,7 @@ export class AuthController {
       await this.authService.signInWithGoogle(user1);
 
     // Redirect to the Angular frontend with tokens in query parameters
-    const redirectUrl = `http://localhost:4200/auth/google/callback?token=${access_token}&user=${JSON.stringify(user)}`;
+    const redirectUrl = `${this.frontendUrl}/auth/google/callback?token=${access_token}&user=${JSON.stringify(user)}`;
 
     return res.redirect(redirectUrl);
   }
@@ -132,7 +130,7 @@ export class AuthController {
       await this.authService.signInWithGoogle(user1);
 
     // Redirect to the Angular frontend with tokens in query parameters
-    const redirectUrl = `http://localhost:4200/auth/facebook/callback?token=${access_token}&user=${JSON.stringify(user)}`;
+    const redirectUrl = `${this.frontendUrl}/auth/facebook/callback?token=${access_token}&user=${JSON.stringify(user)}`;
 
     return res.redirect(redirectUrl);
   }

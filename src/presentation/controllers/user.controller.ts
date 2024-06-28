@@ -12,6 +12,7 @@ import {
   Patch,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { userModel } from '../dtos/user.model';
@@ -23,6 +24,7 @@ import { JwtService } from '@nestjs/jwt';
 import { updateUserModel } from '../dtos/updateUser.model';
 import { ProjectService } from 'src/infrastructure/services/project.service';
 import { error } from 'console';
+import { AuthenticationGuard } from '../guards/auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -71,6 +73,7 @@ export class UserController {
     }
   }
 
+  @UseGuards(AuthenticationGuard)
   @Post()
   async adduserProjectByProjectId(
     @Body() body: { projectId: string },
@@ -83,7 +86,9 @@ export class UserController {
       const targetProject = await this.projectservice.findOne(projectId);
 
       if (targetProject.deleted === false) {
-        result = await this.authservice.processAuth(projectId, token);
+        const payload = this.jwtservice.verify(token);
+        const userId: string = payload.sub;
+        result = await this.authservice.processAuth(projectId, userId);
       } else {
         throw new HttpException(
           'project not found, or has been deleted',
