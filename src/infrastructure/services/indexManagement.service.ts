@@ -16,7 +16,6 @@ export class IndexManagementService implements OnModuleInit {
       await this.userModel.collection.dropIndex('googleId_1');
     } catch (error) {
       if (error.code !== 27) {
-        // 27 is the code for "index not found"
         throw error;
       }
     }
@@ -25,7 +24,6 @@ export class IndexManagementService implements OnModuleInit {
       await this.userModel.collection.dropIndex('githubId_1');
     } catch (error) {
       if (error.code !== 27) {
-        // 27 is the code for "index not found"
         throw error;
       }
     }
@@ -34,7 +32,6 @@ export class IndexManagementService implements OnModuleInit {
       await this.userModel.collection.dropIndex('facebookId_1');
     } catch (error) {
       if (error.code !== 27) {
-        // 27 is the code for "index not found"
         throw error;
       }
     }

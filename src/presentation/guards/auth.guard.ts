@@ -27,7 +27,7 @@ export class AuthenticationGuard implements CanActivate {
     return true;
   }
 
-  async verifyTokenAndGetPayload(token: string): Promise<any> {
+  private async verifyTokenAndGetPayload(token: string): Promise<any> {
     try {
       return await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
