@@ -5,7 +5,6 @@ import { User, userSchema } from '../domain/entities/user.entity';
 import { UserController } from '../presentation/controllers/user.controller';
 import { UsersService } from 'src/infrastructure/services/users.service';
 import { AuthService } from 'src/infrastructure/services/auth.service';
-import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import { TenantModule } from './tenant.module';
 import { ImageService } from 'src/infrastructure/services/image.service';
 import { ProjectsModule } from './project.module';
@@ -17,6 +16,7 @@ import { EmailService } from 'src/infrastructure/services/email.service';
     TenantModule,
     MongooseModule.forFeature([{ name: User.name, schema: userSchema }]),
     forwardRef(() => ProjectsModule),
+    forwardRef(() => TenantModule),
   ],
   providers: [
     AuthService,

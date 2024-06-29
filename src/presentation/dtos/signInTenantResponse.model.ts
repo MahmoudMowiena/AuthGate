@@ -1,6 +1,6 @@
-import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
-export class SignInUserResponse {
+export class SignInTenantResponse {
   @IsString()
   _id: string;
 
@@ -16,11 +16,15 @@ export class SignInUserResponse {
 
   @IsOptional()
   @IsString()
-  image?: string;
+  address?: string;
 
   @IsOptional()
-  @IsNumber()
-  age?: number;
+  @IsString()
+  website?: string;
+
+  @IsOptional()
+  @IsString()
+  image?: string;
 
   @IsString()
   role: string;
