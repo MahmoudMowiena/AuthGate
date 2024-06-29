@@ -100,9 +100,14 @@ export class UserController {
 
       const targetProject = await this.projectservice.findOne(projectId);
       if (targetProject.deleted === false) {
+        const projectName = targetProject.name;
         const payload = await this.verifyTokenAndGetPayload(authHeader);
         const userId = payload.sub;
-        result = await this.authservice.processAuth(projectId, userId);
+        result = await this.authservice.processAuth(
+          projectId,
+          userId,
+          projectName,
+        );
       } else {
         throw new HttpException(
           'project not found, or has been deleted',
