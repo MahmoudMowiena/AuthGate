@@ -9,6 +9,7 @@ import { ProjectsModule } from './project.module';
 import { GithubAuthStrategy } from 'src/infrastructure/Strategies/githubAuth.strategy';
 import { GoogleAuthStrategy } from 'src/infrastructure/Strategies/googleAuth.strategy';
 import { EmailService } from 'src/infrastructure/services/email.service';
+import { FacebookAuthStrategy } from 'src/infrastructure/Strategies/facebookAuth.strategy';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { EmailService } from 'src/infrastructure/services/email.service';
     AuthService,
     GithubAuthStrategy,
     GoogleAuthStrategy,
+    FacebookAuthStrategy,
     EmailService,
   ],
   controllers: [AuthController],

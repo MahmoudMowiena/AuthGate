@@ -11,29 +11,22 @@ import {
   UseInterceptors,
   UploadedFile,
   Headers,
-  UseGuards,
-  Request,
-  Header,
   NotFoundException,
-  BadRequestException,
   ConflictException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
-import { ProjectService } from 'src/infrastructure/services/project.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthenticationGuard } from '../guards/auth.guard';
-import { AuthService } from 'src/infrastructure/services/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { updateTenantModel } from '../dtos/updateTenant.model';
-import { plainToInstance } from 'class-transformer';
+import { jwtConstants } from 'src/constants';
 
 @Controller('tenants')
 export class TenantController {
   constructor(
     private readonly tenantsService: TenantsService,
     private readonly jwtservice: JwtService,
-    private readonly authservice: AuthService,
   ) {}
 
   @Get()
@@ -60,14 +53,13 @@ export class TenantController {
   }
 
   @Patch()
-  @UseGuards(AuthenticationGuard)
   async update(
     @Body() updateTenantDto: tenantModel,
     @Headers('Authorization') authHeader: any,
   ): Promise<tenantModel> {
     try {
-      const token = authHeader.split(' ')[1];
-      const tenantId = this.jwtservice.verify(token).sub;
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
+      const tenantId = payload.sub;
       const updatedTenant = await this.tenantsService.update(
         tenantId,
         updateTenantDto,
@@ -91,14 +83,13 @@ export class TenantController {
   }
 
   @Patch('updateWithPassword')
-  @UseGuards(AuthenticationGuard)
   async updateWithPassword(
     @Body() updateTenantDto: updateTenantModel,
     @Headers('Authorization') authHeader: any,
   ): Promise<tenantModel> {
     try {
-      const token = authHeader.split(' ')[1];
-      const tenantId = this.jwtservice.verify(token).sub;
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
+      const tenantId = payload.sub;
       const updatedTenant = await this.tenantsService.updateWithPassword(
         tenantId,
         updateTenantDto,
@@ -115,14 +106,13 @@ export class TenantController {
     }
   }
 
-  @Patch(':id/undelete')
+  @Patch('undelete/:id')
   async undelete(
     @Param('id') id: string,
     @Headers('Authorization') authHeader: string,
-  ): Promise<any> {
+  ): Promise<tenantModel[]> {
     try {
-      const token = authHeader.split(' ')[1];
-      const payload = this.jwtservice.verify(token);
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
       if (payload.role === 'admin') {
         const tenant = await this.tenantsService.undelete(id);
         if (!tenant) {
@@ -139,7 +129,7 @@ export class TenantController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<any> {
+  async remove(@Param('id') id: string): Promise<tenantModel[]> {
     try {
       const tenant = await this.tenantsService.remove(id);
       if (!tenant) {
@@ -187,5 +177,17 @@ export class TenantController {
       throw new NotFoundException('Tenant not found');
     }
     return tenant;
+  }
+
+  private async verifyTokenAndGetPayload(authHeader: string): Promise<any> {
+    try {
+      const token = authHeader.split(' ')[1];
+      const payload = await this.jwtservice.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }

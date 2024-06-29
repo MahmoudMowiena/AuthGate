@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   ConflictException,
-  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -9,24 +8,18 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { userModel } from '../../presentation/dtos/user.model';
-import { userProjectModel } from 'src/presentation/dtos/userProject.dto';
 import { User, UserDocument } from '../../domain/entities/user.entity';
 import { ImageService } from 'src/infrastructure/services/image.service';
 import { updateUserModel } from 'src/presentation/dtos/updateUser.model';
 import * as bcrypt from 'bcrypt';
-import { ProjectService } from './project.service';
 import { TenantsService } from './tenants.service';
-import { projectModel } from 'src/presentation/dtos/project.model';
 import { jwtConstants } from '../../constants';
-import { error } from 'console';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private imageService: ImageService,
-    private projectservice: ProjectService,
     private tenantservice: TenantsService,
   ) {}
 
@@ -41,29 +34,35 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    const users = this.userModel.find().exec();
-    for (const user of await users) {
+    const users = await this.userModel.find();
+    for (const user of users) {
       user.projects = await this.getUserProjects(user.projects);
     }
     return users;
   }
 
-  async findId(id: string): Promise<userModel> {
-    return await this.userModel.findById(id).exec();
+  async findAllUsersWithProjects(): Promise<User[]> {
+    const users = await this.userModel.find().populate('projects');
+    return users;
   }
 
   async findById(id: string): Promise<userModel> {
-    const user = this.userModel.findById(id).exec();
+    return await this.userModel.findById(id);
+  }
+
+  async findByIdWithProjects(id: string): Promise<userModel> {
+    const user = await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    (await user).projects = await this.getUserProjects((await user).projects);
+    user.projects = await this.getUserProjects(user.projects);
+
     return user;
   }
 
   async findByEmail(email: string): Promise<userModel> {
-    return this.userModel.findOne({ email }).exec();
+    return await this.userModel.findOne({ email });
   }
 
   private async getUserProjects(projectRef: any[]): Promise<any[]> {
@@ -84,12 +83,17 @@ export class UsersService {
     }
     return targetProject;
   }
+
   async findByGitHubId(githubId: string): Promise<User> {
     return this.userModel.findOne({ githubId }).exec();
   }
 
   async findByGoogleId(googleId: string): Promise<User> {
     return this.userModel.findOne({ googleId }).exec();
+  }
+
+  async findByFacebookId(facebookId: string): Promise<User> {
+    return this.userModel.findOne({ facebookId }).exec();
   }
 
   async save(user: User | any): Promise<any> {
@@ -99,14 +103,20 @@ export class UsersService {
   async update(id: string, updateUserDto: userModel): Promise<User> {
     let newEmail: any;
     let targetUser: userModel;
+    let user: any;
 
     try {
+      user = await this.findById(id);
       if (updateUserDto.email !== null) {
         newEmail = updateUserDto.email;
         targetUser = await this.findByEmail(newEmail);
       }
 
-      if (targetUser && targetUser.email === newEmail) {
+      if (
+        targetUser &&
+        targetUser.email === newEmail &&
+        user.email != newEmail
+      ) {
         throw new ConflictException('Email already exists, try to login');
       }
 
@@ -135,7 +145,7 @@ export class UsersService {
   async updateWithPassword(
     id: string,
     updateUserDto: updateUserModel,
-  ): Promise<any> {
+  ): Promise<User> {
     let newEmail: any;
     let targetUser: userModel;
     const user = await this.userModel.findById(id).exec();
@@ -159,7 +169,6 @@ export class UsersService {
           updateUserDto.oldPassword,
           user.password,
         );
-        console.log('it matches');
         if (!isMatch) {
           throw new BadRequestException('Old password is incorrect');
         }
@@ -190,7 +199,7 @@ export class UsersService {
     }
   }
 
-  async remove(id: string): Promise<any> {
+  async remove(id: string): Promise<User> {
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException('User not found');
@@ -200,8 +209,36 @@ export class UsersService {
     return user;
   }
 
-  async undelete(id: string): Promise<any> {
-    const user = await this.userModel.findById(id).exec();
+  async delete(id: string, userID: string): Promise<User> {
+    const user = await this.userModel.findById(userID);
+    if (!user) {
+      throw new NotFoundException(`Tenant not found`);
+    }
+
+    if (!user.projects || !Array.isArray(user.projects)) {
+      throw new BadRequestException(
+        'Projects list is not available for this tenant',
+      );
+    }
+
+    const project = user.projects.find(
+      (proj) => proj.projectID.toString() === id,
+    );
+    if (!project) {
+      throw new NotFoundException(`Project with ID: ${id} not found in tenant`);
+    }
+
+    project.deleted = true;
+    try {
+      await user.save({ validateModifiedOnly: true });
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Failed to delete project');
+    }
+  }
+
+  async undelete(id: string): Promise<User> {
+    const user = await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException('user not found');
     }
@@ -221,5 +258,9 @@ export class UsersService {
     user.image =
       jwtConstants.imageUrl + 'users/' + `${id}/` + image.originalname;
     return user.save();
+  }
+
+  async findUserByProjectId(projectId: string): Promise<any | null> {
+    return this.userModel.findOne({ 'projects._id': projectId });
   }
 }

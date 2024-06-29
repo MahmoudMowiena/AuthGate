@@ -19,16 +19,22 @@ export class AuthenticationGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
-      });
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
+      const payload = await this.verifyTokenAndGetPayload(token);
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
     }
     return true;
+  }
+
+  private async verifyTokenAndGetPayload(token: string): Promise<any> {
+    try {
+      return await this.jwtService.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

@@ -6,6 +6,9 @@ import { ProjectsController } from 'src/presentation/controllers/project.control
 import { projectModel } from 'src/presentation/dtos/project.model';
 import { TenantModule } from './tenant.module';
 import { UserModule } from './user.module';
+import { AuthModule } from './auth.module';
+import { UsersService } from 'src/infrastructure/services/users.service';
+import { userModel } from 'src/presentation/dtos/user.model';
 
 @Module({
   imports: [

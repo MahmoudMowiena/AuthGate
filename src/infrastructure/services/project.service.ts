@@ -2,15 +2,13 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  Inject,
-  forwardRef,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Project } from 'src/domain/entities/project.entity';
 import { Tenant } from 'src/domain/entities/tenant.entity';
 import { projectModel } from 'src/presentation/dtos/project.model';
-import { v4 as uuidv4 } from 'uuid';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class ProjectService {
@@ -22,16 +20,15 @@ export class ProjectService {
   async create(
     createProjectDto: projectModel,
     tenantID: string,
-  ): Promise<Project> {
+  ): Promise<Project[]> {
     const { name, callBackUrl } = createProjectDto;
     const tenant = await this.tenantModel.findById(tenantID);
-    console.log(tenant);
     if (!tenant) {
       throw new NotFoundException(`Tenant with ID ${tenantID} not found`);
     }
 
-    const clientID = uuidv4();
-    const clientSECRET = uuidv4();
+    const clientID = crypto.randomBytes(16).toString('hex');
+    const clientSECRET = crypto.randomBytes(32).toString('hex');
 
     const createdProject = new this.projectModel({
       tenantID,
@@ -40,31 +37,34 @@ export class ProjectService {
       name,
       callBackUrl,
     });
-    console.log(createdProject);
     try {
       tenant.projects.push(createdProject);
       await tenant.save();
-      return createdProject;
+      const projectList = await this.findAllProjectsPerTenant(tenantID);
+      return projectList;
     } catch (error) {
       throw new BadRequestException('Failed to create project');
     }
   }
 
-  async findAllPerTenant(tenantID: string): Promise<Project[]> {
+  async findAllProjectsPerTenant(tenantID: string): Promise<Project[]> {
     const tenant = await this.tenantModel.findById(tenantID);
     if (!tenant) {
       throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
     }
     if (tenant.projects.length >= 1) {
       return tenant.projects;
+    } else {
+      throw new NotFoundException('no projects created yet');
     }
   }
 
   async findOne(projectID: string): Promise<Project> {
     const targetTenant = await this.tenantModel
-      .findOne({ 'projects._id': projectID })
+      .findOne({
+        'projects._id': projectID,
+      })
       .exec();
-
     const project = targetTenant.projects.find(
       (proj) => proj._id.toString() === projectID,
     );
@@ -104,14 +104,14 @@ export class ProjectService {
 
     try {
       await tenant.save();
-      //const projectsAfterUpdate: any = tenant.projects;
-      return project;
+      const projectsAfterUpdate: any = tenant.projects;
+      return projectsAfterUpdate;
     } catch (error) {
       throw new BadRequestException('Failed to update project');
     }
   }
 
-  async undelete(id: string, tenantID: string): Promise<any> {
+  async undelete(id: string, tenantID: string): Promise<Project> {
     const tenant = await this.tenantModel.findById(tenantID);
     if (!tenant) {
       throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
@@ -119,22 +119,24 @@ export class ProjectService {
 
     const project = tenant.projects.find((proj) => proj._id.toString() === id);
     if (!project) {
-      throw new NotFoundException(`Project with ID: ${id} not found in tenant`);
+      throw new NotFoundException(
+        `you are not able to delete this project because you don't own it`,
+      );
     }
 
     project.deleted = false;
     try {
       await tenant.save({ validateModifiedOnly: true });
-      return tenant.projects;
+      return project;
     } catch (error) {
       throw new BadRequestException('Failed to undelete project');
     }
   }
 
-  async delete(id: string, tenantID: string): Promise<any> {
+  async delete(id: string, tenantID: string): Promise<Project[]> {
     const tenant = await this.tenantModel.findById(tenantID);
     if (!tenant) {
-      throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
+      throw new NotFoundException(`Tenant not found`);
     }
 
     if (!tenant.projects || !Array.isArray(tenant.projects)) {
