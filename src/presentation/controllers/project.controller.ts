@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { projectModel } from '../dtos/project.model';
 import { Project } from 'src/domain/entities/project.entity';
@@ -34,7 +33,6 @@ export class ProjectsController {
     @Body() createProjectDto: projectModel,
     @Headers('Authorization') authHeader: string,
   ): Promise<projectModel> {
-    // ---------> changed from any to projectmodel
     const payload = await this.verifyTokenAndGetPayload(authHeader);
     const tenantID = payload.sub;
     const projetListCreated: any = await this.projectService.create(
@@ -48,7 +46,6 @@ export class ProjectsController {
   async getAll(
     @Headers('Authorization') authHeader: string,
   ): Promise<projectModel[]> {
-    // -------------> changed from any to projectmodel[]
     let payload = await this.verifyTokenAndGetPayload(authHeader);
     let role = payload.role;
     if (role === 'admin') {
@@ -67,7 +64,7 @@ export class ProjectsController {
   ): Promise<Project[]> {
     const payload = await this.verifyTokenAndGetPayload(authHeader);
     const tenantID = payload.sub;
-    return await this.projectService.findAllPerTenant(tenantID);
+    return await this.projectService.findAllProjectsPerTenant(tenantID);
   }
 
   @Get(':id')
@@ -81,7 +78,6 @@ export class ProjectsController {
     @Body() updateProjectDto: projectModel,
     @Headers('Authorization') authHeader: string,
   ): Promise<projectModel> {
-    // ---------> changed from any to projectmodel
     const payload = await this.verifyTokenAndGetPayload(authHeader);
     const tenantID = payload.sub;
     const projectList: any = await this.projectService.update(
@@ -92,12 +88,11 @@ export class ProjectsController {
     return projectList;
   }
 
-  @Patch(':id/undelete')
+  @Patch('undelete/:id')
   async undelete(
     @Param('id') id: string,
     @Headers('Authorization') authHeader: string,
   ): Promise<projectModel> {
-    // ---------> changed from any to projectmodel
     const payload = await this.verifyTokenAndGetPayload(authHeader);
     const userID = payload.sub;
     const user = await this.userservice.findById(userID);
@@ -123,7 +118,6 @@ export class ProjectsController {
     @Param('id') id: string,
     @Headers('Authorization') authHeader: string,
   ): Promise<projectModel[]> {
-    // ---------> changed from any to projectmodel[]
     let tenant: any = '';
     const payload = await this.verifyTokenAndGetPayload(authHeader);
     const userID = payload.sub;
@@ -132,7 +126,6 @@ export class ProjectsController {
       return await this.projectService.delete(id, userID);
     } else {
       const user = await this.userservice.findById(userID);
-      console.log(user);
 
       if (user && user.role === 'admin') {
         tenant = await this.tenantservice.findTenantByProjectId(id);

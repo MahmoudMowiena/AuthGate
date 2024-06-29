@@ -26,6 +26,9 @@ export class UserProject {
 
   @Prop()
   updatedAt?: string;
+
+  @Prop({ default: false })
+  deleted?: boolean;
 }
 
 export const userProjectSchema = SchemaFactory.createForClass(UserProject);

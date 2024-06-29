@@ -40,14 +40,14 @@ export class ProjectService {
     try {
       tenant.projects.push(createdProject);
       await tenant.save();
-      const projectList = await this.findAllPerTenant(tenantID);
+      const projectList = await this.findAllProjectsPerTenant(tenantID);
       return projectList;
     } catch (error) {
       throw new BadRequestException('Failed to create project');
     }
   }
 
-  async findAllPerTenant(tenantID: string): Promise<Project[]> {
+  async findAllProjectsPerTenant(tenantID: string): Promise<Project[]> {
     const tenant = await this.tenantModel.findById(tenantID);
     if (!tenant) {
       throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
@@ -112,7 +112,6 @@ export class ProjectService {
   }
 
   async undelete(id: string, tenantID: string): Promise<Project> {
-    //from any to project
     const tenant = await this.tenantModel.findById(tenantID);
     if (!tenant) {
       throw new NotFoundException(`Tenant with ID: ${tenantID} not found`);
@@ -135,7 +134,6 @@ export class ProjectService {
   }
 
   async delete(id: string, tenantID: string): Promise<Project[]> {
-    // from any to project[]
     const tenant = await this.tenantModel.findById(tenantID);
     if (!tenant) {
       throw new NotFoundException(`Tenant not found`);

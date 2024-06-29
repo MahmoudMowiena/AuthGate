@@ -11,8 +11,8 @@ import {
   Param,
   Patch,
   Post,
+  UnauthorizedException,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { userModel } from '../dtos/user.model';
@@ -23,8 +23,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtService } from '@nestjs/jwt';
 import { updateUserModel } from '../dtos/updateUser.model';
 import { ProjectService } from 'src/infrastructure/services/project.service';
-import { error } from 'console';
-import { AuthenticationGuard } from '../guards/auth.guard';
+import { jwtConstants } from 'src/constants';
+import { User } from 'src/domain/entities/user.entity';
 
 @Controller('users')
 export class UserController {
@@ -57,6 +57,22 @@ export class UserController {
     }
   }
 
+  @Get('projects/:id')
+  async getByIdWithProjects(@Param('id') id: string) {
+    try {
+      const user = await this.userService.findByIdWithProjects(id);
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      return user;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to retrieve user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Get('email/:email')
   async getByEmail(@Param('email') email: string) {
     try {
@@ -73,21 +89,19 @@ export class UserController {
     }
   }
 
-  @UseGuards(AuthenticationGuard)
   @Post()
-  async adduserProjectByProjectId(
+  async addProjectToUserByProjectId(
     @Body() body: { projectId: string },
     @Headers('Authorization') authHeader: string,
   ) {
     try {
-      const token = authHeader.split(' ')[1];
       const { projectId } = body;
-      let result: any;
-      const targetProject = await this.projectservice.findOne(projectId);
+      let result;
 
+      const targetProject = await this.projectservice.findOne(projectId);
       if (targetProject.deleted === false) {
-        const payload = this.jwtservice.verify(token);
-        const userId: string = payload.sub;
+        const payload = await this.verifyTokenAndGetPayload(authHeader);
+        const userId = payload.sub;
         result = await this.authservice.processAuth(projectId, userId);
       } else {
         throw new HttpException(
@@ -121,8 +135,8 @@ export class UserController {
     @Headers('Authorization') authHeader: any,
   ): Promise<userModel> {
     try {
-      const token = authHeader.split(' ')[1];
-      const userId = this.jwtservice.verify(token).sub;
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
+      const userId = payload.sub;
       const updatedUser = await this.userService.update(userId, updateUserDto);
       if (!updatedUser) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -142,8 +156,8 @@ export class UserController {
     @Headers('Authorization') authHeader: any,
   ): Promise<userModel> {
     try {
-      const token = authHeader.split(' ')[1];
-      const userId = this.jwtservice.verify(token).sub;
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
+      const userId = payload.sub;
       const updatedUser = await this.userService.updateWithPassword(
         userId,
         updateUserDto,
@@ -160,14 +174,14 @@ export class UserController {
     }
   }
 
-  @Patch(':id/undelete')
+  @Patch('undelete/:id')
   async undelete(
     @Param('id') id: string,
     @Headers('Authorization') authHeader: string,
-  ): Promise<any> {
+  ): Promise<User[]> {
+    // change here
     try {
-      const token = authHeader.split(' ')[1];
-      const payload = this.jwtservice.verify(token);
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
       if (payload.role === 'admin') {
         const user = await this.userService.undelete(id);
         if (!user) {
@@ -184,7 +198,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<any> {
+  async remove(@Param('id') id: string): Promise<User[]> {
     try {
       const user = await this.userService.remove(id);
       if (!user) {
@@ -199,6 +213,29 @@ export class UserController {
     }
   }
 
+  @Delete('project/:id')
+  async removeProject(
+    @Param('id') id: string,
+    @Headers('Authorization') authHeader: string,
+  ): Promise<User> {
+    let targetUser: any = '';
+    const payload = await this.verifyTokenAndGetPayload(authHeader);
+    const userID = payload.sub;
+    const user = await this.userService.findById(userID);
+    if (user && user.role === 'user') {
+      return await this.userService.delete(id, userID);
+    } else {
+      if (user && user.role === 'admin') {
+        targetUser = await this.userService.findUserByProjectId(id);
+        if (!targetUser) {
+          throw new NotFoundException('User not found for given project ID');
+        }
+        let targetUserId = targetUser._id;
+        return await this.userService.delete(id, targetUserId);
+      }
+    }
+  }
+
   @Post('image/:id')
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(
@@ -206,5 +243,17 @@ export class UserController {
     @UploadedFile() image: Express.Multer.File,
   ) {
     return await this.userService.addImage(id, image);
+  }
+
+  private async verifyTokenAndGetPayload(authHeader: string): Promise<any> {
+    try {
+      const token = authHeader.split(' ')[1];
+      const payload = await this.jwtservice.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }
