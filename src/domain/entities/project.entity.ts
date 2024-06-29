@@ -17,7 +17,7 @@ export class Project extends Document {
   @IsOptional()
   clientSECRET: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   @IsString()
   @IsNotEmpty()
   name: string;
