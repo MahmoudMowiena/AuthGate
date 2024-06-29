@@ -4,27 +4,22 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
   Headers,
   NotFoundException,
   Param,
   Patch,
   Post,
-  Put,
-  Request,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { projectModel } from '../dtos/project.model';
 import { Project } from 'src/domain/entities/project.entity';
 import { ProjectService } from 'src/infrastructure/services/project.service';
-import { AuthenticationGuard } from '../guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import { UsersService } from 'src/infrastructure/services/users.service';
+import { jwtConstants } from 'src/constants';
 
 @Controller('projects')
-//@UseGuards(AuthenticationGuard)
 export class ProjectsController {
   constructor(
     private readonly projectService: ProjectService,
@@ -33,29 +28,25 @@ export class ProjectsController {
     private readonly userservice: UsersService,
   ) {}
 
-  private extractTenantId(authHeader: string): string {
-    const token = authHeader.split(' ')[1];
-    const payload = this.jwtService.verify(token);
-    return payload.sub;
-  }
-
   @Post()
   async create(
     @Body() createProjectDto: projectModel,
     @Headers('Authorization') authHeader: string,
-  ): Promise<any> {
-    const tenantID = this.extractTenantId(authHeader);
-    const createdProjetc: any = await this.projectService.create(
+  ): Promise<projectModel> {
+    const payload = await this.verifyTokenAndGetPayload(authHeader);
+    const tenantID = payload.sub;
+    const projetListCreated: any = await this.projectService.create(
       createProjectDto,
       tenantID,
     );
-    return createdProjetc;
+    return projetListCreated;
   }
-  //
+
   @Get()
-  async getAll(@Headers('Authorization') authHeader: string): Promise<any> {
-    const token = authHeader.split(' ')[1];
-    let payload = this.jwtService.verify(token);
+  async getAll(
+    @Headers('Authorization') authHeader: string,
+  ): Promise<projectModel[]> {
+    let payload = await this.verifyTokenAndGetPayload(authHeader);
     let role = payload.role;
     if (role === 'admin') {
       const tenants = await this.tenantservice.findAll();
@@ -67,12 +58,13 @@ export class ProjectsController {
     }
   }
 
-  @Get('targetTenant')
+  @Get('tenantProjects')
   async getAllPerTenant(
     @Headers('Authorization') authHeader: string,
   ): Promise<Project[]> {
-    const tenantID = this.extractTenantId(authHeader);
-    return await this.projectService.findAllPerTenant(tenantID);
+    const payload = await this.verifyTokenAndGetPayload(authHeader);
+    const tenantID = payload.sub;
+    return await this.projectService.findAllProjectsPerTenant(tenantID);
   }
 
   @Get(':id')
@@ -85,8 +77,9 @@ export class ProjectsController {
     @Param('id') id: string,
     @Body() updateProjectDto: projectModel,
     @Headers('Authorization') authHeader: string,
-  ): Promise<any> {
-    const tenantID = this.extractTenantId(authHeader);
+  ): Promise<projectModel> {
+    const payload = await this.verifyTokenAndGetPayload(authHeader);
+    const tenantID = payload.sub;
     const projectList: any = await this.projectService.update(
       id,
       updateProjectDto,
@@ -95,12 +88,13 @@ export class ProjectsController {
     return projectList;
   }
 
-  @Patch(':id/undelete')
+  @Patch('undelete/:id')
   async undelete(
     @Param('id') id: string,
     @Headers('Authorization') authHeader: string,
-  ): Promise<any> {
-    const userID = this.extractTenantId(authHeader);
+  ): Promise<projectModel> {
+    const payload = await this.verifyTokenAndGetPayload(authHeader);
+    const userID = payload.sub;
     const user = await this.userservice.findById(userID);
 
     if (!user) {
@@ -123,15 +117,15 @@ export class ProjectsController {
   async remove(
     @Param('id') id: string,
     @Headers('Authorization') authHeader: string,
-  ): Promise<any> {
+  ): Promise<projectModel[]> {
     let tenant: any = '';
-    const userID = this.extractTenantId(authHeader);
+    const payload = await this.verifyTokenAndGetPayload(authHeader);
+    const userID = payload.sub;
     const user = await this.tenantservice.findById(userID);
-    if (user && user.role === 'tenant' && user) {
+    if (user && user.role === 'tenant') {
       return await this.projectService.delete(id, userID);
     } else {
       const user = await this.userservice.findById(userID);
-      console.log(user);
 
       if (user && user.role === 'admin') {
         tenant = await this.tenantservice.findTenantByProjectId(id);
@@ -141,33 +135,18 @@ export class ProjectsController {
         let tenantId = tenant._id;
         return await this.projectService.delete(id, tenantId);
       }
-      // throw new NotFoundException('User not found');
     }
+  }
 
-    // @Delete(':id')
-    // async remove(
-    //   @Param('id') id: string,
-    //   @Headers('Authorization') authHeader: string,
-    // ): Promise<any> {
-    //   let tenant: any = '';
-    //   const userID = this.extractTenantId(authHeader);
-    //   const user = await this.tenantservice.findById(userID);
-    //   if (!user) {
-    //     throw new NotFoundException('User not found');
-    //   }
-
-    //   if (user.role === 'tenant') {
-    //     return await this.projectService.delete(id, userID);
-    //   } else if (user.role === 'admin') {
-    //     tenant = await this.tenantservice.findTenantByProjectId(id);
-    //     if (!tenant) {
-    //       throw new NotFoundException('Tenant not found for given project ID');
-    //     }
-    //     let tenantId = tenant._id;
-    //     return await this.projectService.delete(id, tenantId);
-    //   } else {
-    //     throw new BadRequestException('Invalid user role');
-    //   }
-    // }
+  private async verifyTokenAndGetPayload(authHeader: string): Promise<any> {
+    try {
+      const token = authHeader.split(' ')[1];
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }

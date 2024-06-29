@@ -2,16 +2,13 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
-  Scope,
-  ScopeOptions,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from './users.service';
-import { SignInUserResponse } from 'src/presentation/dtos/signInUserResponse.dto';
-import { SignInTenantResponse } from 'src/presentation/dtos/signInTenantResponse.dto';
+import { SignInUserResponse } from 'src/presentation/dtos/signInUserResponse.model';
+import { SignInTenantResponse } from 'src/presentation/dtos/signInTenantResponse.model';
 import { TenantsService } from './tenants.service';
 import { userModel } from 'src/presentation/dtos/user.model';
 import { tenantModel } from 'src/presentation/dtos/tenant.model';
@@ -30,15 +27,7 @@ export class AuthService {
     private tenantsService: TenantsService,
     private jwtService: JwtService,
     private emailService: EmailService,
-  ) { }
-
-  verifyToken(token: string): any {
-    try {
-      return this.jwtService.verify(token);
-    } catch (error) {
-      throw new UnauthorizedException('Invalid token');
-    }
-  }
+  ) {}
 
   async signIn(
     email: string,
@@ -47,18 +36,15 @@ export class AuthService {
     access_token: string;
     user: SignInUserResponse | SignInTenantResponse;
   }> {
-    let user: any = await this.usersService.findByEmail(email);
-
-    if (!user) {
-      user = await this.tenantsService.findByEmail(email);
-    }
+    let user: any =
+      (await this.usersService.findByEmail(email)) ||
+      (await this.tenantsService.findByEmail(email));
 
     if (!user || user.deleted) {
       throw new UnauthorizedException('Account not found or has been deleted');
     }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
-
     if (!isPasswordMatch) throw new UnauthorizedException();
 
     const payload = {
@@ -68,39 +54,32 @@ export class AuthService {
       role: user.role,
     };
 
+    const generalResponse = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      image: user.image,
+      role: user.role,
+    };
+
     let signInResponse: SignInUserResponse | SignInTenantResponse;
 
     if (user.role === 'user') {
       signInResponse = {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        image: user.image,
+        ...generalResponse,
         age: user.age,
-        role: 'user',
       };
     } else if (user.role === 'tenant') {
       signInResponse = {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        image: user.image,
+        ...generalResponse,
         website: user.website,
         address: user.address,
-        role: 'tenant',
       };
     } else if (user.role === 'admin') {
       signInResponse = {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        image: user.image,
-        website: user.website,
-        address: user.address,
-        role: 'admin',
+        ...generalResponse,
+        age: user.age,
       };
     }
 
@@ -111,16 +90,9 @@ export class AuthService {
   }
 
   async signUpAsUser(userSignUpDto: userModel) {
-    const salt = 10;
-    const hashedPassword = await bcrypt.hash(userSignUpDto.password, salt);
-    const email = userSignUpDto.email;
-    const unhashedPassword = userSignUpDto.password;
-    const unhashedConfirmPassword = userSignUpDto.confirmPassword;
-    userSignUpDto.password = hashedPassword;
-    userSignUpDto.confirmPassword = hashedPassword;
-    userSignUpDto.role = 'user';
+    const { email, password, confirmPassword } = userSignUpDto;
 
-    if (unhashedPassword !== unhashedConfirmPassword) {
+    if (password !== confirmPassword) {
       throw new BadRequestException('Passwords do not match');
     }
 
@@ -129,24 +101,28 @@ export class AuthService {
       throw new ConflictException('Email already in use');
     }
 
-    const user = await this.usersService.create(userSignUpDto);
-    if (user) {
-      return this.signIn(userSignUpDto.email, unhashedPassword);
-    } else {
-      throw new BadRequestException();
+    const salt = 10;
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const userToCreate = {
+      ...userSignUpDto,
+      password: hashedPassword,
+      confirmPassword: hashedPassword,
+      role: 'user',
+    };
+
+    const user = await this.usersService.create(userToCreate);
+    if (!user) {
+      throw new BadRequestException('User could not be created');
     }
+
+    return this.signIn(email, password);
   }
 
   async signUpAsTenant(tenantSignUpDto: tenantModel) {
-    const salt = 10;
-    const hashedPassword = await bcrypt.hash(tenantSignUpDto.password, salt);
-    const email = tenantSignUpDto.email;
-    const unhashedPassword = tenantSignUpDto.password;
-    const unhashedConfirmPassword = tenantSignUpDto.confirmPassword;
-    tenantSignUpDto.password = hashedPassword;
-    tenantSignUpDto.confirmPassword = hashedPassword;
-    tenantSignUpDto.role = 'tenant';
-    if (unhashedPassword !== unhashedConfirmPassword) {
+    const { email, password, confirmPassword } = tenantSignUpDto;
+
+    if (password !== confirmPassword) {
       throw new BadRequestException('Passwords do not match');
     }
 
@@ -155,14 +131,30 @@ export class AuthService {
       throw new ConflictException('Email already in use');
     }
 
-    const tenant = await this.tenantsService.create(tenantSignUpDto);
-    if (tenant) return this.signIn(tenantSignUpDto.email, unhashedPassword);
-    else throw new BadRequestException();
+    const salt = 10;
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const tenantToCreate = {
+      ...tenantSignUpDto,
+      password: hashedPassword,
+      confirmPassword: hashedPassword,
+      role: 'tenant',
+    };
+
+    const tenant = await this.tenantsService.create(tenantToCreate);
+    if (!tenant) {
+      throw new BadRequestException('Tenant could not be created');
+    }
+
+    return this.signIn(email, password);
   }
 
-  async processAuth(projectID: any, userId: string): Promise<any> {
-    
-    const user: userModel = await this.usersService.findId(userId);
+  async processAuth(
+    projectId: any,
+    userId: string,
+    projectName: string,
+  ): Promise<any> {
+    const user: userModel = await this.usersService.findById(userId);
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -173,18 +165,21 @@ export class AuthService {
       name: user.name,
       phone: user.phone,
       image: user.image,
-      age: user.age
+      age: user.age,
     };
 
-    // const projectID = projectId;
-    const authorizationCode = uuidv4();
-    const authorizationAccessToken: string = await this.jwtService.signAsync(newPayload);
+    const projectID = projectId;
+    const authorizationCode = crypto.randomBytes(16).toString('hex');
+    const authorizationAccessToken: string =
+      await this.jwtService.signAsync(newPayload);
+    const name = projectName;
     const expireDate: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    const newUserProject = {
+    let newUserProject: UserProject = {
       projectID,
       authorizationCode,
       authorizationAccessToken,
+      name,
       expireDate,
     };
 
@@ -193,7 +188,8 @@ export class AuthService {
     );
 
     if (existingUserProject) {
-      existingUserProject.authorizationAccessToken = newUserProject.authorizationAccessToken;
+      existingUserProject.authorizationAccessToken =
+        newUserProject.authorizationAccessToken;
       existingUserProject.authorizationCode = newUserProject.authorizationCode;
       existingUserProject.expireDate = newUserProject.expireDate;
     } else {
@@ -217,7 +213,7 @@ export class AuthService {
       throw new ConflictException('Project not found in tenant');
     }
 
-    const callbackUrl = targetProject.callBackUrl;
+    const callbackUrl: string = targetProject.callBackUrl;
 
     return {
       userId,
@@ -227,93 +223,7 @@ export class AuthService {
     };
   }
 
-
-  // async processAuth(projectID: any, userId: string): Promise<any> {
-  //   const user = await this.findUserById(userId);
-  //   const { authorizationCode, authorizationAccessToken, expireDate } = await this.generateAuthDetails(user);
-  //   this.updateUserProject(user, projectID, authorizationCode, authorizationAccessToken, expireDate);
-  //   await this.saveUser(user);
-  //   const { callbackUrl } = await this.getTenantProjectDetails(projectID);
-
-  //   return this.prepareResponse(userId, projectID, callbackUrl, authorizationCode);
-  // }
-
-  // private async findUserById(userId: string): Promise<userModel> {
-  //   const user: userModel = await this.usersService.findId(userId);
-  //   if (!user) {
-  //     throw new NotFoundException('User not found');
-  //   }
-  //   return user;
-  // }
-
-  // private async generateAuthDetails(user: User) {
-  //   const newPayload = {
-  //     email: user.email,
-  //     name: user.name,
-  //     phone: user.phone,
-  //     image: user.image,
-  //     age: user.age
-  //   };
-  //   const authorizationCode = uuidv4();
-  //   const authorizationAccessToken = await this.jwtService.signAsync(newPayload);
-  //   const expireDate: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-  //   return { authorizationCode, authorizationAccessToken, expireDate };
-  // }
-
-  // private updateUserProject(user: User, projectID: any, authorizationCode: string, authorizationAccessToken: string, expireDate: Date): void {
-  //   const newUserProject = {
-  //     projectID,
-  //     authorizationCode,
-  //     authorizationAccessToken,
-  //     expireDate,
-  //   };
-
-  //   const existingUserProject: UserProject = user.projects?.find(
-  //     (project) => project.projectID === projectID,
-  //   );
-
-  //   if (existingUserProject) {
-  //     existingUserProject.authorizationAccessToken = newUserProject.authorizationAccessToken;
-  //     existingUserProject.authorizationCode = newUserProject.authorizationCode;
-  //     existingUserProject.expireDate = newUserProject.expireDate;
-  //   } else {
-  //     user.projects.push(newUserProject);
-  //   }
-  // }
-
-  // private async saveUser(user: User): Promise<void> {
-  //   await this.usersService.save(user);
-  // }
-
-  // private async getTenantProjectDetails(projectID: any) {
-  //   const targetTenant = await this.tenantsService.findTenantByProjectId(projectID);
-  //   if (!targetTenant) {
-  //     throw new ConflictException('Tenant not found for the given project ID');
-  //   }
-
-  //   const targetProject: projectModel | any = targetTenant.projects.find(
-  //     (project) => project.projectID === projectID,
-  //   );
-
-  //   if (!targetProject) {
-  //     throw new ConflictException('Project not found in tenant');
-  //   }
-
-  //   return targetProject;
-  // }
-
-  // private prepareResponse(userId: string, projectID: any, callbackUrl: string, authorizationCode: string): any {
-  //   return {
-  //     userId,
-  //     projectID,
-  //     callbackUrl,
-  //     authorizationCode,
-  //   };
-  // }
-
-
-  async validateGitHubUser(profile: any): Promise<any> {
+  async validateGitHubUser(profile: any): Promise<User> {
     const { id, username, displayName, emails, photos } = profile;
     // Find user by GitHub ID
     let user = await this.usersService.findByGitHubId(id);
@@ -356,18 +266,17 @@ export class AuthService {
         phone: user.phone,
         image: user.image,
         age: user.age,
+        githubId: user.githubId,
         role: 'user',
       },
     };
   }
 
-  async validateGoogleUser(profile: any): Promise<any> {
+  async validateGoogleUser(profile: any): Promise<User> {
     const { id, displayName, emails, photos } = profile;
 
-    // Find user by Google ID
     let user = await this.usersService.findByGoogleId(id);
     if (!user) {
-      // If user doesn't exist, create a new one
       const email = emails && emails[0] && emails[0].value;
       const hashedPassword = await bcrypt.hash(uuidv4(), 10);
 
@@ -403,33 +312,13 @@ export class AuthService {
         phone: user.phone,
         image: user.image,
         age: user.age,
+        googleId: user.googleId,
         role: 'user',
       },
     };
   }
 
-  // async validateFacebookUser(profile: any): Promise<any> {
-  //   const user = await this.usersService.findByFacebookId(profile.facebookId);
-  //   const { facebookId, email, firstName, lastName, picture } = profile;
-  //   console.log(profile);
-  //   if (!user) {
-  //     // If user doesn't exist, create a new one
-  //     const hashedPassword = await bcrypt.hash(uuidv4(), 10);
-  //     const newUser = await this.usersService.create({
-  //       email: profile.email,
-  //       name: `${profile.firstName} ${profile.lastName}`,
-  //       facebookId: profile.facebookId,
-  //       image: profile.picture,
-  //       password: hashedPassword,
-  //       confirmPassword: hashedPassword,
-  //       role: 'user',
-  //     });
-  //     return newUser;
-  //   }
-  //   return user;
-  // }
-
-  async validateFacebookUser(profile: any): Promise<any> {
+  async validateFacebookUser(profile: any): Promise<User> {
     const { facebookId, email, firstName, lastName, picture } = profile;
     let user: any = await this.usersService.findByFacebookId(facebookId);
     if (!user && email) {
@@ -493,7 +382,6 @@ export class AuthService {
       throw new Error(`User ${email} not found`);
     }
 
-    //generate a unique token for reset link
     const resetToken = this.jwtService.sign(
       { email },
       { secret: process.env.PASSWORD_RESET_JWT_SECRET, expiresIn: '1h' },
@@ -501,7 +389,6 @@ export class AuthService {
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = new Date(Date.now() + 3600000);
     await this.usersService.save(user);
-    //reset link
     const resetLink = `http://localhost:4200/reset-password/${resetToken}`;
     await this.emailService.sendMail(
       user.email,

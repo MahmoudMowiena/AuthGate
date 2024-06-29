@@ -6,7 +6,7 @@ import { ProjectsModule } from './modules/project.module';
 import { AuthModule } from './modules/auth.module';
 import { ImageService } from './infrastructure/services/image.service';
 import { ConfigModule } from '@nestjs/config';
-import { IndexManagementService } from './infrastructure/services/indexManagement.service';
+import { PaypalModule } from './modules/paypal.module';
 
 @Module({
   imports: [
@@ -16,6 +16,7 @@ import { IndexManagementService } from './infrastructure/services/indexManagemen
     ProjectsModule,
     TenantModule,
     AuthModule,
+    PaypalModule,
   ],
   controllers: [],
   providers: [],
