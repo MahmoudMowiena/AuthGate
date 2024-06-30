@@ -14,6 +14,7 @@ import {
   NotFoundException,
   ConflictException,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
@@ -21,6 +22,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtService } from '@nestjs/jwt';
 import { updateTenantModel } from '../dtos/updateTenant.model';
 import { jwtConstants } from 'src/constants';
+import { SharpPipe } from '../pipes/sharp.pipe';
+import { AuthenticationGuard } from '../guards/auth.guard';
 
 @Controller('tenants')
 export class TenantController {
@@ -163,12 +166,15 @@ export class TenantController {
   }
 
   @Post('image/:id')
+  @UseGuards(AuthenticationGuard)
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(
     @Param('id') id: string,
     @UploadedFile() image: Express.Multer.File,
+    @UploadedFile(SharpPipe) imageBuffer: Buffer
   ) {
-    return await this.tenantsService.addImage(id, image);
+    const imageName: string = image.originalname;
+    return await this.tenantsService.addImage(id, imageBuffer, imageName);
   }
 
   async getTenantByProjectId(projectId: string): Promise<tenantModel> {

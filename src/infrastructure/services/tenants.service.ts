@@ -195,17 +195,17 @@ export class TenantsService {
     return project._id.toString();
   }
 
-  async addImage(id: string, image: Express.Multer.File): Promise<Tenant> {
+  async addImage(id: string, imageBuffer: Buffer, imageName: string): Promise<Tenant> {
     const tenant = await this.tenantModel.findById(id);
 
     if (!tenant) {
       throw new NotFoundException('Tenant not found');
     }
 
-    await this.imageService.upload('tenants', id, image);
+    await this.imageService.upload('tenants', id, imageBuffer, imageName);
 
     tenant.image =
-      jwtConstants.imageUrl + 'tenants/' + `${id}/` + image.originalname;
+      jwtConstants.imageUrl + 'tenants/' + `${id}/` + imageName;
 
     return tenant.save();
   }
