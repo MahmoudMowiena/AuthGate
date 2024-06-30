@@ -13,4 +13,7 @@ export class userProjectModel {
 
   @IsDate()
   expireDate: Date;
+
+  @IsString()
+  codeChallenge: string;
 }
