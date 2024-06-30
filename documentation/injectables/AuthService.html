@@ -308,8 +308,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="152"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:152</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="153"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:153</a></div>
                         </td>
                     </tr>
 
@@ -401,8 +401,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="400"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:400</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="401"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:401</a></div>
                         </td>
                     </tr>
 
@@ -494,8 +494,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="376"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:376</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="377"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:377</a></div>
                         </td>
                     </tr>
 
@@ -644,8 +644,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="355"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:355</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="356"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:356</a></div>
                         </td>
                     </tr>
 
@@ -713,8 +713,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="251"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:251</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="252"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:252</a></div>
                         </td>
                     </tr>
 
@@ -782,8 +782,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="297"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:297</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="298"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:298</a></div>
                         </td>
                     </tr>
 
@@ -851,8 +851,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="122"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:122</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="123"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:123</a></div>
                         </td>
                     </tr>
 
@@ -920,8 +920,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="92"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:92</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="93"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:93</a></div>
                         </td>
                     </tr>
 
@@ -989,8 +989,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="321"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:321</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="322"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:322</a></div>
                         </td>
                     </tr>
 
@@ -1058,8 +1058,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="226"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:226</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="227"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:227</a></div>
                         </td>
                     </tr>
 
@@ -1127,8 +1127,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="275"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:275</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="276"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:276</a></div>
                         </td>
                     </tr>
 
@@ -1251,6 +1251,7 @@ export class AuthService {
       signInResponse &#x3D; {
         ...generalResponse,
         age: user.age,
+        projects: user.projects,
       };
     } else if (user.role &#x3D;&#x3D;&#x3D; &#x27;tenant&#x27;) {
       signInResponse &#x3D; {
@@ -1406,14 +1407,15 @@ export class AuthService {
   }
 
   async validateGitHubUser(profile: any): Promise&lt;User&gt; {
-    const { id, username, displayName, emails, photos } &#x3D; profile;
-    // Find user by GitHub ID
+    const { id, username, displayName, photos } &#x3D; profile;
     let user &#x3D; await this.usersService.findByGitHubId(id);
     if (!user) {
-      // If user doesn&#x27;t exist, create a new one
-      // let email;
-      // if (emails) email &#x3D; emails &amp;&amp; emails[0] &amp;&amp; emails[0].value;
-      // else email &#x3D; &#x60;${id}provided@github.com&#x60;;
+      let userEmail &#x3D; &#x60;${username}${Math.floor(Math.random() * 10000)}@authGate.com&#x60;;
+      let notUnique &#x3D; await this.usersService.findByEmail(userEmail);
+      while (notUnique) {
+        userEmail &#x3D; &#x60;${username}${Math.floor(Math.random() * 10000)}@authGate.com&#x60;;
+        notUnique &#x3D; await this.usersService.findByEmail(userEmail);
+      }
       const hashedPassword &#x3D; await bcrypt.hash(uuidv4(), 10);
 
       user &#x3D; await this.usersService.createGithubUser({
@@ -1423,10 +1425,9 @@ export class AuthService {
         password: hashedPassword,
         confirmPassword: hashedPassword,
         role: &#x27;user&#x27;,
-        email: &#x27;&#x27;,
+        email: userEmail,
       });
     }
-
     return user;
   }
 

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -113,6 +114,31 @@ export class ProjectsController {
     }
   }
 
+  // @Delete(':id')
+  // async remove(
+  //   @Param('id') id: string,
+  //   @Headers('Authorization') authHeader: string,
+  // ): Promise<projectModel[]> {
+  //   let tenant: any = '';
+  //   const payload = await this.verifyTokenAndGetPayload(authHeader);
+  //   const userID = payload.sub;
+  //   const user = await this.tenantservice.findById(userID);
+  //   if (user && user.role === 'tenant') {
+  //     return await this.projectService.delete(id, userID);
+  //   } else {
+  //     const user = await this.userservice.findById(userID);
+
+  //     if (user && user.role === 'admin') {
+  //       tenant = await this.tenantservice.findTenantByProjectId(id);
+  //       if (!tenant) {
+  //         throw new NotFoundException('Tenant not found for given project ID');
+  //       }
+  //       let tenantId = tenant._id;
+  //       return await this.projectService.delete(id, tenantId);
+  //     }
+  //   }
+  // }
+
   @Delete(':id')
   async remove(
     @Param('id') id: string,
@@ -121,21 +147,31 @@ export class ProjectsController {
     let tenant: any = '';
     const payload = await this.verifyTokenAndGetPayload(authHeader);
     const userID = payload.sub;
-    const user = await this.tenantservice.findById(userID);
-    if (user && user.role === 'tenant') {
-      return await this.projectService.delete(id, userID);
-    } else {
-      const user = await this.userservice.findById(userID);
 
-      if (user && user.role === 'admin') {
-        tenant = await this.tenantservice.findTenantByProjectId(id);
-        if (!tenant) {
-          throw new NotFoundException('Tenant not found for given project ID');
-        }
-        let tenantId = tenant._id;
-        return await this.projectService.delete(id, tenantId);
+    const tenantUser = await this.tenantservice.findById(userID);
+    if (tenantUser) {
+      if (tenantUser.role === 'tenant') {
+        return await this.projectService.delete(id, userID);
+      } else {
+        throw new ConflictException(
+          "You can't delete the project because of role authorization",
+        );
       }
     }
+
+    const adminUser = await this.userservice.findById(userID);
+    if (adminUser && adminUser.role === 'admin') {
+      tenant = await this.tenantservice.findTenantByProjectId(id);
+      if (!tenant) {
+        throw new NotFoundException('Tenant not found for given project ID');
+      }
+      const tenantId = tenant._id;
+      return await this.projectService.delete(id, tenantId);
+    }
+
+    throw new ConflictException(
+      "You can't delete the project because of role authorization",
+    );
   }
 
   private async verifyTokenAndGetPayload(authHeader: string): Promise<any> {

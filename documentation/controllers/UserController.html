@@ -297,7 +297,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>unknown</code>
+                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
 
                         </div>
                             <div class="io-description">
@@ -346,7 +346,7 @@
                 <td class="col-md-4">
 
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                            <b>Returns : </b>        <code><a href="../classes/userModel.html" target="_self" >Promise&lt;userModel[]&gt;</a></code>
 
                         </div>
                 </td>
@@ -420,7 +420,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>unknown</code>
+                            <b>Returns : </b>        <code><a href="../classes/userModel.html" target="_self" >Promise&lt;userModel&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -497,7 +497,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>unknown</code>
+                            <b>Returns : </b>        <code><a href="../classes/userModel.html" target="_self" >Promise&lt;userModel&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -574,7 +574,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>unknown</code>
+                            <b>Returns : </b>        <code><a href="../classes/userModel.html" target="_self" >Promise&lt;userModel&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -651,7 +651,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User[]&gt;</a></code>
+                            <b>Returns : </b>        <code><a href="../classes/userModel.html" target="_self" >Promise&lt;userModel[]&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -740,7 +740,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
+                            <b>Returns : </b>        <code><a href="../classes/userModel.html" target="_self" >Promise&lt;userModel&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -829,7 +829,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User[]&gt;</a></code>
+                            <b>Returns : </b>        <code><a href="../classes/userModel.html" target="_self" >Promise&lt;userModel[]&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -1220,12 +1220,12 @@ export class UserController {
   ) {}
 
   @Get()
-  findAll() {
+  findAll(): Promise&lt;userModel[]&gt; {
     return this.userService.findAll();
   }
 
   @Get(&#x27;:id&#x27;)
-  async getById(@Param(&#x27;id&#x27;) id: string) {
+  async getById(@Param(&#x27;id&#x27;) id: string): Promise&lt;userModel&gt; {
     try {
       const user &#x3D; await this.userService.findById(id);
       if (!user) {
@@ -1241,7 +1241,7 @@ export class UserController {
   }
 
   @Get(&#x27;projects/:id&#x27;)
-  async getByIdWithProjects(@Param(&#x27;id&#x27;) id: string) {
+  async getByIdWithProjects(@Param(&#x27;id&#x27;) id: string): Promise&lt;userModel&gt; {
     try {
       const user &#x3D; await this.userService.findByIdWithProjects(id);
       if (!user) {
@@ -1257,7 +1257,7 @@ export class UserController {
   }
 
   @Get(&#x27;email/:email&#x27;)
-  async getByEmail(@Param(&#x27;email&#x27;) email: string) {
+  async getByEmail(@Param(&#x27;email&#x27;) email: string): Promise&lt;userModel&gt; {
     try {
       const user &#x3D; await this.userService.findByEmail(email);
       if (!user) {
@@ -1276,7 +1276,7 @@ export class UserController {
   async addProjectToUserByProjectId(
     @Body() body: { projectId: string },
     @Headers(&#x27;Authorization&#x27;) authHeader: string,
-  ) {
+  ): Promise&lt;any&gt; {
     try {
       const { projectId } &#x3D; body;
       const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
@@ -1366,7 +1366,7 @@ export class UserController {
   async undelete(
     @Param(&#x27;id&#x27;) id: string,
     @Headers(&#x27;Authorization&#x27;) authHeader: string,
-  ): Promise&lt;User[]&gt; {
+  ): Promise&lt;userModel[]&gt; {
     try {
       const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
       if (payload.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
@@ -1385,7 +1385,7 @@ export class UserController {
   }
 
   @Delete(&#x27;:id&#x27;)
-  async remove(@Param(&#x27;id&#x27;) id: string): Promise&lt;User[]&gt; {
+  async remove(@Param(&#x27;id&#x27;) id: string): Promise&lt;userModel[]&gt; {
     try {
       const user &#x3D; await this.userService.remove(id);
       if (!user) {
@@ -1404,7 +1404,7 @@ export class UserController {
   async removeProject(
     @Param(&#x27;id&#x27;) id: string,
     @Headers(&#x27;Authorization&#x27;) authHeader: string,
-  ): Promise&lt;User&gt; {
+  ): Promise&lt;userModel&gt; {
     let targetUser: any &#x3D; &#x27;&#x27;;
     const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
     const userID &#x3D; payload.sub;

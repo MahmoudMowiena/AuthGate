@@ -228,8 +228,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="32"
-                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:32</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="33"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:33</a></div>
                         </td>
                     </tr>
 
@@ -317,8 +317,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="71"
-                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:71</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="72"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:72</a></div>
                         </td>
                     </tr>
 
@@ -394,8 +394,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="46"
-                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:46</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="47"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:47</a></div>
                         </td>
                     </tr>
 
@@ -471,8 +471,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="62"
-                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:62</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="63"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:63</a></div>
                         </td>
                     </tr>
 
@@ -548,8 +548,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="117"
-                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:117</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="143"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:143</a></div>
                         </td>
                     </tr>
 
@@ -637,8 +637,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="92"
-                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:92</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="93"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:93</a></div>
                         </td>
                     </tr>
 
@@ -726,8 +726,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="76"
-                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:76</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="77"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:77</a></div>
                         </td>
                     </tr>
 
@@ -820,8 +820,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="141"
-                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:141</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="177"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:177</a></div>
                         </td>
                     </tr>
 
@@ -874,6 +874,7 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -986,6 +987,31 @@ export class ProjectsController {
     }
   }
 
+  // @Delete(&#x27;:id&#x27;)
+  // async remove(
+  //   @Param(&#x27;id&#x27;) id: string,
+  //   @Headers(&#x27;Authorization&#x27;) authHeader: string,
+  // ): Promise&lt;projectModel[]&gt; {
+  //   let tenant: any &#x3D; &#x27;&#x27;;
+  //   const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+  //   const userID &#x3D; payload.sub;
+  //   const user &#x3D; await this.tenantservice.findById(userID);
+  //   if (user &amp;&amp; user.role &#x3D;&#x3D;&#x3D; &#x27;tenant&#x27;) {
+  //     return await this.projectService.delete(id, userID);
+  //   } else {
+  //     const user &#x3D; await this.userservice.findById(userID);
+
+  //     if (user &amp;&amp; user.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
+  //       tenant &#x3D; await this.tenantservice.findTenantByProjectId(id);
+  //       if (!tenant) {
+  //         throw new NotFoundException(&#x27;Tenant not found for given project ID&#x27;);
+  //       }
+  //       let tenantId &#x3D; tenant._id;
+  //       return await this.projectService.delete(id, tenantId);
+  //     }
+  //   }
+  // }
+
   @Delete(&#x27;:id&#x27;)
   async remove(
     @Param(&#x27;id&#x27;) id: string,
@@ -994,21 +1020,31 @@ export class ProjectsController {
     let tenant: any &#x3D; &#x27;&#x27;;
     const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
     const userID &#x3D; payload.sub;
-    const user &#x3D; await this.tenantservice.findById(userID);
-    if (user &amp;&amp; user.role &#x3D;&#x3D;&#x3D; &#x27;tenant&#x27;) {
-      return await this.projectService.delete(id, userID);
-    } else {
-      const user &#x3D; await this.userservice.findById(userID);
 
-      if (user &amp;&amp; user.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
-        tenant &#x3D; await this.tenantservice.findTenantByProjectId(id);
-        if (!tenant) {
-          throw new NotFoundException(&#x27;Tenant not found for given project ID&#x27;);
-        }
-        let tenantId &#x3D; tenant._id;
-        return await this.projectService.delete(id, tenantId);
+    const tenantUser &#x3D; await this.tenantservice.findById(userID);
+    if (tenantUser) {
+      if (tenantUser.role &#x3D;&#x3D;&#x3D; &#x27;tenant&#x27;) {
+        return await this.projectService.delete(id, userID);
+      } else {
+        throw new ConflictException(
+          &quot;You can&#x27;t delete the project because of role authorization&quot;,
+        );
       }
     }
+
+    const adminUser &#x3D; await this.userservice.findById(userID);
+    if (adminUser &amp;&amp; adminUser.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
+      tenant &#x3D; await this.tenantservice.findTenantByProjectId(id);
+      if (!tenant) {
+        throw new NotFoundException(&#x27;Tenant not found for given project ID&#x27;);
+      }
+      const tenantId &#x3D; tenant._id;
+      return await this.projectService.delete(id, tenantId);
+    }
+
+    throw new ConflictException(
+      &quot;You can&#x27;t delete the project because of role authorization&quot;,
+    );
   }
 
   private async verifyTokenAndGetPayload(authHeader: string): Promise&lt;any&gt; {

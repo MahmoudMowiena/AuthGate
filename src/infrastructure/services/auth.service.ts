@@ -154,7 +154,9 @@ export class AuthService {
     projectId: any,
     userId: string,
     projectName: string,
+    codeChallenge: string
   ): Promise<any> {
+
     const user: userModel = await this.usersService.findById(userId);
 
     if (!user) {
@@ -182,6 +184,7 @@ export class AuthService {
       authorizationAccessToken,
       name,
       expireDate,
+      codeChallenge
     };
 
     const existingUserProject: UserProject = user.projects?.find(
@@ -193,6 +196,7 @@ export class AuthService {
         newUserProject.authorizationAccessToken;
       existingUserProject.authorizationCode = newUserProject.authorizationCode;
       existingUserProject.expireDate = newUserProject.expireDate;
+      existingUserProject.codeChallenge = codeChallenge;
     } else {
       user.projects.push(newUserProject);
     }
