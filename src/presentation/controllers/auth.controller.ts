@@ -22,8 +22,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import * as CryptoJS from 'crypto-js';
-
-
+import { SignInUserResponse } from '../dtos/signInUserResponse.model';
+import { SignInTenantResponse } from '../dtos/signInTenantResponse.model';
 
 @Controller('auth')
 export class AuthController {

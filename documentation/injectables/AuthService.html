@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -153,6 +154,10 @@
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
+                                <a href="#signInWithFacebook" >signInWithFacebook</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#signInWithGitHub" >signInWithGitHub</a>
                             </li>
                             <li>
@@ -169,14 +174,15 @@
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
+                                <a href="#validateFacebookUser" >validateFacebookUser</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#validateGitHubUser" >validateGitHubUser</a>
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
                                 <a href="#validateGoogleUser" >validateGoogleUser</a>
-                            </li>
-                            <li>
-                                <a href="#verifyToken" >verifyToken</a>
                             </li>
                         </ul>
                     </td>
@@ -201,7 +207,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="27" class="link-to-prism">src/infrastructure/services/auth.service.ts:27</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/infrastructure/services/auth.service.ts:24</a></div>
                             </td>
                         </tr>
 
@@ -295,15 +301,15 @@
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>processAuth(projectId: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                    <code>processAuth(projectId: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, userId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, projectName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
                 </td>
             </tr>
 
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="163"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:163</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="152"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:152</a></div>
                         </td>
                     </tr>
 
@@ -336,7 +342,19 @@
 
                                         </tr>
                                         <tr>
-                                                <td>token</td>
+                                                <td>userId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>projectName</td>
                                             <td>
                                                             <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
                                             </td>
@@ -383,8 +401,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="348"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:348</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="400"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:400</a></div>
                         </td>
                     </tr>
 
@@ -476,8 +494,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="322"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:322</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="376"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:376</a></div>
                         </td>
                     </tr>
 
@@ -545,8 +563,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="43"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:43</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="32"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:32</a></div>
                         </td>
                     </tr>
 
@@ -608,6 +626,75 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
+                    <a name="signInWithFacebook"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>signInWithFacebook</b></span>
+                        <a href="#signInWithFacebook"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>signInWithFacebook(user: <a href="../classes/User.html" target="_self">User</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="355"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:355</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>user</td>
+                                            <td>
+                                                            <code><a href="../classes/User.html" target="_self" >User</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
                     <a name="signInWithGitHub"></a>
                     <span class="name">
                             <span class="modifier">Async</span>
@@ -626,8 +713,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="253"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:253</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="251"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:251</a></div>
                         </td>
                     </tr>
 
@@ -695,8 +782,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="299"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:299</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="297"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:297</a></div>
                         </td>
                     </tr>
 
@@ -764,8 +851,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="140"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:140</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="122"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:122</a></div>
                         </td>
                     </tr>
 
@@ -833,8 +920,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="113"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:113</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="92"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:92</a></div>
                         </td>
                     </tr>
 
@@ -884,26 +971,26 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="validateGitHubUser"></a>
+                    <a name="validateFacebookUser"></a>
                     <span class="name">
                             <span class="modifier">Async</span>
-                        <span ><b>validateGitHubUser</b></span>
-                        <a href="#validateGitHubUser"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>validateFacebookUser</b></span>
+                        <a href="#validateFacebookUser"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>validateGitHubUser(profile: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                    <code>validateFacebookUser(profile: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
                 </td>
             </tr>
 
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="229"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:229</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="321"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:321</a></div>
                         </td>
                     </tr>
 
@@ -939,7 +1026,76 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="validateGitHubUser"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>validateGitHubUser</b></span>
+                        <a href="#validateGitHubUser"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>validateGitHubUser(profile: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="226"
+                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:226</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>profile</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -1008,74 +1164,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
-
-                        </div>
-                            <div class="io-description">
-                                
-                            </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="verifyToken"></a>
-                    <span class="name">
-                        <span ><b>verifyToken</b></span>
-                        <a href="#verifyToken"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-<code>verifyToken(token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
-                </td>
-            </tr>
-
-
-                    <tr>
-                        <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="35"
-                                    class="link-to-prism">src/infrastructure/services/auth.service.ts:35</a></div>
-                        </td>
-                    </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-
-                            <div class="io-description">
-                                <b>Parameters :</b>
-                                
-                                <table class="params">
-                                    <thead>
-                                        <tr>
-                                            <td>Name</td>
-                                                <td>Type</td>
-                                            <td>Optional</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                                <td>token</td>
-                                            <td>
-                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
-                                            </td>
-
-                                            <td>
-                                                    No
-                                            </td>
-
-
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <div class="io-description">
-                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -1095,16 +1184,13 @@
   BadRequestException,
   ConflictException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
-  Scope,
-  ScopeOptions,
   UnauthorizedException,
 } from &#x27;@nestjs/common&#x27;;
 import { JwtService } from &#x27;@nestjs/jwt&#x27;;
 import { UsersService } from &#x27;./users.service&#x27;;
-import { SignInUserResponse } from &#x27;src/presentation/dtos/signInUserResponse.dto&#x27;;
-import { SignInTenantResponse } from &#x27;src/presentation/dtos/signInTenantResponse.dto&#x27;;
+import { SignInUserResponse } from &#x27;src/presentation/dtos/signInUserResponse.model&#x27;;
+import { SignInTenantResponse } from &#x27;src/presentation/dtos/signInTenantResponse.model&#x27;;
 import { TenantsService } from &#x27;./tenants.service&#x27;;
 import { userModel } from &#x27;src/presentation/dtos/user.model&#x27;;
 import { tenantModel } from &#x27;src/presentation/dtos/tenant.model&#x27;;
@@ -1125,14 +1211,6 @@ export class AuthService {
     private emailService: EmailService,
   ) {}
 
-  verifyToken(token: string): any {
-    try {
-      return this.jwtService.verify(token);
-    } catch (error) {
-      throw new UnauthorizedException(&#x27;Invalid token&#x27;);
-    }
-  }
-
   async signIn(
     email: string,
     password: string,
@@ -1140,18 +1218,15 @@ export class AuthService {
     access_token: string;
     user: SignInUserResponse | SignInTenantResponse;
   }&gt; {
-    let user: any &#x3D; await this.usersService.findByEmail(email);
-
-    if (!user) {
-      user &#x3D; await this.tenantsService.findByEmail(email);
-    }
+    let user: any &#x3D;
+      (await this.usersService.findByEmail(email)) ||
+      (await this.tenantsService.findByEmail(email));
 
     if (!user || user.deleted) {
       throw new UnauthorizedException(&#x27;Account not found or has been deleted&#x27;);
     }
 
     const isPasswordMatch &#x3D; await bcrypt.compare(password, user.password);
-
     if (!isPasswordMatch) throw new UnauthorizedException();
 
     const payload &#x3D; {
@@ -1161,39 +1236,32 @@ export class AuthService {
       role: user.role,
     };
 
+    const generalResponse &#x3D; {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      image: user.image,
+      role: user.role,
+    };
+
     let signInResponse: SignInUserResponse | SignInTenantResponse;
 
     if (user.role &#x3D;&#x3D;&#x3D; &#x27;user&#x27;) {
       signInResponse &#x3D; {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        image: user.image,
+        ...generalResponse,
         age: user.age,
-        role: &#x27;user&#x27;,
       };
     } else if (user.role &#x3D;&#x3D;&#x3D; &#x27;tenant&#x27;) {
       signInResponse &#x3D; {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        image: user.image,
+        ...generalResponse,
         website: user.website,
         address: user.address,
-        role: &#x27;tenant&#x27;,
       };
     } else if (user.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
       signInResponse &#x3D; {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        image: user.image,
-        website: user.website,
-        address: user.address,
-        role: &#x27;admin&#x27;,
+        ...generalResponse,
+        age: user.age,
       };
     }
 
@@ -1204,16 +1272,9 @@ export class AuthService {
   }
 
   async signUpAsUser(userSignUpDto: userModel) {
-    const salt &#x3D; 10;
-    const hashedPassword &#x3D; await bcrypt.hash(userSignUpDto.password, salt);
-    const email &#x3D; userSignUpDto.email;
-    const unhashedPassword &#x3D; userSignUpDto.password;
-    const unhashedConfirmPassword &#x3D; userSignUpDto.confirmPassword;
-    userSignUpDto.password &#x3D; hashedPassword;
-    userSignUpDto.confirmPassword &#x3D; hashedPassword;
-    userSignUpDto.role &#x3D; &#x27;user&#x27;;
+    const { email, password, confirmPassword } &#x3D; userSignUpDto;
 
-    if (unhashedPassword !&#x3D;&#x3D; unhashedConfirmPassword) {
+    if (password !&#x3D;&#x3D; confirmPassword) {
       throw new BadRequestException(&#x27;Passwords do not match&#x27;);
     }
 
@@ -1222,24 +1283,28 @@ export class AuthService {
       throw new ConflictException(&#x27;Email already in use&#x27;);
     }
 
-    const user &#x3D; await this.usersService.create(userSignUpDto);
-    if (user) {
-      return this.signIn(userSignUpDto.email, unhashedPassword);
-    } else {
-      throw new BadRequestException();
+    const salt &#x3D; 10;
+    const hashedPassword &#x3D; await bcrypt.hash(password, salt);
+
+    const userToCreate &#x3D; {
+      ...userSignUpDto,
+      password: hashedPassword,
+      confirmPassword: hashedPassword,
+      role: &#x27;user&#x27;,
+    };
+
+    const user &#x3D; await this.usersService.create(userToCreate);
+    if (!user) {
+      throw new BadRequestException(&#x27;User could not be created&#x27;);
     }
+
+    return this.signIn(email, password);
   }
 
   async signUpAsTenant(tenantSignUpDto: tenantModel) {
-    const salt &#x3D; 10;
-    const hashedPassword &#x3D; await bcrypt.hash(tenantSignUpDto.password, salt);
-    const email &#x3D; tenantSignUpDto.email;
-    const unhashedPassword &#x3D; tenantSignUpDto.password;
-    const unhashedConfirmPassword &#x3D; tenantSignUpDto.confirmPassword;
-    tenantSignUpDto.password &#x3D; hashedPassword;
-    tenantSignUpDto.confirmPassword &#x3D; hashedPassword;
-    tenantSignUpDto.role &#x3D; &#x27;tenant&#x27;;
-    if (unhashedPassword !&#x3D;&#x3D; unhashedConfirmPassword) {
+    const { email, password, confirmPassword } &#x3D; tenantSignUpDto;
+
+    if (password !&#x3D;&#x3D; confirmPassword) {
       throw new BadRequestException(&#x27;Passwords do not match&#x27;);
     }
 
@@ -1248,69 +1313,89 @@ export class AuthService {
       throw new ConflictException(&#x27;Email already in use&#x27;);
     }
 
-    const tenant &#x3D; await this.tenantsService.create(tenantSignUpDto);
-    if (tenant) return this.signIn(tenantSignUpDto.email, unhashedPassword);
-    else throw new BadRequestException();
+    const salt &#x3D; 10;
+    const hashedPassword &#x3D; await bcrypt.hash(password, salt);
+
+    const tenantToCreate &#x3D; {
+      ...tenantSignUpDto,
+      password: hashedPassword,
+      confirmPassword: hashedPassword,
+      role: &#x27;tenant&#x27;,
+    };
+
+    const tenant &#x3D; await this.tenantsService.create(tenantToCreate);
+    if (!tenant) {
+      throw new BadRequestException(&#x27;Tenant could not be created&#x27;);
+    }
+
+    return this.signIn(email, password);
   }
 
-  async processAuth(projectId: any, token: string): Promise&lt;any&gt; {
-    let userproject: UserProject;
-    let payload;
-
-    try {
-      payload &#x3D; this.jwtService.verify(token);
-    } catch (error) {
-      throw new UnauthorizedException(&#x27;Invalid token&#x27;);
-    }
-
-    const userId &#x3D; payload.sub;
-    const user &#x3D; await this.usersService.findId(userId);
+  async processAuth(
+    projectId: any,
+    userId: string,
+    projectName: string,
+  ): Promise&lt;any&gt; {
+    const user: userModel &#x3D; await this.usersService.findById(userId);
 
     if (!user) {
-      throw new UnauthorizedException(&#x27;User not found&#x27;);
+      throw new NotFoundException(&#x27;User not found&#x27;);
     }
+
+    const newPayload &#x3D; {
+      email: user.email,
+      name: user.name,
+      phone: user.phone,
+      image: user.image,
+      age: user.age,
+    };
 
     const projectID &#x3D; projectId;
-    const authorizationCode &#x3D; uuidv4();
-    const authorizationAccessToken &#x3D; crypto.randomBytes(32).toString(&#x27;hex&#x27;);
-    const expireDate &#x3D; new Date();
-    expireDate.setHours(expireDate.getHours() + 24);
+    const authorizationCode &#x3D; crypto.randomBytes(16).toString(&#x27;hex&#x27;);
+    const authorizationAccessToken: string &#x3D;
+      await this.jwtService.signAsync(newPayload);
+    const name &#x3D; projectName;
+    const expireDate: Date &#x3D; new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    if (projectID) {
-      userproject &#x3D; {
-        projectID,
-        authorizationCode,
-        authorizationAccessToken,
-        expireDate,
-      };
-    }
+    let newUserProject: UserProject &#x3D; {
+      projectID,
+      authorizationCode,
+      authorizationAccessToken,
+      name,
+      expireDate,
+    };
 
-    const userProject &#x3D; user.projects.find(
+    const existingUserProject: UserProject &#x3D; user.projects?.find(
       (project) &#x3D;&gt; project.projectID &#x3D;&#x3D;&#x3D; projectID,
     );
 
-    if (!userProject) {
-      user.projects.push(userproject);
+    if (existingUserProject) {
+      existingUserProject.authorizationAccessToken &#x3D;
+        newUserProject.authorizationAccessToken;
+      existingUserProject.authorizationCode &#x3D; newUserProject.authorizationCode;
+      existingUserProject.expireDate &#x3D; newUserProject.expireDate;
+    } else {
+      user.projects.push(newUserProject);
     }
 
     await this.usersService.save(user);
 
     const targetTenant &#x3D;
-      await this.tenantsService.findTenantByProjectId(projectId);
+      await this.tenantsService.findTenantByProjectId(projectID);
 
     if (!targetTenant) {
       throw new ConflictException(&#x27;Tenant not found for the given project ID&#x27;);
     }
 
     const targetProject: projectModel | any &#x3D; targetTenant.projects.find(
-      (project) &#x3D;&gt; project._id.toString() &#x3D;&#x3D;&#x3D; projectId,
+      (project) &#x3D;&gt; project._id.toString() &#x3D;&#x3D;&#x3D; projectID,
     );
 
     if (!targetProject) {
       throw new ConflictException(&#x27;Project not found in tenant&#x27;);
     }
 
-    const callbackUrl &#x3D; targetProject.callBackUrl;
+    const callbackUrl: string &#x3D; targetProject.callBackUrl;
 
     return {
       userId,
@@ -1319,7 +1404,8 @@ export class AuthService {
       authorizationCode,
     };
   }
-  async validateGitHubUser(profile: any): Promise&lt;any&gt; {
+
+  async validateGitHubUser(profile: any): Promise&lt;User&gt; {
     const { id, username, displayName, emails, photos } &#x3D; profile;
     // Find user by GitHub ID
     let user &#x3D; await this.usersService.findByGitHubId(id);
@@ -1343,6 +1429,7 @@ export class AuthService {
 
     return user;
   }
+
   async signInWithGitHub(
     user: User,
   ): Promise&lt;{ access_token: string; user: any }&gt; {
@@ -1361,17 +1448,17 @@ export class AuthService {
         phone: user.phone,
         image: user.image,
         age: user.age,
+        githubId: user.githubId,
         role: &#x27;user&#x27;,
       },
     };
   }
-  async validateGoogleUser(profile: any): Promise&lt;any&gt; {
+
+  async validateGoogleUser(profile: any): Promise&lt;User&gt; {
     const { id, displayName, emails, photos } &#x3D; profile;
 
-    // Find user by Google ID
     let user &#x3D; await this.usersService.findByGoogleId(id);
     if (!user) {
-      // If user doesn&#x27;t exist, create a new one
       const email &#x3D; emails &amp;&amp; emails[0] &amp;&amp; emails[0].value;
       const hashedPassword &#x3D; await bcrypt.hash(uuidv4(), 10);
 
@@ -1407,6 +1494,62 @@ export class AuthService {
         phone: user.phone,
         image: user.image,
         age: user.age,
+        googleId: user.googleId,
+        role: &#x27;user&#x27;,
+      },
+    };
+  }
+
+  async validateFacebookUser(profile: any): Promise&lt;User&gt; {
+    const { facebookId, email, firstName, lastName, picture } &#x3D; profile;
+    let user: any &#x3D; await this.usersService.findByFacebookId(facebookId);
+    if (!user &amp;&amp; email) {
+      user &#x3D; await this.usersService.findByEmail(email);
+      if (user) {
+        user.facebookId &#x3D; facebookId;
+        if (user.name &#x3D;&#x3D;&#x3D; undefined || user.name &#x3D;&#x3D;&#x3D; &#x27;&#x27; || user.name &#x3D;&#x3D;&#x3D; null)
+          user.name &#x3D; &#x60;${firstName} ${lastName}&#x60;;
+        if (
+          user.image &#x3D;&#x3D;&#x3D; undefined ||
+          user.image &#x3D;&#x3D;&#x3D; &#x27;&#x27; ||
+          user.image &#x3D;&#x3D;&#x3D; null
+        )
+          user.image &#x3D; picture;
+        await this.usersService.save(user);
+      } else {
+        const hashedPassword &#x3D; await bcrypt.hash(uuidv4(), 10);
+        user &#x3D; await this.usersService.create({
+          email: profile.email,
+          name: &#x60;${firstName} ${lastName}&#x60;,
+          facebookId: facebookId,
+          image: picture,
+          password: hashedPassword,
+          confirmPassword: hashedPassword,
+          role: &#x27;user&#x27;,
+        });
+      }
+    } else if (!user) {
+      throw new UnauthorizedException(&#x27;Unable to authenticate with Facebook&#x27;);
+    }
+    return user;
+  }
+
+  async signInWithFacebook(user: User) {
+    const payload &#x3D; {
+      sub: user._id,
+      email: user.email,
+      name: user.name,
+      role: &#x27;user&#x27;,
+    };
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        image: user.image,
+        age: user.age,
         role: &#x27;user&#x27;,
       },
     };
@@ -1421,7 +1564,6 @@ export class AuthService {
       throw new Error(&#x60;User ${email} not found&#x60;);
     }
 
-    //generate a unique token for reset link
     const resetToken &#x3D; this.jwtService.sign(
       { email },
       { secret: process.env.PASSWORD_RESET_JWT_SECRET, expiresIn: &#x27;1h&#x27; },
@@ -1429,7 +1571,6 @@ export class AuthService {
     user.resetPasswordToken &#x3D; resetToken;
     user.resetPasswordExpires &#x3D; new Date(Date.now() + 3600000);
     await this.usersService.save(user);
-    //reset link
     const resetLink &#x3D; &#x60;http://localhost:4200/reset-password/${resetToken}&#x60;;
     await this.emailService.sendMail(
       user.email,
@@ -1447,9 +1588,11 @@ export class AuthService {
       secret: process.env.PASSWORD_RESET_JWT_SECRET,
     });
     let user: any &#x3D; await this.usersService.findByEmail(decoded.email);
+
     if (!user) {
       user &#x3D; await this.tenantsService.findByEmail(decoded.email);
     }
+
     if (
       !user ||
       user.resetPasswordToken !&#x3D;&#x3D; token ||
@@ -1457,6 +1600,7 @@ export class AuthService {
     ) {
       throw new BadRequestException(&#x27;Invalid or expired token&#x27;);
     }
+
     if (newPassword &#x3D;&#x3D;&#x3D; confirmNewPassword) {
       const hashedPassword &#x3D; await bcrypt.hash(newPassword, 10);
       user.password &#x3D; hashedPassword;

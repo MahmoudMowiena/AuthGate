@@ -69,6 +69,7 @@ export class AuthService {
       signInResponse = {
         ...generalResponse,
         age: user.age,
+        projects: user.projects,
       };
     } else if (user.role === 'tenant') {
       signInResponse = {
@@ -228,14 +229,15 @@ export class AuthService {
   }
 
   async validateGitHubUser(profile: any): Promise<User> {
-    const { id, username, displayName, emails, photos } = profile;
-    // Find user by GitHub ID
+    const { id, username, displayName, photos } = profile;
     let user = await this.usersService.findByGitHubId(id);
     if (!user) {
-      // If user doesn't exist, create a new one
-      // let email;
-      // if (emails) email = emails && emails[0] && emails[0].value;
-      // else email = `${id}provided@github.com`;
+      let userEmail = `${username}${Math.floor(Math.random() * 10000)}@authGate.com`;
+      let notUnique = await this.usersService.findByEmail(userEmail);
+      while (notUnique) {
+        userEmail = `${username}${Math.floor(Math.random() * 10000)}@authGate.com`;
+        notUnique = await this.usersService.findByEmail(userEmail);
+      }
       const hashedPassword = await bcrypt.hash(uuidv4(), 10);
 
       user = await this.usersService.createGithubUser({
@@ -245,10 +247,9 @@ export class AuthService {
         password: hashedPassword,
         confirmPassword: hashedPassword,
         role: 'user',
-        email: '',
+        email: userEmail,
       });
     }
-
     return user;
   }
 

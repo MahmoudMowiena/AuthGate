@@ -31,4 +31,8 @@ export class SignInUserResponse {
 
   @IsString()
   role: string;
+
+  @IsOptional()
+  @IsArray()
+  projects?: UserProject[];
 }

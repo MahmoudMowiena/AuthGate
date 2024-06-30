@@ -96,14 +96,13 @@ export class UserController {
   ) {
     try {
       const { projectId, codeChallenge } = body;
-      
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
+      const userId = payload.sub;
       let result;
 
       const targetProject = await this.projectservice.findOne(projectId);
       if (targetProject.deleted === false) {
         const projectName = targetProject.name;
-        const payload = await this.verifyTokenAndGetPayload(authHeader);
-        const userId = payload.sub;
         result = await this.authservice.processAuth(
           projectId,
           userId,
@@ -186,7 +185,6 @@ export class UserController {
     @Param('id') id: string,
     @Headers('Authorization') authHeader: string,
   ): Promise<User[]> {
-    // change here
     try {
       const payload = await this.verifyTokenAndGetPayload(authHeader);
       if (payload.role === 'admin') {
