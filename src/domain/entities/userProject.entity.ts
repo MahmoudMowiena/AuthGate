@@ -1,4 +1,5 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { IsString } from 'class-validator';
 import mongoose, { Types } from 'mongoose';
 
 @Schema()
@@ -16,7 +17,8 @@ export class UserProject {
   expireDate: Date;
 
   @Prop()
-  name?: string;
+  @IsString()
+  name: string;
 
   @Prop()
   callBackUrl?: string;

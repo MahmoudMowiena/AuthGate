@@ -149,7 +149,11 @@ export class AuthService {
     return this.signIn(email, password);
   }
 
-  async processAuth(projectId: any, userId: string): Promise<any> {
+  async processAuth(
+    projectId: any,
+    userId: string,
+    projectName: string,
+  ): Promise<any> {
     const user: userModel = await this.usersService.findById(userId);
 
     if (!user) {
@@ -163,16 +167,19 @@ export class AuthService {
       image: user.image,
       age: user.age,
     };
+
     const projectID = projectId;
     const authorizationCode = crypto.randomBytes(16).toString('hex');
     const authorizationAccessToken: string =
       await this.jwtService.signAsync(newPayload);
+    const name = projectName;
     const expireDate: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    let newUserProject = {
+    let newUserProject: UserProject = {
       projectID,
       authorizationCode,
       authorizationAccessToken,
+      name,
       expireDate,
     };
 
