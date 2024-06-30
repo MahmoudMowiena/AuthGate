@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -360,8 +361,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="175"
-                                    class="link-to-prism">src/infrastructure/services/tenants.service.ts:175</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="176"
+                                    class="link-to-prism">src/infrastructure/services/tenants.service.ts:176</a></div>
                         </td>
                     </tr>
 
@@ -756,8 +757,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="155"
-                                    class="link-to-prism">src/infrastructure/services/tenants.service.ts:155</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="156"
+                                    class="link-to-prism">src/infrastructure/services/tenants.service.ts:156</a></div>
                         </td>
                     </tr>
 
@@ -793,7 +794,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/tenantModel.html" target="_self" >Promise&lt;tenantModel&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -825,8 +826,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="165"
-                                    class="link-to-prism">src/infrastructure/services/tenants.service.ts:165</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="166"
+                                    class="link-to-prism">src/infrastructure/services/tenants.service.ts:166</a></div>
                         </td>
                     </tr>
 
@@ -862,7 +863,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/tenantModel.html" target="_self" >Promise&lt;tenantModel&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -943,7 +944,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/tenantModel.html" target="_self" >Promise&lt;tenantModel&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -975,8 +976,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="92"
-                                    class="link-to-prism">src/infrastructure/services/tenants.service.ts:92</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="97"
+                                    class="link-to-prism">src/infrastructure/services/tenants.service.ts:97</a></div>
                         </td>
                     </tr>
 
@@ -1024,7 +1025,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/tenantModel.html" target="_self" >Promise&lt;tenantModel&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -1069,50 +1070,54 @@ export class TenantsService {
   }
 
   async findById(id: string): Promise&lt;tenantModel&gt; {
-    return await this.tenantModel.findById(id).exec();
+    return await this.tenantModel.findById(id);
   }
 
   async findByEmail(email: string): Promise&lt;tenantModel&gt; {
-    return this.tenantModel.findOne({ email }).exec();
+    return this.tenantModel.findOne({ email });
   }
 
   async findAll(): Promise&lt;Tenant[]&gt; {
-    return this.tenantModel.find().exec();
+    return this.tenantModel.find();
   }
 
-  async update(id: string, updateTenantDto: tenantModel): Promise&lt;any&gt; {
-    let newEmail: any;
-    let newName: any;
-    let targetTenant: tenantModel;
-    let user: any;
+  async update(id: string, updateTenantDto: tenantModel): Promise&lt;tenantModel&gt; {
+    const { email, name } &#x3D; updateTenantDto;
+    let user: tenantModel;
 
     try {
-      if (updateTenantDto.email !&#x3D;&#x3D; null) {
-        user &#x3D; await this.findById(id);
-        newEmail &#x3D; updateTenantDto.email;
-        targetTenant &#x3D; await this.findByEmail(newEmail);
+      user &#x3D; await this.findById(id);
+
+      if (!user) {
+        throw new NotFoundException(&#x27;Tenant not found or already deleted&#x27;);
+      }
+
+      if (email) {
+        const existingTenant &#x3D; await this.findByEmail(email);
         if (
-          targetTenant &amp;&amp;
-          targetTenant.email &#x3D;&#x3D;&#x3D; newEmail &amp;&amp;
-          user.email !&#x3D; newEmail
+          existingTenant &amp;&amp;
+          existingTenant.email &#x3D;&#x3D;&#x3D; email &amp;&amp;
+          user.email !&#x3D;&#x3D; email
         ) {
           throw new ConflictException(&#x27;Email already exists, try to login&#x27;);
         }
       }
 
-      newName &#x3D; updateTenantDto.name;
-      const tenants &#x3D; await this.findAll();
-      for (const item of tenants) {
-        if (item.name &#x3D;&#x3D;&#x3D; newName &amp;&amp; user.name !&#x3D; newName) {
+      if (name) {
+        const tenants &#x3D; await this.findAll();
+        const isNameInUse &#x3D; tenants.some(
+          (tenant) &#x3D;&gt; tenant.name &#x3D;&#x3D;&#x3D; name &amp;&amp; user.name !&#x3D;&#x3D; name,
+        );
+        if (isNameInUse) {
           throw new ConflictException(&#x27;Name already in use, try another one&#x27;);
         }
       }
 
-      const tenantAfterUpdate &#x3D; await this.tenantModel
-        .findOneAndUpdate({ _id: id, deleted: false }, updateTenantDto, {
-          new: true,
-        })
-        .exec();
+      const tenantAfterUpdate &#x3D; await this.tenantModel.findOneAndUpdate(
+        { _id: id, deleted: false },
+        updateTenantDto,
+        { new: true },
+      );
 
       if (!tenantAfterUpdate) {
         throw new NotFoundException(&#x27;Tenant not found or already deleted&#x27;);
@@ -1120,10 +1125,11 @@ export class TenantsService {
 
       return tenantAfterUpdate;
     } catch (error) {
-      if (error instanceof ConflictException) {
-        throw new ConflictException(error.message);
-      } else if (error instanceof NotFoundException) {
-        throw new NotFoundException(error.message);
+      if (
+        error instanceof ConflictException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
       } else {
         console.error(&#x27;Error updating tenant:&#x27;, error);
         throw new InternalServerErrorException(&#x27;Failed to update tenant&#x27;);
@@ -1134,47 +1140,43 @@ export class TenantsService {
   async updateWithPassword(
     id: string,
     updateTenantDto: updateTenantModel,
-  ): Promise&lt;any&gt; {
-    const tenant &#x3D; await this.tenantModel.findById(id).exec();
+  ): Promise&lt;tenantModel&gt; {
+    const tenant &#x3D; await this.tenantModel.findById(id);
     if (!tenant) {
       throw new NotFoundException(&#x27;Tenant not found&#x27;);
     }
 
+    const { email, name, oldPassword, newPassword, confirmNewPassword } &#x3D;
+      updateTenantDto;
+
     try {
-      if (updateTenantDto.email !&#x3D;&#x3D; null) {
-        const newEmail &#x3D; updateTenantDto.email;
-        const targetTenant &#x3D; await this.findByEmail(newEmail);
-        if (targetTenant &amp;&amp; targetTenant.email &#x3D;&#x3D;&#x3D; newEmail) {
+      if (email &amp;&amp; email !&#x3D;&#x3D; tenant.email) {
+        const existingTenant &#x3D; await this.findByEmail(email);
+        if (existingTenant) {
           throw new ConflictException(&#x27;Email already exists, try to login&#x27;);
         }
       }
 
-      if (updateTenantDto.name !&#x3D;&#x3D; null) {
-        const newName &#x3D; updateTenantDto.name;
+      if (name &amp;&amp; name !&#x3D;&#x3D; tenant.name) {
         const tenants &#x3D; await this.findAll();
-        if (tenants.some((item) &#x3D;&gt; item.name &#x3D;&#x3D;&#x3D; newName)) {
+        if (tenants.some((t) &#x3D;&gt; t.name &#x3D;&#x3D;&#x3D; name)) {
           throw new ConflictException(&#x27;Name already in use, try another one&#x27;);
         }
       }
 
-      if (updateTenantDto.oldPassword) {
-        const isMatch &#x3D; await bcrypt.compare(
-          updateTenantDto.oldPassword,
-          tenant.password,
-        );
+      if (oldPassword) {
+        const isMatch &#x3D; await bcrypt.compare(oldPassword, tenant.password);
         if (!isMatch) {
           throw new BadRequestException(&#x27;Old password is incorrect&#x27;);
         }
       }
 
-      if (updateTenantDto.newPassword &amp;&amp; updateTenantDto.confirmNewPassword) {
-        if (
-          updateTenantDto.newPassword !&#x3D;&#x3D; updateTenantDto.confirmNewPassword
-        ) {
+      if (newPassword &amp;&amp; confirmNewPassword) {
+        if (newPassword !&#x3D;&#x3D; confirmNewPassword) {
           throw new BadRequestException(&#x27;New passwords do not match&#x27;);
         }
         const salt &#x3D; await bcrypt.genSalt();
-        tenant.password &#x3D; await bcrypt.hash(updateTenantDto.newPassword, salt);
+        tenant.password &#x3D; await bcrypt.hash(newPassword, salt);
         tenant.confirmPassword &#x3D; tenant.password;
       }
 
@@ -1194,8 +1196,8 @@ export class TenantsService {
     }
   }
 
-  async remove(id: string): Promise&lt;any&gt; {
-    const tenant &#x3D; await this.tenantModel.findById(id).exec();
+  async remove(id: string): Promise&lt;tenantModel&gt; {
+    const tenant &#x3D; await this.tenantModel.findById(id);
     if (!tenant) {
       throw new NotFoundException(&#x27;Tenant not found&#x27;);
     }
@@ -1204,8 +1206,8 @@ export class TenantsService {
     return tenant;
   }
 
-  async undelete(id: string): Promise&lt;any&gt; {
-    const tenant &#x3D; await this.tenantModel.findById(id).exec();
+  async undelete(id: string): Promise&lt;tenantModel&gt; {
+    const tenant &#x3D; await this.tenantModel.findById(id);
     if (!tenant) {
       throw new NotFoundException(&#x27;Tenant not found&#x27;);
     }
@@ -1218,12 +1220,11 @@ export class TenantsService {
     clientID: string,
     clientSECRET: string,
   ): Promise&lt;string&gt; {
-    const tenant &#x3D; await this.tenantModel
-      .findOne({
-        &#x27;projects.clientID&#x27;: clientID,
-        &#x27;projects.clientSECRET&#x27;: clientSECRET,
-      })
-      .exec();
+    const tenant &#x3D; await this.tenantModel.findOne({
+      &#x27;projects.clientID&#x27;: clientID,
+      &#x27;projects.clientSECRET&#x27;: clientSECRET,
+    });
+
     if (!tenant) {
       throw new Error(&#x27;Tenant not found for the given client credentials.&#x27;);
     }
@@ -1238,7 +1239,7 @@ export class TenantsService {
   }
 
   async addImage(id: string, image: Express.Multer.File): Promise&lt;Tenant&gt; {
-    const tenant &#x3D; await this.tenantModel.findById(id).exec();
+    const tenant &#x3D; await this.tenantModel.findById(id);
 
     if (!tenant) {
       throw new NotFoundException(&#x27;Tenant not found&#x27;);
@@ -1253,7 +1254,7 @@ export class TenantsService {
   }
 
   async findTenantByProjectId(projectId: string): Promise&lt;any | null&gt; {
-    return this.tenantModel.findOne({ &#x27;projects._id&#x27;: projectId }).exec();
+    return this.tenantModel.findOne({ &#x27;projects._id&#x27;: projectId });
   }
 }
 </code></pre>

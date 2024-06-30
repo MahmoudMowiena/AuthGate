@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -176,12 +177,10 @@
                             </li>
                             <li>
                                     <span class="modifier"></span>
-                                    <span class="modifier"></span>
                                     <span class="modifier">Async</span>
                                 <a href="#update" >update</a>
                             </li>
                             <li>
-                                    <span class="modifier"></span>
                                     <span class="modifier"></span>
                                     <span class="modifier">Async</span>
                                 <a href="#updateWithPassword" >updateWithPassword</a>
@@ -191,6 +190,11 @@
                                     <span class="modifier"></span>
                                     <span class="modifier">Async</span>
                                 <a href="#uploadImage" >uploadImage</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#verifyTokenAndGetPayload" >verifyTokenAndGetPayload</a>
                             </li>
                         </ul>
                     </td>
@@ -239,8 +243,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="158"
-                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:158</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="148"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:148</a></div>
                         </td>
                     </tr>
 
@@ -328,8 +332,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="40"
-                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:40</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="33"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:33</a></div>
                         </td>
                     </tr>
 
@@ -375,8 +379,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="54"
-                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:54</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="47"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:47</a></div>
                         </td>
                     </tr>
 
@@ -452,8 +456,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="45"
-                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:45</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="38"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:38</a></div>
                         </td>
                     </tr>
 
@@ -521,8 +525,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="184"
-                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:184</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="174"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:174</a></div>
                         </td>
                     </tr>
 
@@ -598,8 +602,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="142"
-                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:142</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="132"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:132</a></div>
                         </td>
                     </tr>
 
@@ -635,7 +639,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/tenantModel.html" target="_self" >Promise&lt;tenantModel[]&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -669,14 +673,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch(&#x27;:id/undelete&#x27;)<br /></code>
+                    <code>@Patch(&#x27;undelete/:id&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="119"
-                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:119</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="110"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:110</a></div>
                         </td>
                     </tr>
 
@@ -724,7 +728,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/tenantModel.html" target="_self" >Promise&lt;tenantModel[]&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -740,7 +744,6 @@
                 <td class="col-md-4">
                     <a name="update"></a>
                     <span class="name">
-                            <span class="modifier"></span>
                             <span class="modifier"></span>
                             <span class="modifier">Async</span>
                         <span ><b>update</b></span>
@@ -759,14 +762,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch()<br />@UseGuards(AuthenticationGuard)<br /></code>
+                    <code>@Patch()<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="64"
-                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:64</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="56"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:56</a></div>
                         </td>
                     </tr>
 
@@ -831,7 +834,6 @@
                     <a name="updateWithPassword"></a>
                     <span class="name">
                             <span class="modifier"></span>
-                            <span class="modifier"></span>
                             <span class="modifier">Async</span>
                         <span ><b>updateWithPassword</b></span>
                         <a href="#updateWithPassword"><span class="icon ion-ios-link"></span></a>
@@ -849,14 +851,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch(&#x27;updateWithPassword&#x27;)<br />@UseGuards(AuthenticationGuard)<br /></code>
+                    <code>@Patch(&#x27;updateWithPassword&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="95"
-                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:95</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="86"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:86</a></div>
                         </td>
                     </tr>
 
@@ -945,8 +947,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="177"
-                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:177</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="167"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:167</a></div>
                         </td>
                     </tr>
 
@@ -1004,6 +1006,76 @@
             </tr>
         </tbody>
     </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="verifyTokenAndGetPayload"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>verifyTokenAndGetPayload</b></span>
+                        <a href="#verifyTokenAndGetPayload"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>verifyTokenAndGetPayload(authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="182"
+                                    class="link-to-prism">src/presentation/controllers/tenant.controller.ts:182</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>authHeader</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </section>    </div>
 
 
@@ -1021,29 +1093,22 @@
   UseInterceptors,
   UploadedFile,
   Headers,
-  UseGuards,
-  Request,
-  Header,
   NotFoundException,
-  BadRequestException,
   ConflictException,
+  UnauthorizedException,
 } from &#x27;@nestjs/common&#x27;;
 import { tenantModel } from &#x27;../dtos/tenant.model&#x27;;
 import { TenantsService } from &#x27;src/infrastructure/services/tenants.service&#x27;;
-import { ProjectService } from &#x27;src/infrastructure/services/project.service&#x27;;
 import { FileInterceptor } from &#x27;@nestjs/platform-express&#x27;;
-import { AuthenticationGuard } from &#x27;../guards/auth.guard&#x27;;
-import { AuthService } from &#x27;src/infrastructure/services/auth.service&#x27;;
 import { JwtService } from &#x27;@nestjs/jwt&#x27;;
 import { updateTenantModel } from &#x27;../dtos/updateTenant.model&#x27;;
-import { plainToInstance } from &#x27;class-transformer&#x27;;
+import { jwtConstants } from &#x27;src/constants&#x27;;
 
 @Controller(&#x27;tenants&#x27;)
 export class TenantController {
   constructor(
     private readonly tenantsService: TenantsService,
     private readonly jwtservice: JwtService,
-    private readonly authservice: AuthService,
   ) {}
 
   @Get()
@@ -1070,14 +1135,13 @@ export class TenantController {
   }
 
   @Patch()
-  @UseGuards(AuthenticationGuard)
   async update(
     @Body() updateTenantDto: tenantModel,
     @Headers(&#x27;Authorization&#x27;) authHeader: any,
   ): Promise&lt;tenantModel&gt; {
     try {
-      const token &#x3D; authHeader.split(&#x27; &#x27;)[1];
-      const tenantId &#x3D; this.jwtservice.verify(token).sub;
+      const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+      const tenantId &#x3D; payload.sub;
       const updatedTenant &#x3D; await this.tenantsService.update(
         tenantId,
         updateTenantDto,
@@ -1101,14 +1165,13 @@ export class TenantController {
   }
 
   @Patch(&#x27;updateWithPassword&#x27;)
-  @UseGuards(AuthenticationGuard)
   async updateWithPassword(
     @Body() updateTenantDto: updateTenantModel,
     @Headers(&#x27;Authorization&#x27;) authHeader: any,
   ): Promise&lt;tenantModel&gt; {
     try {
-      const token &#x3D; authHeader.split(&#x27; &#x27;)[1];
-      const tenantId &#x3D; this.jwtservice.verify(token).sub;
+      const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+      const tenantId &#x3D; payload.sub;
       const updatedTenant &#x3D; await this.tenantsService.updateWithPassword(
         tenantId,
         updateTenantDto,
@@ -1125,14 +1188,13 @@ export class TenantController {
     }
   }
 
-  @Patch(&#x27;:id/undelete&#x27;)
+  @Patch(&#x27;undelete/:id&#x27;)
   async undelete(
     @Param(&#x27;id&#x27;) id: string,
     @Headers(&#x27;Authorization&#x27;) authHeader: string,
-  ): Promise&lt;any&gt; {
+  ): Promise&lt;tenantModel[]&gt; {
     try {
-      const token &#x3D; authHeader.split(&#x27; &#x27;)[1];
-      const payload &#x3D; this.jwtservice.verify(token);
+      const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
       if (payload.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
         const tenant &#x3D; await this.tenantsService.undelete(id);
         if (!tenant) {
@@ -1149,7 +1211,7 @@ export class TenantController {
   }
 
   @Delete(&#x27;:id&#x27;)
-  async remove(@Param(&#x27;id&#x27;) id: string): Promise&lt;any&gt; {
+  async remove(@Param(&#x27;id&#x27;) id: string): Promise&lt;tenantModel[]&gt; {
     try {
       const tenant &#x3D; await this.tenantsService.remove(id);
       if (!tenant) {
@@ -1197,6 +1259,18 @@ export class TenantController {
       throw new NotFoundException(&#x27;Tenant not found&#x27;);
     }
     return tenant;
+  }
+
+  private async verifyTokenAndGetPayload(authHeader: string): Promise&lt;any&gt; {
+    try {
+      const token &#x3D; authHeader.split(&#x27; &#x27;)[1];
+      const payload &#x3D; await this.jwtservice.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException(&#x27;Invalid token&#x27;);
+    }
   }
 }
 </code></pre>

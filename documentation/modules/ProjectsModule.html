@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -245,6 +246,9 @@ import { ProjectsController } from &#x27;src/presentation/controllers/project.co
 import { projectModel } from &#x27;src/presentation/dtos/project.model&#x27;;
 import { TenantModule } from &#x27;./tenant.module&#x27;;
 import { UserModule } from &#x27;./user.module&#x27;;
+import { AuthModule } from &#x27;./auth.module&#x27;;
+import { UsersService } from &#x27;src/infrastructure/services/users.service&#x27;;
+import { userModel } from &#x27;src/presentation/dtos/user.model&#x27;;
 
 @Module({
   imports: [

@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -145,7 +146,7 @@
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
-                                <a href="#findAllPerTenant" >findAllPerTenant</a>
+                                <a href="#findAllProjectsPerTenant" >findAllProjectsPerTenant</a>
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
@@ -182,7 +183,7 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">src/infrastructure/services/project.service.ts:16</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/infrastructure/services/project.service.ts:14</a></div>
                             </td>
                         </tr>
 
@@ -259,8 +260,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="22"
-                                    class="link-to-prism">src/infrastructure/services/project.service.ts:22</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="20"
+                                    class="link-to-prism">src/infrastructure/services/project.service.ts:20</a></div>
                         </td>
                     </tr>
 
@@ -340,8 +341,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="135"
-                                    class="link-to-prism">src/infrastructure/services/project.service.ts:135</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="136"
+                                    class="link-to-prism">src/infrastructure/services/project.service.ts:136</a></div>
                         </td>
                     </tr>
 
@@ -389,7 +390,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/Project.html" target="_self" >Promise&lt;Project[]&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -403,26 +404,26 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="findAllPerTenant"></a>
+                    <a name="findAllProjectsPerTenant"></a>
                     <span class="name">
                             <span class="modifier">Async</span>
-                        <span ><b>findAllPerTenant</b></span>
-                        <a href="#findAllPerTenant"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>findAllProjectsPerTenant</b></span>
+                        <a href="#findAllProjectsPerTenant"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>findAllPerTenant(tenantID: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                    <code>findAllProjectsPerTenant(tenantID: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
                 </td>
             </tr>
 
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="54"
-                                    class="link-to-prism">src/infrastructure/services/project.service.ts:54</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="50"
+                                    class="link-to-prism">src/infrastructure/services/project.service.ts:50</a></div>
                         </td>
                     </tr>
 
@@ -490,8 +491,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="64"
-                                    class="link-to-prism">src/infrastructure/services/project.service.ts:64</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="62"
+                                    class="link-to-prism">src/infrastructure/services/project.service.ts:62</a></div>
                         </td>
                     </tr>
 
@@ -559,8 +560,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="115"
-                                    class="link-to-prism">src/infrastructure/services/project.service.ts:115</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="114"
+                                    class="link-to-prism">src/infrastructure/services/project.service.ts:114</a></div>
                         </td>
                     </tr>
 
@@ -608,7 +609,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/Project.html" target="_self" >Promise&lt;Project&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -640,8 +641,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="80"
-                                    class="link-to-prism">src/infrastructure/services/project.service.ts:80</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="79"
+                                    class="link-to-prism">src/infrastructure/services/project.service.ts:79</a></div>
                         </td>
                     </tr>
 
@@ -721,15 +722,13 @@
   Injectable,
   NotFoundException,
   BadRequestException,
-  Inject,
-  forwardRef,
 } from &#x27;@nestjs/common&#x27;;
 import { InjectModel } from &#x27;@nestjs/mongoose&#x27;;
 import { Model } from &#x27;mongoose&#x27;;
 import { Project } from &#x27;src/domain/entities/project.entity&#x27;;
 import { Tenant } from &#x27;src/domain/entities/tenant.entity&#x27;;
 import { projectModel } from &#x27;src/presentation/dtos/project.model&#x27;;
-import { v4 as uuidv4 } from &#x27;uuid&#x27;;
+import * as crypto from &#x27;crypto&#x27;;
 
 @Injectable()
 export class ProjectService {
@@ -744,13 +743,12 @@ export class ProjectService {
   ): Promise&lt;Project[]&gt; {
     const { name, callBackUrl } &#x3D; createProjectDto;
     const tenant &#x3D; await this.tenantModel.findById(tenantID);
-    console.log(tenant);
     if (!tenant) {
       throw new NotFoundException(&#x60;Tenant with ID ${tenantID} not found&#x60;);
     }
 
-    const clientID &#x3D; uuidv4();
-    const clientSECRET &#x3D; uuidv4();
+    const clientID &#x3D; crypto.randomBytes(16).toString(&#x27;hex&#x27;);
+    const clientSECRET &#x3D; crypto.randomBytes(32).toString(&#x27;hex&#x27;);
 
     const createdProject &#x3D; new this.projectModel({
       tenantID,
@@ -759,32 +757,34 @@ export class ProjectService {
       name,
       callBackUrl,
     });
-    console.log(createdProject);
     try {
       tenant.projects.push(createdProject);
       await tenant.save();
-      const projectList &#x3D; await this.findAllPerTenant(tenantID);
+      const projectList &#x3D; await this.findAllProjectsPerTenant(tenantID);
       return projectList;
     } catch (error) {
       throw new BadRequestException(&#x27;Failed to create project&#x27;);
     }
   }
 
-  async findAllPerTenant(tenantID: string): Promise&lt;Project[]&gt; {
+  async findAllProjectsPerTenant(tenantID: string): Promise&lt;Project[]&gt; {
     const tenant &#x3D; await this.tenantModel.findById(tenantID);
     if (!tenant) {
       throw new NotFoundException(&#x60;Tenant with ID: ${tenantID} not found&#x60;);
     }
     if (tenant.projects.length &gt;&#x3D; 1) {
       return tenant.projects;
+    } else {
+      throw new NotFoundException(&#x27;no projects created yet&#x27;);
     }
   }
 
   async findOne(projectID: string): Promise&lt;Project&gt; {
     const targetTenant &#x3D; await this.tenantModel
-      .findOne({ &#x27;projects._id&#x27;: projectID })
+      .findOne({
+        &#x27;projects._id&#x27;: projectID,
+      })
       .exec();
-
     const project &#x3D; targetTenant.projects.find(
       (proj) &#x3D;&gt; proj._id.toString() &#x3D;&#x3D;&#x3D; projectID,
     );
@@ -831,7 +831,7 @@ export class ProjectService {
     }
   }
 
-  async undelete(id: string, tenantID: string): Promise&lt;any&gt; {
+  async undelete(id: string, tenantID: string): Promise&lt;Project&gt; {
     const tenant &#x3D; await this.tenantModel.findById(tenantID);
     if (!tenant) {
       throw new NotFoundException(&#x60;Tenant with ID: ${tenantID} not found&#x60;);
@@ -839,7 +839,9 @@ export class ProjectService {
 
     const project &#x3D; tenant.projects.find((proj) &#x3D;&gt; proj._id.toString() &#x3D;&#x3D;&#x3D; id);
     if (!project) {
-      throw new NotFoundException(&#x60;Project with ID: ${id} not found in tenant&#x60;);
+      throw new NotFoundException(
+        &#x60;you are not able to delete this project because you don&#x27;t own it&#x60;,
+      );
     }
 
     project.deleted &#x3D; false;
@@ -851,10 +853,10 @@ export class ProjectService {
     }
   }
 
-  async delete(id: string, tenantID: string): Promise&lt;any&gt; {
+  async delete(id: string, tenantID: string): Promise&lt;Project[]&gt; {
     const tenant &#x3D; await this.tenantModel.findById(tenantID);
     if (!tenant) {
-      throw new NotFoundException(&#x60;Tenant with ID: ${tenantID} not found&#x60;);
+      throw new NotFoundException(&#x60;Tenant not found&#x60;);
     }
 
     if (!tenant.projects || !Array.isArray(tenant.projects)) {

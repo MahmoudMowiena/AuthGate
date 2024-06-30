@@ -80,16 +80,19 @@
                    <compodoc-menu mode="normal"></compodoc-menu>
                </div>
                <!-- START CONTENT -->
-               <div class="content controller">
+               <div class="content injectable">
                    <div class="content-data">
 
 
 
 
 
+
+
+
 <ol class="breadcrumb">
-  <li class="breadcrumb-item">Controllers</li>
-  <li class="breadcrumb-item" >PaypalController</li>
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >FacebookAuthStrategy</li>
 </ol>
 
 <ul class="nav nav-tabs" role="tablist">
@@ -113,19 +116,20 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/presentation/controllers/paypal.controller.ts</code>
+            <code>src/infrastructure/Strategies/facebookAuth.strategy.ts</code>
         </p>
 
+
+
             <p class="comment">
-                <h3>Prefix</h3>
+                <h3>Extends</h3>
             </p>
             <p class="comment">
-                <code>paypal</code>
+                        <code>PassportStrategy(
+  Strategy,
+  &#x27;facebook&#x27;,
+)</code>
             </p>
-
-
-
-
 
 
             <section data-compodoc="block-index">
@@ -142,14 +146,8 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
-                                    <span class="modifier"></span>
                                     <span class="modifier">Async</span>
-                                <a href="#captureOrder" >captureOrder</a>
-                            </li>
-                            <li>
-                                    <span class="modifier"></span>
-                                    <span class="modifier">Async</span>
-                                <a href="#createOrder" >createOrder</a>
+                                <a href="#validate" >validate</a>
                             </li>
                         </ul>
                     </td>
@@ -163,6 +161,67 @@
     </table>
 </section>
 
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(configService: ConfigService, authService: <a href="../injectables/AuthService.html" target="_self">AuthService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/infrastructure/Strategies/facebookAuth.strategy.ts:11</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>configService</td>
+                                                  
+                                                        <td>
+                                                                    <code>ConfigService</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>authService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AuthService.html" target="_self" >AuthService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
             <section data-compodoc="block-methods">
     
     <h3 id="methods">
@@ -172,34 +231,26 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="captureOrder"></a>
+                    <a name="validate"></a>
                     <span class="name">
-                            <span class="modifier"></span>
                             <span class="modifier">Async</span>
-                        <span ><b>captureOrder</b></span>
-                        <a href="#captureOrder"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>validate</b></span>
+                        <a href="#validate"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>captureOrder(orderId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                    <code>validate(accessToken: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, refreshToken: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, profile: Profile, done: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" target="_blank">Function</a>)</code>
                 </td>
             </tr>
 
-            <tr>
-                <td class="col-md-4">
-                    <b>Decorators : </b>
-                    <br />
-                    <code>@Post(&#x27;capture-order/:orderId&#x27;)<br /></code>
-                </td>
-            </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="19"
-                                    class="link-to-prism">src/presentation/controllers/paypal.controller.ts:19</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="24"
+                                    class="link-to-prism">src/infrastructure/Strategies/facebookAuth.strategy.ts:24</a></div>
                         </td>
                     </tr>
 
@@ -220,9 +271,45 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                                <td>orderId</td>
+                                                <td>accessToken</td>
                                             <td>
                                                             <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>refreshToken</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>profile</td>
+                                            <td>
+                                                        <code>Profile</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>done</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" target="_blank" >Function</a></code>
                                             </td>
 
                                             <td>
@@ -245,90 +332,62 @@
             </tr>
         </tbody>
     </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="createOrder"></a>
-                    <span class="name">
-                            <span class="modifier"></span>
-                            <span class="modifier">Async</span>
-                        <span ><b>createOrder</b></span>
-                        <a href="#createOrder"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                        <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>createOrder()</code>
-                </td>
-            </tr>
+</section>
 
-            <tr>
-                <td class="col-md-4">
-                    <b>Decorators : </b>
-                    <br />
-                    <code>@Post(&#x27;create-order&#x27;)<br /></code>
-                </td>
-            </tr>
-
-                    <tr>
-                        <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="9"
-                                    class="link-to-prism">src/presentation/controllers/paypal.controller.ts:9</a></div>
-                        </td>
-                    </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-
-                        <div class="io-description">
-                            <b>Returns : </b>    <code>unknown</code>
-
-                        </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</section>    </div>
+    </div>
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Controller, Post, Body, Param } from &#x27;@nestjs/common&#x27;;
-import { PaypalService } from &#x27;src/infrastructure/paypal/paypal.service&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { AuthService } from &#x27;./../services/auth.service&#x27;;
+import { Strategy, Profile } from &#x27;passport-facebook&#x27;;
+import { Injectable, UnauthorizedException } from &#x27;@nestjs/common&#x27;;
+import { PassportStrategy } from &#x27;@nestjs/passport&#x27;;
+import { ConfigService } from &#x27;@nestjs/config&#x27;;
 
-@Controller(&#x27;paypal&#x27;)
-export class PaypalController {
-  constructor(private readonly paypalService: PaypalService) {}
-
-  @Post(&#x27;create-order&#x27;)
-  async createOrder() {
-    const order &#x3D; await this.paypalService.createOrder();
-    return {
-      id: order.id,
-      status: order.status,
-      links: order.links,
-    };
+@Injectable()
+export class FacebookAuthStrategy extends PassportStrategy(
+  Strategy,
+  &#x27;facebook&#x27;,
+) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly authService: AuthService,
+  ) {
+    super({
+      clientID: configService.get&lt;string&gt;(&#x27;FACEBOOK_CLIENT_ID&#x27;),
+      clientSecret: configService.get&lt;string&gt;(&#x27;FACEBOOK_CLIENT_SECRET&#x27;),
+      callbackURL: configService.get&lt;string&gt;(&#x27;FACEBOOk_CALLBACK_URL&#x27;),
+      profileFields: [&#x27;id&#x27;, &#x27;name&#x27;, &#x27;emails&#x27;, &#x27;photos&#x27;],
+      scope: [&#x27;email&#x27;],
+    });
   }
-
-  @Post(&#x27;capture-order/:orderId&#x27;)
-  async captureOrder(@Param(&#x27;orderId&#x27;) orderId: string) {
-    const capture &#x3D; await this.paypalService.captureOrder(orderId);
-    return {
-      id: capture.id,
-      status: capture.status,
-      payer: capture.payer,
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile,
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    done: Function,
+  ) {
+    const { name, emails, photos } &#x3D; profile;
+    const user &#x3D; {
+      facebookId: profile.id,
+      email: emails &amp;&amp; emails[0] &amp;&amp; emails[0].value,
+      firstName: name.givenName,
+      lastName: name.familyName,
+      picture: photos[0].value,
     };
+
+    const existingUser &#x3D; await this.authService.validateFacebookUser(user);
+    if (!existingUser) {
+      return done(new UnauthorizedException(), false);
+    }
+    done(null, existingUser);
   }
 }
 </code></pre>
     </div>
+
 </div>
-
-
-
 
 
 
@@ -367,8 +426,8 @@ export class PaypalController {
 
        <script>
             var COMPODOC_CURRENT_PAGE_DEPTH = 1;
-            var COMPODOC_CURRENT_PAGE_CONTEXT = 'controller';
-            var COMPODOC_CURRENT_PAGE_URL = 'PaypalController.html';
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'FacebookAuthStrategy.html';
             var MAX_SEARCH_RESULTS = 15;
        </script>
 

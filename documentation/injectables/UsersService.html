@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -149,11 +150,23 @@
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
+                                <a href="#delete" >delete</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#findAll" >findAll</a>
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
+                                <a href="#findAllUsersWithProjects" >findAllUsersWithProjects</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
                                 <a href="#findByEmail" >findByEmail</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#findByFacebookId" >findByFacebookId</a>
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
@@ -169,7 +182,11 @@
                             </li>
                             <li>
                                     <span class="modifier">Async</span>
-                                <a href="#findId" >findId</a>
+                                <a href="#findByIdWithProjects" >findByIdWithProjects</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#findUserByProjectId" >findUserByProjectId</a>
                             </li>
                             <li>
                                     <span class="modifier">Private</span>
@@ -214,12 +231,12 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(userModel: <a href="../classes/User.html" target="_self">Model&lt;UserDocument&gt;</a>, imageService: <a href="../injectables/ImageService.html" target="_self">ImageService</a>, projectservice: <a href="../injectables/ProjectService.html" target="_self">ProjectService</a>, tenantservice: <a href="../injectables/TenantsService.html" target="_self">TenantsService</a>)</code>
+<code>constructor(userModel: <a href="../classes/User.html" target="_self">Model&lt;UserDocument&gt;</a>, imageService: <a href="../injectables/ImageService.html" target="_self">ImageService</a>, tenantservice: <a href="../injectables/TenantsService.html" target="_self">TenantsService</a>)</code>
                     </td>
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">src/infrastructure/services/users.service.ts:25</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/infrastructure/services/users.service.ts:19</a></div>
                             </td>
                         </tr>
 
@@ -253,18 +270,6 @@
                                                   
                                                         <td>
                                                                         <code><a href="../injectables/ImageService.html" target="_self" >ImageService</a></code>
-                                                        </td>
-                                                  
-                                                    <td>
-                                                            No
-                                                    </td>
-                                                    
-                                                </tr>
-                                                <tr>
-                                                        <td>projectservice</td>
-                                                  
-                                                        <td>
-                                                                        <code><a href="../injectables/ProjectService.html" target="_self" >ProjectService</a></code>
                                                         </td>
                                                   
                                                     <td>
@@ -320,8 +325,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="219"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:219</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="250"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:250</a></div>
                         </td>
                     </tr>
 
@@ -401,8 +406,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="33"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:33</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="26"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:26</a></div>
                         </td>
                     </tr>
 
@@ -470,8 +475,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="38"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:38</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="31"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:31</a></div>
                         </td>
                     </tr>
 
@@ -521,6 +526,87 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
+                    <a name="delete"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>delete</b></span>
+                        <a href="#delete"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>delete(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, userID: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="212"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:212</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>userID</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
                     <a name="findAll"></a>
                     <span class="name">
                             <span class="modifier">Async</span>
@@ -539,8 +625,47 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="43"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:43</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="36"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:36</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User[]&gt;</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findAllUsersWithProjects"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>findAllUsersWithProjects</b></span>
+                        <a href="#findAllUsersWithProjects"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>findAllUsersWithProjects()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="44"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:44</a></div>
                         </td>
                     </tr>
 
@@ -578,8 +703,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="65"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:65</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="64"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:64</a></div>
                         </td>
                     </tr>
 
@@ -616,6 +741,75 @@
                             </div>
                         <div class="io-description">
                             <b>Returns : </b>        <code><a href="../classes/userModel.html" target="_self" >Promise&lt;userModel&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findByFacebookId"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>findByFacebookId</b></span>
+                        <a href="#findByFacebookId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>findByFacebookId(facebookId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="95"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:95</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>facebookId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -785,8 +979,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="55"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:55</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="49"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:49</a></div>
                         </td>
                     </tr>
 
@@ -836,26 +1030,26 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="findId"></a>
+                    <a name="findByIdWithProjects"></a>
                     <span class="name">
                             <span class="modifier">Async</span>
-                        <span ><b>findId</b></span>
-                        <a href="#findId"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>findByIdWithProjects</b></span>
+                        <a href="#findByIdWithProjects"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>findId(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                    <code>findByIdWithProjects(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
                 </td>
             </tr>
 
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="51"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:51</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="53"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:53</a></div>
                         </td>
                     </tr>
 
@@ -892,6 +1086,75 @@
                             </div>
                         <div class="io-description">
                             <b>Returns : </b>        <code><a href="../classes/userModel.html" target="_self" >Promise&lt;userModel&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findUserByProjectId"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>findUserByProjectId</b></span>
+                        <a href="#findUserByProjectId"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>findUserByProjectId(projectId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="263"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:263</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>projectId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;any | null&gt;</code>
 
                         </div>
                             <div class="io-description">
@@ -924,8 +1187,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="69"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:69</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="68"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:68</a></div>
                         </td>
                     </tr>
 
@@ -993,8 +1256,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="199"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:199</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="202"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:202</a></div>
                         </td>
                     </tr>
 
@@ -1030,7 +1293,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -1062,8 +1325,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="95"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:95</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="99"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:99</a></div>
                         </td>
                     </tr>
 
@@ -1131,8 +1394,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="209"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:209</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="240"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:240</a></div>
                         </td>
                     </tr>
 
@@ -1168,7 +1431,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -1200,8 +1463,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="99"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:99</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="103"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:103</a></div>
                         </td>
                     </tr>
 
@@ -1281,8 +1544,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="141"
-                                    class="link-to-prism">src/infrastructure/services/users.service.ts:141</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="145"
+                                    class="link-to-prism">src/infrastructure/services/users.service.ts:145</a></div>
                         </td>
                     </tr>
 
@@ -1330,7 +1593,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -1349,7 +1612,6 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
   BadRequestException,
   ConflictException,
-  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -1357,24 +1619,18 @@
 import { InjectModel } from &#x27;@nestjs/mongoose&#x27;;
 import { Model } from &#x27;mongoose&#x27;;
 import { userModel } from &#x27;../../presentation/dtos/user.model&#x27;;
-import { userProjectModel } from &#x27;src/presentation/dtos/userProject.dto&#x27;;
 import { User, UserDocument } from &#x27;../../domain/entities/user.entity&#x27;;
 import { ImageService } from &#x27;src/infrastructure/services/image.service&#x27;;
 import { updateUserModel } from &#x27;src/presentation/dtos/updateUser.model&#x27;;
 import * as bcrypt from &#x27;bcrypt&#x27;;
-import { ProjectService } from &#x27;./project.service&#x27;;
 import { TenantsService } from &#x27;./tenants.service&#x27;;
-import { projectModel } from &#x27;src/presentation/dtos/project.model&#x27;;
 import { jwtConstants } from &#x27;../../constants&#x27;;
-import { error } from &#x27;console&#x27;;
-import { ExceptionsHandler } from &#x27;@nestjs/core/exceptions/exceptions-handler&#x27;;
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model&lt;UserDocument&gt;,
     private imageService: ImageService,
-    private projectservice: ProjectService,
     private tenantservice: TenantsService,
   ) {}
 
@@ -1389,29 +1645,35 @@ export class UsersService {
   }
 
   async findAll(): Promise&lt;User[]&gt; {
-    const users &#x3D; this.userModel.find().exec();
-    for (const user of await users) {
+    const users &#x3D; await this.userModel.find();
+    for (const user of users) {
       user.projects &#x3D; await this.getUserProjects(user.projects);
     }
     return users;
   }
 
-  async findId(id: string): Promise&lt;userModel&gt; {
-    return await this.userModel.findById(id).exec();
+  async findAllUsersWithProjects(): Promise&lt;User[]&gt; {
+    const users &#x3D; await this.userModel.find().populate(&#x27;projects&#x27;);
+    return users;
   }
 
   async findById(id: string): Promise&lt;userModel&gt; {
-    const user &#x3D; this.userModel.findById(id).exec();
+    return await this.userModel.findById(id);
+  }
+
+  async findByIdWithProjects(id: string): Promise&lt;userModel&gt; {
+    const user &#x3D; await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException(&#x27;User not found&#x27;);
     }
 
-    (await user).projects &#x3D; await this.getUserProjects((await user).projects);
+    user.projects &#x3D; await this.getUserProjects(user.projects);
+
     return user;
   }
 
   async findByEmail(email: string): Promise&lt;userModel&gt; {
-    return this.userModel.findOne({ email }).exec();
+    return await this.userModel.findOne({ email });
   }
 
   private async getUserProjects(projectRef: any[]): Promise&lt;any[]&gt; {
@@ -1432,12 +1694,17 @@ export class UsersService {
     }
     return targetProject;
   }
+
   async findByGitHubId(githubId: string): Promise&lt;User&gt; {
     return this.userModel.findOne({ githubId }).exec();
   }
 
   async findByGoogleId(googleId: string): Promise&lt;User&gt; {
     return this.userModel.findOne({ googleId }).exec();
+  }
+
+  async findByFacebookId(facebookId: string): Promise&lt;User&gt; {
+    return this.userModel.findOne({ facebookId }).exec();
   }
 
   async save(user: User | any): Promise&lt;any&gt; {
@@ -1489,7 +1756,7 @@ export class UsersService {
   async updateWithPassword(
     id: string,
     updateUserDto: updateUserModel,
-  ): Promise&lt;any&gt; {
+  ): Promise&lt;User&gt; {
     let newEmail: any;
     let targetUser: userModel;
     const user &#x3D; await this.userModel.findById(id).exec();
@@ -1513,7 +1780,6 @@ export class UsersService {
           updateUserDto.oldPassword,
           user.password,
         );
-        console.log(&#x27;it matches&#x27;);
         if (!isMatch) {
           throw new BadRequestException(&#x27;Old password is incorrect&#x27;);
         }
@@ -1544,7 +1810,7 @@ export class UsersService {
     }
   }
 
-  async remove(id: string): Promise&lt;any&gt; {
+  async remove(id: string): Promise&lt;User&gt; {
     const user &#x3D; await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException(&#x27;User not found&#x27;);
@@ -1554,8 +1820,36 @@ export class UsersService {
     return user;
   }
 
-  async undelete(id: string): Promise&lt;any&gt; {
-    const user &#x3D; await this.userModel.findById(id).exec();
+  async delete(id: string, userID: string): Promise&lt;User&gt; {
+    const user &#x3D; await this.userModel.findById(userID);
+    if (!user) {
+      throw new NotFoundException(&#x60;Tenant not found&#x60;);
+    }
+
+    if (!user.projects || !Array.isArray(user.projects)) {
+      throw new BadRequestException(
+        &#x27;Projects list is not available for this tenant&#x27;,
+      );
+    }
+
+    const project &#x3D; user.projects.find(
+      (proj) &#x3D;&gt; proj.projectID.toString() &#x3D;&#x3D;&#x3D; id,
+    );
+    if (!project) {
+      throw new NotFoundException(&#x60;Project with ID: ${id} not found in tenant&#x60;);
+    }
+
+    project.deleted &#x3D; true;
+    try {
+      await user.save({ validateModifiedOnly: true });
+      return user;
+    } catch (error) {
+      throw new BadRequestException(&#x27;Failed to delete project&#x27;);
+    }
+  }
+
+  async undelete(id: string): Promise&lt;User&gt; {
+    const user &#x3D; await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException(&#x27;user not found&#x27;);
     }
@@ -1575,6 +1869,10 @@ export class UsersService {
     user.image &#x3D;
       jwtConstants.imageUrl + &#x27;users/&#x27; + &#x60;${id}/&#x60; + image.originalname;
     return user.save();
+  }
+
+  async findUserByProjectId(projectId: string): Promise&lt;any | null&gt; {
+    return this.userModel.findOne({ &#x27;projects._id&#x27;: projectId });
   }
 }
 </code></pre>
