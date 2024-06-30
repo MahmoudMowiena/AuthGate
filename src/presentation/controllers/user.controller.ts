@@ -37,12 +37,12 @@ export class UserController {
   ) {}
 
   @Get()
-  findAll() {
+  findAll(): Promise<userModel[]> {
     return this.userService.findAll();
   }
 
   @Get(':id')
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id') id: string): Promise<userModel> {
     try {
       const user = await this.userService.findById(id);
       if (!user) {
@@ -58,7 +58,7 @@ export class UserController {
   }
 
   @Get('projects/:id')
-  async getByIdWithProjects(@Param('id') id: string) {
+  async getByIdWithProjects(@Param('id') id: string): Promise<userModel> {
     try {
       const user = await this.userService.findByIdWithProjects(id);
       if (!user) {
@@ -74,7 +74,7 @@ export class UserController {
   }
 
   @Get('email/:email')
-  async getByEmail(@Param('email') email: string) {
+  async getByEmail(@Param('email') email: string): Promise<userModel> {
     try {
       const user = await this.userService.findByEmail(email);
       if (!user) {
@@ -93,7 +93,7 @@ export class UserController {
   async addProjectToUserByProjectId(
     @Body() body: { projectId: string, codeChallenge: string },
     @Headers('Authorization') authHeader: string,
-  ) {
+  ): Promise<any> {
     try {
       const { projectId, codeChallenge } = body;
       const payload = await this.verifyTokenAndGetPayload(authHeader);
@@ -184,7 +184,7 @@ export class UserController {
   async undelete(
     @Param('id') id: string,
     @Headers('Authorization') authHeader: string,
-  ): Promise<User[]> {
+  ): Promise<userModel[]> {
     try {
       const payload = await this.verifyTokenAndGetPayload(authHeader);
       if (payload.role === 'admin') {
@@ -203,7 +203,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<User[]> {
+  async remove(@Param('id') id: string): Promise<userModel[]> {
     try {
       const user = await this.userService.remove(id);
       if (!user) {
@@ -222,7 +222,7 @@ export class UserController {
   async removeProject(
     @Param('id') id: string,
     @Headers('Authorization') authHeader: string,
-  ): Promise<User> {
+  ): Promise<userModel> {
     let targetUser: any = '';
     const payload = await this.verifyTokenAndGetPayload(authHeader);
     const userID = payload.sub;
