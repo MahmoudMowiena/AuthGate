@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -121,13 +122,13 @@
 <title>cluster_UserModule_imports</title>
 <polygon fill="none" stroke="black" points="833,-78 833,-130 947,-130 947,-78 833,-78"/>
 </g>
-<g id="clust4" class="cluster">
-<title>cluster_UserModule_exports</title>
-<polygon fill="none" stroke="black" points="434,-208 434,-260 658,-260 658,-208 434,-208"/>
-</g>
 <g id="clust6" class="cluster">
 <title>cluster_UserModule_providers</title>
 <polygon fill="none" stroke="black" points="16,-78 16,-130 825,-130 825,-78 16,-78"/>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_UserModule_exports</title>
+<polygon fill="none" stroke="black" points="434,-208 434,-260 658,-260 658,-208 434,-208"/>
 </g>
 <!-- TenantModule -->
 <g id="node1" class="node">
@@ -345,7 +346,6 @@ import { User, userSchema } from &#x27;../domain/entities/user.entity&#x27;;
 import { UserController } from &#x27;../presentation/controllers/user.controller&#x27;;
 import { UsersService } from &#x27;src/infrastructure/services/users.service&#x27;;
 import { AuthService } from &#x27;src/infrastructure/services/auth.service&#x27;;
-import { TenantsService } from &#x27;src/infrastructure/services/tenants.service&#x27;;
 import { TenantModule } from &#x27;./tenant.module&#x27;;
 import { ImageService } from &#x27;src/infrastructure/services/image.service&#x27;;
 import { ProjectsModule } from &#x27;./project.module&#x27;;
@@ -357,6 +357,7 @@ import { EmailService } from &#x27;src/infrastructure/services/email.service&#x2
     TenantModule,
     MongooseModule.forFeature([{ name: User.name, schema: userSchema }]),
     forwardRef(() &#x3D;&gt; ProjectsModule),
+    forwardRef(() &#x3D;&gt; TenantModule),
   ],
   providers: [
     AuthService,

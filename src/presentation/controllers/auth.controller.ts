@@ -20,6 +20,8 @@ import { UsersService } from 'src/infrastructure/services/users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
+import { SignInUserResponse } from '../dtos/signInUserResponse.model';
+import { SignInTenantResponse } from '../dtos/signInTenantResponse.model';
 
 @Controller('auth')
 export class AuthController {

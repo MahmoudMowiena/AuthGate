@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -145,6 +146,11 @@
                             <li>
                                     <span class="modifier">Private</span>
                                 <a href="#extractTokenFromHeader" >extractTokenFromHeader</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#verifyTokenAndGetPayload" >verifyTokenAndGetPayload</a>
                             </li>
                         </ul>
                     </td>
@@ -303,8 +309,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="34"
-                                    class="link-to-prism">src/presentation/guards/auth.guard.ts:34</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="40"
+                                    class="link-to-prism">src/presentation/guards/auth.guard.ts:40</a></div>
                         </td>
                     </tr>
 
@@ -350,6 +356,76 @@
             </tr>
         </tbody>
     </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="verifyTokenAndGetPayload"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>verifyTokenAndGetPayload</b></span>
+                        <a href="#verifyTokenAndGetPayload"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>verifyTokenAndGetPayload(token: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="30"
+                                    class="link-to-prism">src/presentation/guards/auth.guard.ts:30</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>token</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </section>
         </div>
 
@@ -376,16 +452,22 @@ export class AuthenticationGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
-      const payload &#x3D; await this.jwtService.verifyAsync(token, {
-        secret: jwtConstants.secret,
-      });
-      // 💡 We&#x27;re assigning the payload to the request object here
-      // so that we can access it in our route handlers
+      const payload &#x3D; await this.verifyTokenAndGetPayload(token);
       request[&#x27;user&#x27;] &#x3D; payload;
     } catch {
       throw new UnauthorizedException();
     }
     return true;
+  }
+
+  private async verifyTokenAndGetPayload(token: string): Promise&lt;any&gt; {
+    try {
+      return await this.jwtService.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+    } catch (error) {
+      throw new UnauthorizedException(&#x27;Invalid token&#x27;);
+    }
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

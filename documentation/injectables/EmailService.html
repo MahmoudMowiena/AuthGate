@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -362,9 +363,9 @@ export class EmailService {
 
   constructor(private configService: ConfigService) {
     this.transporter &#x3D; nodemailer.createTransport({
-      host: &#x27;smtp.office365.com&#x27;, // e.g., &#x27;smtp.gmail.com&#x27;
-      port: 587, // For TLS: 587, For SSL: 465
-      secure: false, // true for 465, false for other ports
+      host: &#x27;smtp.office365.com&#x27;,
+      port: 587,
+      secure: false,
       auth: {
         user: this.configService.get&lt;string&gt;(&#x27;GMAIL_USER&#x27;),
         pass: this.configService.get&lt;string&gt;(&#x27;GMAIL_PASS&#x27;),

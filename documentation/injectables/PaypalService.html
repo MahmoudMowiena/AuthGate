@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -246,8 +247,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="45"
-                                    class="link-to-prism">src/infrastructure/paypal/paypal.service.ts:45</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="50"
+                                    class="link-to-prism">src/infrastructure/paypal/paypal.service.ts:50</a></div>
                         </td>
                     </tr>
 
@@ -404,11 +405,16 @@ export class PaypalService {
       purchase_units: [
         {
           amount: {
-            currency_code: &#x27;EGP&#x27;,
-            value: &#x27;10.00&#x27;,
+            currency_code: &#x27;USD&#x27;,
+            value: &#x27;5.00&#x27;,
+            description: &#x27;Buy me a coffee&#x27;,
           },
         },
       ],
+      application_context: {
+        return_url: &#x27;http://localhost:4200/paypal/callback&#x27;, // Your callback URL
+        cancel_url: &#x27;http://localhost:4200/paypal/cancel&#x27;, // Your cancel URL
+      },
     });
 
     const order &#x3D; await this.payPalClient.execute(request);
@@ -429,7 +435,7 @@ export class PaypalService {
       payerName: &#x60;${capture.result.payer.name.given_name} ${capture.result.payer.name.surname}&#x60;,
     };
 
-    await this.paypalTransactionService.createTransaction(transactionData);
+    //await this.paypalTransactionService.createTransaction(transactionData);
 
     return capture.result;
   }

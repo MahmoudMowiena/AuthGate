@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -143,7 +144,7 @@
                             <li>
                                     <span class="modifier"></span>
                                     <span class="modifier">Async</span>
-                                <a href="#adduserProjectByProjectId" >adduserProjectByProjectId</a>
+                                <a href="#addProjectToUserByProjectId" >addProjectToUserByProjectId</a>
                             </li>
                             <li>
                                     <span class="modifier"></span>
@@ -162,7 +163,17 @@
                             <li>
                                     <span class="modifier"></span>
                                     <span class="modifier">Async</span>
+                                <a href="#getByIdWithProjects" >getByIdWithProjects</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
                                 <a href="#remove" >remove</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#removeProject" >removeProject</a>
                             </li>
                             <li>
                                     <span class="modifier"></span>
@@ -185,6 +196,11 @@
                                     <span class="modifier">Async</span>
                                 <a href="#uploadImage" >uploadImage</a>
                             </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#verifyTokenAndGetPayload" >verifyTokenAndGetPayload</a>
+                            </li>
                         </ul>
                     </td>
                 </tr>
@@ -206,19 +222,19 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="adduserProjectByProjectId"></a>
+                    <a name="addProjectToUserByProjectId"></a>
                     <span class="name">
                             <span class="modifier"></span>
                             <span class="modifier">Async</span>
-                        <span ><b>adduserProjectByProjectId</b></span>
-                        <a href="#adduserProjectByProjectId"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>addProjectToUserByProjectId</b></span>
+                        <a href="#addProjectToUserByProjectId"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>adduserProjectByProjectId(body: literal type, authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                    <code>addProjectToUserByProjectId(body: literal type, authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
                 </td>
             </tr>
 
@@ -232,8 +248,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="75"
-                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:75</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="93"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:93</a></div>
                         </td>
                     </tr>
 
@@ -320,8 +336,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="38"
-                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:38</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="40"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:40</a></div>
                         </td>
                     </tr>
 
@@ -367,8 +383,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="59"
-                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:59</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="77"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:77</a></div>
                         </td>
                     </tr>
 
@@ -444,8 +460,85 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="43"
-                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:43</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="45"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getByIdWithProjects"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>getByIdWithProjects</b></span>
+                        <a href="#getByIdWithProjects"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getByIdWithProjects(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Get(&#x27;projects/:id&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="61"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:61</a></div>
                         </td>
                     </tr>
 
@@ -521,8 +614,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="182"
-                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:182</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="205"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:205</a></div>
                         </td>
                     </tr>
 
@@ -558,7 +651,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User[]&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -572,19 +665,19 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
-                    <a name="undelete"></a>
+                    <a name="removeProject"></a>
                     <span class="name">
                             <span class="modifier"></span>
                             <span class="modifier">Async</span>
-                        <span ><b>undelete</b></span>
-                        <a href="#undelete"><span class="icon ion-ios-link"></span></a>
+                        <span ><b>removeProject</b></span>
+                        <a href="#removeProject"><span class="icon ion-ios-link"></span></a>
                     </span>
                 </td>
             </tr>
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>undelete(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                    <code>removeProject(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
                 </td>
             </tr>
 
@@ -592,14 +685,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch(&#x27;:id/undelete&#x27;)<br /></code>
+                    <code>@Delete(&#x27;project/:id&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="159"
-                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:159</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="221"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:221</a></div>
                         </td>
                     </tr>
 
@@ -647,7 +740,96 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="undelete"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>undelete</b></span>
+                        <a href="#undelete"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>undelete(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Patch(&#x27;undelete/:id&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="183"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:183</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>authHeader</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/User.html" target="_self" >Promise&lt;User[]&gt;</a></code>
 
                         </div>
                             <div class="io-description">
@@ -687,8 +869,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="114"
-                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:114</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="138"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:138</a></div>
                         </td>
                     </tr>
 
@@ -776,8 +958,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="135"
-                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:135</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="159"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:159</a></div>
                         </td>
                     </tr>
 
@@ -866,8 +1048,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="199"
-                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:199</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="245"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:245</a></div>
                         </td>
                     </tr>
 
@@ -925,6 +1107,76 @@
             </tr>
         </tbody>
     </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="verifyTokenAndGetPayload"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>verifyTokenAndGetPayload</b></span>
+                        <a href="#verifyTokenAndGetPayload"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>verifyTokenAndGetPayload(authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="252"
+                                    class="link-to-prism">src/presentation/controllers/user.controller.ts:252</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>authHeader</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </section>    </div>
 
 
@@ -942,6 +1194,7 @@
   Param,
   Patch,
   Post,
+  UnauthorizedException,
   UploadedFile,
   UseInterceptors,
 } from &#x27;@nestjs/common&#x27;;
@@ -953,7 +1206,8 @@ import { FileInterceptor } from &#x27;@nestjs/platform-express&#x27;;
 import { JwtService } from &#x27;@nestjs/jwt&#x27;;
 import { updateUserModel } from &#x27;../dtos/updateUser.model&#x27;;
 import { ProjectService } from &#x27;src/infrastructure/services/project.service&#x27;;
-import { error } from &#x27;console&#x27;;
+import { jwtConstants } from &#x27;src/constants&#x27;;
+import { User } from &#x27;src/domain/entities/user.entity&#x27;;
 
 @Controller(&#x27;users&#x27;)
 export class UserController {
@@ -986,6 +1240,22 @@ export class UserController {
     }
   }
 
+  @Get(&#x27;projects/:id&#x27;)
+  async getByIdWithProjects(@Param(&#x27;id&#x27;) id: string) {
+    try {
+      const user &#x3D; await this.userService.findByIdWithProjects(id);
+      if (!user) {
+        throw new HttpException(&#x27;User not found&#x27;, HttpStatus.NOT_FOUND);
+      }
+      return user;
+    } catch (error) {
+      throw new HttpException(
+        &#x27;Failed to retrieve user&#x27;,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Get(&#x27;email/:email&#x27;)
   async getByEmail(@Param(&#x27;email&#x27;) email: string) {
     try {
@@ -1003,18 +1273,24 @@ export class UserController {
   }
 
   @Post()
-  async adduserProjectByProjectId(
+  async addProjectToUserByProjectId(
     @Body() body: { projectId: string },
     @Headers(&#x27;Authorization&#x27;) authHeader: string,
   ) {
     try {
-      const token &#x3D; authHeader.split(&#x27; &#x27;)[1];
       const { projectId } &#x3D; body;
-      let result: any;
-      const targetProject &#x3D; await this.projectservice.findOne(projectId);
+      const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+      const userId &#x3D; payload.sub;
+      let result;
 
+      const targetProject &#x3D; await this.projectservice.findOne(projectId);
       if (targetProject.deleted &#x3D;&#x3D;&#x3D; false) {
-        result &#x3D; await this.authservice.processAuth(projectId, token);
+        const projectName &#x3D; targetProject.name;
+        result &#x3D; await this.authservice.processAuth(
+          projectId,
+          userId,
+          projectName,
+        );
       } else {
         throw new HttpException(
           &#x27;project not found, or has been deleted&#x27;,
@@ -1047,8 +1323,8 @@ export class UserController {
     @Headers(&#x27;Authorization&#x27;) authHeader: any,
   ): Promise&lt;userModel&gt; {
     try {
-      const token &#x3D; authHeader.split(&#x27; &#x27;)[1];
-      const userId &#x3D; this.jwtservice.verify(token).sub;
+      const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+      const userId &#x3D; payload.sub;
       const updatedUser &#x3D; await this.userService.update(userId, updateUserDto);
       if (!updatedUser) {
         throw new HttpException(&#x27;User not found&#x27;, HttpStatus.NOT_FOUND);
@@ -1068,8 +1344,8 @@ export class UserController {
     @Headers(&#x27;Authorization&#x27;) authHeader: any,
   ): Promise&lt;userModel&gt; {
     try {
-      const token &#x3D; authHeader.split(&#x27; &#x27;)[1];
-      const userId &#x3D; this.jwtservice.verify(token).sub;
+      const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+      const userId &#x3D; payload.sub;
       const updatedUser &#x3D; await this.userService.updateWithPassword(
         userId,
         updateUserDto,
@@ -1086,14 +1362,13 @@ export class UserController {
     }
   }
 
-  @Patch(&#x27;:id/undelete&#x27;)
+  @Patch(&#x27;undelete/:id&#x27;)
   async undelete(
     @Param(&#x27;id&#x27;) id: string,
     @Headers(&#x27;Authorization&#x27;) authHeader: string,
-  ): Promise&lt;any&gt; {
+  ): Promise&lt;User[]&gt; {
     try {
-      const token &#x3D; authHeader.split(&#x27; &#x27;)[1];
-      const payload &#x3D; this.jwtservice.verify(token);
+      const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
       if (payload.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
         const user &#x3D; await this.userService.undelete(id);
         if (!user) {
@@ -1110,7 +1385,7 @@ export class UserController {
   }
 
   @Delete(&#x27;:id&#x27;)
-  async remove(@Param(&#x27;id&#x27;) id: string): Promise&lt;any&gt; {
+  async remove(@Param(&#x27;id&#x27;) id: string): Promise&lt;User[]&gt; {
     try {
       const user &#x3D; await this.userService.remove(id);
       if (!user) {
@@ -1125,6 +1400,29 @@ export class UserController {
     }
   }
 
+  @Delete(&#x27;project/:id&#x27;)
+  async removeProject(
+    @Param(&#x27;id&#x27;) id: string,
+    @Headers(&#x27;Authorization&#x27;) authHeader: string,
+  ): Promise&lt;User&gt; {
+    let targetUser: any &#x3D; &#x27;&#x27;;
+    const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+    const userID &#x3D; payload.sub;
+    const user &#x3D; await this.userService.findById(userID);
+    if (user &amp;&amp; user.role &#x3D;&#x3D;&#x3D; &#x27;user&#x27;) {
+      return await this.userService.delete(id, userID);
+    } else {
+      if (user &amp;&amp; user.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
+        targetUser &#x3D; await this.userService.findUserByProjectId(id);
+        if (!targetUser) {
+          throw new NotFoundException(&#x27;User not found for given project ID&#x27;);
+        }
+        let targetUserId &#x3D; targetUser._id;
+        return await this.userService.delete(id, targetUserId);
+      }
+    }
+  }
+
   @Post(&#x27;image/:id&#x27;)
   @UseInterceptors(FileInterceptor(&#x27;image&#x27;))
   async uploadImage(
@@ -1132,6 +1430,18 @@ export class UserController {
     @UploadedFile() image: Express.Multer.File,
   ) {
     return await this.userService.addImage(id, image);
+  }
+
+  private async verifyTokenAndGetPayload(authHeader: string): Promise&lt;any&gt; {
+    try {
+      const token &#x3D; authHeader.split(&#x27; &#x27;)[1];
+      const payload &#x3D; await this.jwtservice.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException(&#x27;Invalid token&#x27;);
+    }
   }
 }
 </code></pre>
