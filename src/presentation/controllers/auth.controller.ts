@@ -9,6 +9,7 @@ import {
   Req,
   Request,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthenticationGuard } from '../guards/auth.guard';
@@ -20,6 +21,7 @@ import { UsersService } from 'src/infrastructure/services/users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
+import * as CryptoJS from 'crypto-js';
 import { SignInUserResponse } from '../dtos/signInUserResponse.model';
 import { SignInTenantResponse } from '../dtos/signInTenantResponse.model';
 
@@ -29,7 +31,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private tenantsService: TenantsService,
-  ) {}
+  ) { }
 
   private readonly frontendUrl = 'http://localhost:4200';
 
@@ -59,18 +61,30 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('authcode')
-  async exchangeCodeWithToken(@Body() obj: { authCode: string }) {
-    const { authCode } = obj;
+  async exchangeCodeWithToken(@Body() obj: { AuthCode: string, CodeVerifier: string }) {
+    const { AuthCode, CodeVerifier } = obj;
 
     const users = await this.usersService.findAll();
 
     const userWithProject = users.find((user) =>
-      user.projects.some((project) => project.authorizationCode === authCode),
+      user.projects.some((project) => project.authorizationCode === AuthCode),
     );
 
     const targetUserProject = userWithProject?.projects.find(
-      (project) => project.authorizationCode === authCode,
+      (project) => project.authorizationCode === AuthCode,
     );
+
+    const hashedCodeVerifier = CryptoJS.SHA256(CodeVerifier).toString(CryptoJS.enc.Base64);
+
+    
+    console.log("after");
+
+    console.log(hashedCodeVerifier);
+    console.log(targetUserProject.codeChallenge);
+
+    if (hashedCodeVerifier !== targetUserProject.codeChallenge) {
+      throw new UnauthorizedException();
+    }
 
     return {
       auth_token: targetUserProject.authorizationAccessToken,
@@ -106,7 +120,7 @@ export class AuthController {
 
   @Get('github')
   @UseGuards(AuthGuard('github'))
-  async loginWithGitHub() {}
+  async loginWithGitHub() { }
 
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))
@@ -122,7 +136,7 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async loginWithGoogle() {}
+  async loginWithGoogle() { }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
@@ -138,7 +152,7 @@ export class AuthController {
 
   @Get('facebook')
   @UseGuards(AuthGuard('facebook'))
-  async loginWithFacebook() {}
+  async loginWithFacebook() { }
 
   @Get('facebook/callback')
   @UseGuards(AuthGuard('facebook'))

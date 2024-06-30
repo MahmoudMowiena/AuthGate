@@ -31,6 +31,9 @@ export class UserProject {
 
   @Prop({ default: false })
   deleted?: boolean;
+
+  @Prop()
+  codeChallenge: string
 }
 
 export const userProjectSchema = SchemaFactory.createForClass(UserProject);

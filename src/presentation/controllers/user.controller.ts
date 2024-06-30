@@ -91,11 +91,11 @@ export class UserController {
 
   @Post()
   async addProjectToUserByProjectId(
-    @Body() body: { projectId: string },
+    @Body() body: { projectId: string, codeChallenge: string },
     @Headers('Authorization') authHeader: string,
   ): Promise<any> {
     try {
-      const { projectId } = body;
+      const { projectId, codeChallenge } = body;
       const payload = await this.verifyTokenAndGetPayload(authHeader);
       const userId = payload.sub;
       let result;
@@ -107,6 +107,7 @@ export class UserController {
           projectId,
           userId,
           projectName,
+          codeChallenge
         );
       } else {
         throw new HttpException(
