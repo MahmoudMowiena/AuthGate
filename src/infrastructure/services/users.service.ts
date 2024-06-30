@@ -34,14 +34,6 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    const users = await this.userModel.find();
-    for (const user of users) {
-      user.projects = await this.getUserProjects(user.projects);
-    }
-    return users;
-  }
-
-  async findAllUsersWithProjects(): Promise<User[]> {
     const users = await this.userModel.find().populate('projects');
     return users;
   }

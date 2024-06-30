@@ -62,7 +62,7 @@ export class AuthController {
   async exchangeCodeWithToken(@Body() obj: { authCode: string }) {
     const { authCode } = obj;
 
-    const users = await this.usersService.findAllUsersWithProjects();
+    const users = await this.usersService.findAll();
 
     const userWithProject = users.find((user) =>
       user.projects.some((project) => project.authorizationCode === authCode),
@@ -80,10 +80,12 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('token/user')
-  async exchangeTokenForUserData(@Body() obj: { token: string }) {
+  async exchangeTokenForUserData(
+    @Body() obj: { token: string },
+  ): Promise<userModel> {
     const { token } = obj;
 
-    const users = await this.usersService.findAllUsersWithProjects();
+    const users = await this.usersService.findAll();
 
     const userWithProject = users.find((user) =>
       user.projects.some(
