@@ -267,16 +267,18 @@ export class UsersService {
     }
   }
 
-  async addImage(id: string, image: Express.Multer.File): Promise<User> {
+
+  async addImage(id: string, imageBuffer: Buffer, imageName: string): Promise<User> {
+
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    await this.imageService.upload('users', id, image);
+    await this.imageService.upload('users', id, imageBuffer, imageName);
 
     user.image =
-      jwtConstants.imageUrl + 'users/' + `${id}/` + image.originalname;
+      jwtConstants.imageUrl + 'users/' + `${id}/` + imageName;
     return user.save();
   }
 
