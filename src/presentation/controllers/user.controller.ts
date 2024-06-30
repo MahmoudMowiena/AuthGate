@@ -13,6 +13,7 @@ import {
   Post,
   UnauthorizedException,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { userModel } from '../dtos/user.model';
@@ -25,6 +26,9 @@ import { updateUserModel } from '../dtos/updateUser.model';
 import { ProjectService } from 'src/infrastructure/services/project.service';
 import { jwtConstants } from 'src/constants';
 import { User } from 'src/domain/entities/user.entity';
+import { SharpPipe } from '../pipes/sharp.pipe';
+import { AuthGuard } from '@nestjs/passport';
+import { AuthenticationGuard } from '../guards/auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -242,12 +246,15 @@ export class UserController {
   }
 
   @Post('image/:id')
+  @UseGuards(AuthenticationGuard)
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(
     @Param('id') id: string,
     @UploadedFile() image: Express.Multer.File,
+    @UploadedFile(SharpPipe) imageBuffer: Buffer
   ) {
-    return await this.userService.addImage(id, image);
+    const imageName: string = image.originalname;
+    return await this.userService.addImage(id, imageBuffer, imageName);
   }
 
   private async verifyTokenAndGetPayload(authHeader: string): Promise<any> {
