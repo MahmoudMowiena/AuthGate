@@ -151,6 +151,7 @@ export class ProjectService {
     }
 
     project.deleted = true;
+    //const users = this.userService.findAll();
     try {
       await tenant.save({ validateModifiedOnly: true });
       return tenant.projects;

@@ -239,7 +239,37 @@ export class UsersService {
     return user;
   }
 
+  async unremove(id: string, userID: string): Promise<User> {
+    const user = await this.userModel.findById(userID);
+    if (!user) {
+      throw new NotFoundException(`Tenant not found`);
+    }
+
+    if (!user.projects || !Array.isArray(user.projects)) {
+      throw new BadRequestException(
+        'Projects list is not available for this tenant',
+      );
+    }
+
+    const project = user.projects.find(
+      (proj) => proj.projectID.toString() === id,
+    );
+    if (!project) {
+      throw new NotFoundException(`Project with ID: ${id} not found in tenant`);
+    }
+
+    project.deleted = false;
+    try {
+      await user.save({ validateModifiedOnly: true });
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Failed to delete project');
+    }
+  }
+
+
   async addImage(id: string, imageBuffer: Buffer, imageName: string): Promise<User> {
+
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException('User not found');
@@ -252,7 +282,10 @@ export class UsersService {
     return user.save();
   }
 
-  async findUserByProjectId(projectId: string): Promise<any | null> {
-    return this.userModel.findOne({ 'projects._id': projectId });
+  async findUserByProjectId(projectId: string): Promise<userModel> {
+    const targetUser = await this.userModel.findOne({
+      'projects.projectID': projectId,
+    });
+    return targetUser;
   }
 }

@@ -76,4 +76,8 @@ export class userModel {
   @IsOptional()
   @IsBoolean()
   deleted?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isFirstTime?: boolean;
 }
