@@ -91,11 +91,12 @@ export class UserController {
 
   @Post()
   async addProjectToUserByProjectId(
-    @Body() body: { projectId: string },
+    @Body() body: { projectId: string, codeChallenge: string },
     @Headers('Authorization') authHeader: string,
   ) {
     try {
-      const { projectId } = body;
+      const { projectId, codeChallenge } = body;
+      
       let result;
 
       const targetProject = await this.projectservice.findOne(projectId);
@@ -107,6 +108,7 @@ export class UserController {
           projectId,
           userId,
           projectName,
+          codeChallenge
         );
       } else {
         throw new HttpException(
