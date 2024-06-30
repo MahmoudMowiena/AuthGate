@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -149,6 +150,18 @@
                             <li>
                                     <span class="modifier"></span>
                                     <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#exchangeTokenForUserData" >exchangeTokenForUserData</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#facebookAuthCallback" >facebookAuthCallback</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier"></span>
                                 <a href="#getProfile" >getProfile</a>
                             </li>
                             <li>
@@ -162,6 +175,17 @@
                                     <span class="modifier"></span>
                                     <span class="modifier">Async</span>
                                 <a href="#googleAuthCallback" >googleAuthCallback</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#isTenant" >isTenant</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#loginWithFacebook" >loginWithFacebook</a>
                             </li>
                             <li>
                                     <span class="modifier"></span>
@@ -299,6 +323,173 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
+                    <a name="exchangeTokenForUserData"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>exchangeTokenForUserData</b></span>
+                        <a href="#exchangeTokenForUserData"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>exchangeTokenForUserData(obj: literal type)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@HttpCode(HttpStatus.OK)<br />@Post(&#x27;token/user&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="81"
+                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:81</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>obj</td>
+                                            <td>
+                                                        <code>literal type</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="facebookAuthCallback"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>facebookAuthCallback</b></span>
+                        <a href="#facebookAuthCallback"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>facebookAuthCallback(req, res: Response)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Get(&#x27;facebook/callback&#x27;)<br />@UseGuards(undefined)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="141"
+                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:141</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>req</td>
+                                            <td>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>res</td>
+                                            <td>
+                                                        <code>Response</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>unknown</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
                     <a name="getProfile"></a>
                     <span class="name">
                             <span class="modifier"></span>
@@ -399,8 +590,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="85"
-                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:85</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="109"
+                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:109</a></div>
                         </td>
                     </tr>
 
@@ -488,8 +679,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="104"
-                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:104</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="125"
+                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:125</a></div>
                         </td>
                     </tr>
 
@@ -550,6 +741,143 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
+                    <a name="isTenant"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>isTenant</b></span>
+                        <a href="#isTenant"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>isTenant(clientId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, clientSecret: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Post(&#x27;istenant&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="170"
+                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:170</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>clientId</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>clientSecret</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loginWithFacebook"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>loginWithFacebook</b></span>
+                        <a href="#loginWithFacebook"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>loginWithFacebook()</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Get(&#x27;facebook&#x27;)<br />@UseGuards(undefined)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="137"
+                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:137</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
                     <a name="loginWithGitHub"></a>
                     <span class="name">
                             <span class="modifier"></span>
@@ -577,8 +905,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="80"
-                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:80</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="105"
+                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:105</a></div>
                         </td>
                     </tr>
 
@@ -625,8 +953,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="98"
-                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:98</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="121"
+                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:121</a></div>
                         </td>
                     </tr>
 
@@ -672,8 +1000,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="121"
-                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:121</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="157"
+                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:157</a></div>
                         </td>
                     </tr>
 
@@ -773,8 +1101,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="116"
-                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:116</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="152"
+                                    class="link-to-prism">src/presentation/controllers/auth.controller.ts:152</a></div>
                         </td>
                     </tr>
 
@@ -1056,8 +1384,8 @@
 
     <div class="tab-pane fade  tab-source-code" id="source">
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
-  BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Get,
   HttpCode,
@@ -1070,23 +1398,23 @@
 } from &#x27;@nestjs/common&#x27;;
 import { AuthenticationGuard } from &#x27;../guards/auth.guard&#x27;;
 import { AuthService } from &#x27;src/infrastructure/services/auth.service&#x27;;
-import { SignInRequest } from &#x27;../dtos/signInRequest.dto&#x27;;
+import { SignInRequest } from &#x27;../dtos/signInRequest.model&#x27;;
 import { userModel } from &#x27;../dtos/user.model&#x27;;
 import { tenantModel } from &#x27;../dtos/tenant.model&#x27;;
 import { UsersService } from &#x27;src/infrastructure/services/users.service&#x27;;
-import { User } from &#x27;src/domain/entities/user.entity&#x27;;
-import { Types } from &#x27;mongoose&#x27;;
 import { AuthGuard } from &#x27;@nestjs/passport&#x27;;
-import { JwtService } from &#x27;@nestjs/jwt&#x27;;
 import { Response } from &#x27;express&#x27;;
+import { TenantsService } from &#x27;src/infrastructure/services/tenants.service&#x27;;
 
 @Controller(&#x27;auth&#x27;)
 export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
-    private jwtService: JwtService,
+    private tenantsService: TenantsService,
   ) {}
+
+  private readonly frontendUrl &#x3D; &#x27;http://localhost:4200&#x27;;
 
   @HttpCode(HttpStatus.OK)
   @Post(&#x27;login&#x27;)
@@ -1114,47 +1442,68 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post(&#x27;authcode&#x27;)
-  async exchangeCodeWithToken(
-    @Body() obj: { projectId: string; userId: string; authCode: string },
-  ) {
-    const { projectId, userId, authCode } &#x3D; obj;
-    const user: userModel &#x3D; await this.usersService.findById(userId);
-    if (!user) throw new BadRequestException(&#x27;user does not exist&#x27;);
+  async exchangeCodeWithToken(@Body() obj: { authCode: string }) {
+    const { authCode } &#x3D; obj;
 
-    const userProject &#x3D; user.projects.find(
-      (project) &#x3D;&gt; project.projectID.toString() &#x3D;&#x3D;&#x3D; projectId,
+    const users &#x3D; await this.usersService.findAllUsersWithProjects();
+
+    const userWithProject &#x3D; users.find((user) &#x3D;&gt;
+      user.projects.some((project) &#x3D;&gt; project.authorizationCode &#x3D;&#x3D;&#x3D; authCode),
     );
 
-    if (userProject.authorizationCode &#x3D;&#x3D; authCode) {
-      return {
-        auth_token: userProject.authorizationAccessToken,
-      };
+    const targetUserProject &#x3D; userWithProject?.projects.find(
+      (project) &#x3D;&gt; project.authorizationCode &#x3D;&#x3D;&#x3D; authCode,
+    );
+
+    return {
+      auth_token: targetUserProject.authorizationAccessToken,
+      userWithProject,
+    };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post(&#x27;token/user&#x27;)
+  async exchangeTokenForUserData(@Body() obj: { token: string }) {
+    const { token } &#x3D; obj;
+
+    const users &#x3D; await this.usersService.findAllUsersWithProjects();
+
+    const userWithProject &#x3D; users.find((user) &#x3D;&gt;
+      user.projects.some(
+        (project) &#x3D;&gt; project.authorizationAccessToken &#x3D;&#x3D;&#x3D; token,
+      ),
+    );
+
+    const targetUserProject &#x3D; userWithProject?.projects.find(
+      (project) &#x3D;&gt; project.authorizationAccessToken &#x3D;&#x3D;&#x3D; token,
+    );
+
+    if (!targetUserProject.expireDate &amp;&amp; !targetUserProject.deleted) {
+      return userWithProject;
+    } else {
+      throw new ConflictException(&#x27;project may be deleted or token expired&#x27;);
     }
   }
 
   @Get(&#x27;github&#x27;)
   @UseGuards(AuthGuard(&#x27;github&#x27;))
-  async loginWithGitHub() {
-    //
-  }
+  async loginWithGitHub() {}
+
   @Get(&#x27;github/callback&#x27;)
   @UseGuards(AuthGuard(&#x27;github&#x27;))
   async githubAuthCallback(@Req() req, @Res() res: Response) {
     const user1 &#x3D; req.user;
     const { access_token, user } &#x3D;
-      await this.authService.signInWithGoogle(user1);
+      await this.authService.signInWithGitHub(user1);
 
-    // Redirect to the Angular frontend with tokens in query parameters
-    const redirectUrl &#x3D; &#x60;http://localhost:4200/auth/github/callback?token&#x3D;${access_token}&amp;user&#x3D;${JSON.stringify(user)}&#x60;;
+    const redirectUrl &#x3D; &#x60;${this.frontendUrl}/auth/github/callback?token&#x3D;${access_token}&amp;user&#x3D;${JSON.stringify(user)}&#x60;;
 
     return res.redirect(redirectUrl);
   }
 
   @Get(&#x27;google&#x27;)
   @UseGuards(AuthGuard(&#x27;google&#x27;))
-  async loginWithGoogle() {
-    // Initiates Google OAuth flow
-  }
+  async loginWithGoogle() {}
 
   @Get(&#x27;google/callback&#x27;)
   @UseGuards(AuthGuard(&#x27;google&#x27;))
@@ -1163,8 +1512,23 @@ export class AuthController {
     const { access_token, user } &#x3D;
       await this.authService.signInWithGoogle(user1);
 
-    // Redirect to the Angular frontend with tokens in query parameters
-    const redirectUrl &#x3D; &#x60;http://localhost:4200/auth/google/callback?token&#x3D;${access_token}&amp;user&#x3D;${JSON.stringify(user)}&#x60;;
+    const redirectUrl &#x3D; &#x60;${this.frontendUrl}/auth/google/callback?token&#x3D;${access_token}&amp;user&#x3D;${JSON.stringify(user)}&#x60;;
+
+    return res.redirect(redirectUrl);
+  }
+
+  @Get(&#x27;facebook&#x27;)
+  @UseGuards(AuthGuard(&#x27;facebook&#x27;))
+  async loginWithFacebook() {}
+
+  @Get(&#x27;facebook/callback&#x27;)
+  @UseGuards(AuthGuard(&#x27;facebook&#x27;))
+  async facebookAuthCallback(@Req() req, @Res() res: Response) {
+    const user1 &#x3D; req.user;
+    const { access_token, user } &#x3D;
+      await this.authService.signInWithFacebook(user1);
+
+    const redirectUrl &#x3D; &#x60;${this.frontendUrl}/auth/facebook/callback?token&#x3D;${access_token}&amp;user&#x3D;${encodeURIComponent(JSON.stringify(user))}&#x60;;
 
     return res.redirect(redirectUrl);
   }
@@ -1185,6 +1549,14 @@ export class AuthController {
       newPassword,
       confirmNewPassword,
     );
+  }
+
+  @Post(&#x27;istenant&#x27;)
+  async isTenant(
+    @Body(&#x27;clientId&#x27;) clientId: string,
+    @Body(&#x27;clientSecret&#x27;) clientSecret: string,
+  ) {
+    this.tenantsService.authorizeClient(clientId, clientSecret);
   }
 }
 </code></pre>

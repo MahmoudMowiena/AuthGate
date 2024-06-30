@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -403,7 +404,7 @@
                         <b>Decorators : </b>
                         <br />
                         <code>
-                            @Prop({required: true})<br />@IsString()<br />@IsNotEmpty()<br />
+                            @Prop({required: true, unique: true})<br />@IsString()<br />@IsNotEmpty()<br />
                         </code>
                     </td>
                 </tr>
@@ -447,7 +448,7 @@ export class Project extends Document {
   @IsOptional()
   clientSECRET: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   @IsString()
   @IsNotEmpty()
   name: string;

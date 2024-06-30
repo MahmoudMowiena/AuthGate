@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -119,7 +120,7 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/presentation/dtos/signInUserResponse.dto.ts</code>
+            <code>src/presentation/dtos/signInUserResponse.model.ts</code>
         </p>
 
 
@@ -221,7 +222,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="5" class="link-to-prism">src/presentation/dtos/signInUserResponse.dto.ts:5</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="12" class="link-to-prism">src/presentation/dtos/signInUserResponse.model.ts:12</a></div>
                         </td>
                     </tr>
 
@@ -259,7 +260,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="23" class="link-to-prism">src/presentation/dtos/signInUserResponse.dto.ts:23</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">src/presentation/dtos/signInUserResponse.model.ts:30</a></div>
                         </td>
                     </tr>
 
@@ -295,7 +296,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/presentation/dtos/signInUserResponse.dto.ts:11</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="18" class="link-to-prism">src/presentation/dtos/signInUserResponse.model.ts:18</a></div>
                         </td>
                     </tr>
 
@@ -333,7 +334,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="19" class="link-to-prism">src/presentation/dtos/signInUserResponse.dto.ts:19</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/presentation/dtos/signInUserResponse.model.ts:26</a></div>
                         </td>
                     </tr>
 
@@ -369,7 +370,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="8" class="link-to-prism">src/presentation/dtos/signInUserResponse.dto.ts:8</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/presentation/dtos/signInUserResponse.model.ts:15</a></div>
                         </td>
                     </tr>
 
@@ -407,7 +408,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/presentation/dtos/signInUserResponse.dto.ts:15</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="22" class="link-to-prism">src/presentation/dtos/signInUserResponse.model.ts:22</a></div>
                         </td>
                     </tr>
 
@@ -443,7 +444,7 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/presentation/dtos/signInUserResponse.dto.ts:26</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="33" class="link-to-prism">src/presentation/dtos/signInUserResponse.model.ts:33</a></div>
                         </td>
                     </tr>
 
@@ -462,7 +463,14 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { IsEmail, IsNumber, IsOptional, IsString } from &#x27;class-validator&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  IsArray,
+  IsEmail,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from &#x27;class-validator&#x27;;
+import { UserProject } from &#x27;src/domain/entities/userProject.entity&#x27;;
 
 export class SignInUserResponse {
   @IsString()

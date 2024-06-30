@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 	   <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
     </head>
     <body>
           <script>
@@ -311,7 +312,6 @@ export class IndexManagementService implements OnModuleInit {
       await this.userModel.collection.dropIndex(&#x27;googleId_1&#x27;);
     } catch (error) {
       if (error.code !&#x3D;&#x3D; 27) {
-        // 27 is the code for &quot;index not found&quot;
         throw error;
       }
     }
@@ -320,7 +320,14 @@ export class IndexManagementService implements OnModuleInit {
       await this.userModel.collection.dropIndex(&#x27;githubId_1&#x27;);
     } catch (error) {
       if (error.code !&#x3D;&#x3D; 27) {
-        // 27 is the code for &quot;index not found&quot;
+        throw error;
+      }
+    }
+
+    try {
+      await this.userModel.collection.dropIndex(&#x27;facebookId_1&#x27;);
+    } catch (error) {
+      if (error.code !&#x3D;&#x3D; 27) {
         throw error;
       }
     }
@@ -331,6 +338,10 @@ export class IndexManagementService implements OnModuleInit {
     );
     await this.userModel.collection.createIndex(
       { githubId: 1 },
+      { unique: true, sparse: true },
+    );
+    await this.userModel.collection.createIndex(
+      { facebookId: 1 },
       { unique: true, sparse: true },
     );
   }
