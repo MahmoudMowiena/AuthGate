@@ -154,9 +154,8 @@ export class AuthService {
     projectId: any,
     userId: string,
     projectName: string,
-    codeChallenge: string
+    codeChallenge: string,
   ): Promise<any> {
-
     const user: userModel = await this.usersService.findById(userId);
 
     if (!user) {
@@ -184,7 +183,7 @@ export class AuthService {
       authorizationAccessToken,
       name,
       expireDate,
-      codeChallenge
+      codeChallenge,
     };
 
     const existingUserProject: UserProject = user.projects?.find(
@@ -231,6 +230,7 @@ export class AuthService {
   async validateGitHubUser(profile: any): Promise<User> {
     const { id, username, displayName, photos } = profile;
     let user = await this.usersService.findByGitHubId(id);
+
     if (!user) {
       let userEmail = `${username}${Math.floor(Math.random() * 10000)}@authGate.com`;
       let notUnique = await this.usersService.findByEmail(userEmail);
@@ -248,8 +248,12 @@ export class AuthService {
         confirmPassword: hashedPassword,
         role: 'user',
         email: userEmail,
+        isFirstTime: true,
       });
+    } else {
+      user.isFirstTime = false;
     }
+
     return user;
   }
 
@@ -273,6 +277,7 @@ export class AuthService {
         age: user.age,
         githubId: user.githubId,
         role: 'user',
+        isFirstTime: user.isFirstTime,
       },
     };
   }

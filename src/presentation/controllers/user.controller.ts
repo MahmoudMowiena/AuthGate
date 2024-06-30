@@ -91,7 +91,7 @@ export class UserController {
 
   @Post()
   async addProjectToUserByProjectId(
-    @Body() body: { projectId: string, codeChallenge: string },
+    @Body() body: { projectId: string; codeChallenge: string },
     @Headers('Authorization') authHeader: string,
   ): Promise<any> {
     try {
@@ -107,7 +107,7 @@ export class UserController {
           projectId,
           userId,
           projectName,
-          codeChallenge
+          codeChallenge,
         );
       } else {
         throw new HttpException(
@@ -238,6 +238,35 @@ export class UserController {
         let targetUserId = targetUser._id;
         return await this.userService.delete(id, targetUserId);
       }
+    }
+  }
+
+  @Patch('undelete-project/:id')
+  async unremove(
+    @Param('id') id: string,
+    @Headers('Authorization') authHeader: string,
+  ): Promise<userModel> {
+    try {
+      let targetUser: any = '';
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
+      if (payload.role === 'admin') {
+        targetUser = await this.userService.findUserByProjectId(id);
+        if (!targetUser) {
+          throw new NotFoundException('User not found for given project ID');
+        }
+        let targetUserId = targetUser._id;
+        const user = await this.userService.unremove(id, targetUserId);
+        if (!user) {
+          throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+        }
+
+        return user;
+      }
+    } catch (error) {
+      throw new HttpException(
+        'Failed to undelete the project of this user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
