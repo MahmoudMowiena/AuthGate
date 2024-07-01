@@ -74,6 +74,55 @@ export class ProjectsController {
     return await this.projectService.findOne(id);
   }
 
+  // @Patch(':id')
+  // async update(
+  //   @Param('id') id: string,
+  //   @Body() updateProjectDto: projectModel,
+  //   @Headers('Authorization') authHeader: string,
+  // ): Promise<projectModel> {
+  //   const payload = await this.verifyTokenAndGetPayload(authHeader);
+  //   const tenantID = payload.sub;
+  //   const neededTenant = await this.tenantservice.findById(tenantID);
+  //   const oldname = neededTenant.projects.find(
+  //     (pro) => pro._id.toString() === id,
+  //   ).name;
+  //   const projectList: any = await this.projectService.update(
+  //     id,
+  //     updateProjectDto,
+  //     neededTenant,
+  //   );
+  //   if (projectList) {
+  //     if (neededTenant) {
+  //       const neededProject = neededTenant.projects.find(
+  //         (pro) => pro._id.toString() === id,
+  //       );
+  //       if (neededProject) {
+  //         //console.log(neededTenant);
+  //         //console.log('-------------------------');
+  //         //console.log(neededProject);
+  //         if (oldname !== updateProjectDto.name) {
+  //           let users: any[] = await this.userservice.findAll();
+  //           //console.log('-------------------------');
+  //           //console.log(users);
+  //           //console.log('-------------------------');
+  //           for (const item of users) {
+  //             let projectFound = item.projects.find(
+  //               (pro) => pro.projectID === id,
+  //             );
+  //             if (projectFound) {
+  //               console.log('-------------------------');
+  //               console.log(projectFound);
+  //               item.projectFound.name = updateProjectDto.name;
+  //               item.save();
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return projectList;
+  // }
+
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -82,11 +131,39 @@ export class ProjectsController {
   ): Promise<projectModel> {
     const payload = await this.verifyTokenAndGetPayload(authHeader);
     const tenantID = payload.sub;
+    const neededTenant = await this.tenantservice.findById(tenantID);
+
+    const oldname = neededTenant.projects.find(
+      (pro) => pro._id.toString() === id,
+    ).name;
+
     const projectList: any = await this.projectService.update(
       id,
       updateProjectDto,
-      tenantID,
+      neededTenant,
     );
+
+    if (projectList && neededTenant) {
+      const neededProject = neededTenant.projects.find(
+        (pro) => pro._id.toString() === id,
+      );
+
+      if (neededProject && oldname !== updateProjectDto.name) {
+        const users: any[] = await this.userservice.findAll();
+
+        for (const item of users) {
+          const projectFound = item.projects.find(
+            (pro) => pro.projectID === id,
+          );
+
+          if (projectFound) {
+            projectFound.name = updateProjectDto.name;
+            await item.save(); // Save the user to persist changes
+          }
+        }
+      }
+    }
+
     return projectList;
   }
 
@@ -128,7 +205,9 @@ export class ProjectsController {
     if (tenantUser) {
       if (tenantUser.role === 'tenant') {
         const projectList = await this.projectService.delete(id, userID);
-        await this.deleteProjectFromUsers(id);
+        if (projectList) {
+          await this.deleteProjectFromUsers(id);
+        }
         return projectList;
       } else {
         throw new ConflictException(
@@ -145,7 +224,9 @@ export class ProjectsController {
       }
       const tenantId = tenant._id;
       const projectList = await this.projectService.delete(id, tenantId);
-      await this.deleteProjectFromUsers(id);
+      if (projectList) {
+        await this.deleteProjectFromUsers(id);
+      }
       return projectList;
     }
 
@@ -157,18 +238,19 @@ export class ProjectsController {
   private async deleteProjectFromUsers(
     projectId: string,
   ): Promise<userModel[]> {
-    let usersAfterDeleteProject: any[];
     let users: any[] = await this.userservice.findAll();
     if (users) {
       for (let item of users) {
-        if (item.projects.projectID === projectId) {
-          usersAfterDeleteProject.push(
-            await this.userservice.delete(projectId, item.id),
-          );
+        let itemProject = item.projects.find(
+          (pro) => pro.projectID === projectId,
+        );
+        if (itemProject) {
+          itemProject.deleted = true;
+          item.save();
         }
       }
     }
-    return usersAfterDeleteProject;
+    return;
   }
 
   private async verifyTokenAndGetPayload(authHeader: string): Promise<any> {

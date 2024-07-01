@@ -9,6 +9,7 @@ import { Project } from 'src/domain/entities/project.entity';
 import { Tenant } from 'src/domain/entities/tenant.entity';
 import { projectModel } from 'src/presentation/dtos/project.model';
 import * as crypto from 'crypto';
+import { tenantModel } from 'src/presentation/dtos/tenant.model';
 
 @Injectable()
 export class ProjectService {
@@ -79,9 +80,9 @@ export class ProjectService {
   async update(
     id: string,
     updateProjectDto: projectModel,
-    tenantID: string,
+    tenant: tenantModel | any,
   ): Promise<Project> {
-    const tenant = await this.tenantModel.findById(tenantID);
+    //const tenant = await this.tenantModel.findById(tenantID);
     if (tenant) {
       if (!tenant.projects.find((proj) => proj._id.toString() === id)) {
         throw new NotFoundException(
