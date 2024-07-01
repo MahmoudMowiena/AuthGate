@@ -19,6 +19,7 @@ import { JwtService } from '@nestjs/jwt';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
 import { UsersService } from 'src/infrastructure/services/users.service';
 import { jwtConstants } from 'src/constants';
+import { userModel } from '../dtos/user.model';
 
 @Controller('projects')
 export class ProjectsController {
@@ -73,6 +74,55 @@ export class ProjectsController {
     return await this.projectService.findOne(id);
   }
 
+  // @Patch(':id')
+  // async update(
+  //   @Param('id') id: string,
+  //   @Body() updateProjectDto: projectModel,
+  //   @Headers('Authorization') authHeader: string,
+  // ): Promise<projectModel> {
+  //   const payload = await this.verifyTokenAndGetPayload(authHeader);
+  //   const tenantID = payload.sub;
+  //   const neededTenant = await this.tenantservice.findById(tenantID);
+  //   const oldname = neededTenant.projects.find(
+  //     (pro) => pro._id.toString() === id,
+  //   ).name;
+  //   const projectList: any = await this.projectService.update(
+  //     id,
+  //     updateProjectDto,
+  //     neededTenant,
+  //   );
+  //   if (projectList) {
+  //     if (neededTenant) {
+  //       const neededProject = neededTenant.projects.find(
+  //         (pro) => pro._id.toString() === id,
+  //       );
+  //       if (neededProject) {
+  //         //console.log(neededTenant);
+  //         //console.log('-------------------------');
+  //         //console.log(neededProject);
+  //         if (oldname !== updateProjectDto.name) {
+  //           let users: any[] = await this.userservice.findAll();
+  //           //console.log('-------------------------');
+  //           //console.log(users);
+  //           //console.log('-------------------------');
+  //           for (const item of users) {
+  //             let projectFound = item.projects.find(
+  //               (pro) => pro.projectID === id,
+  //             );
+  //             if (projectFound) {
+  //               console.log('-------------------------');
+  //               console.log(projectFound);
+  //               item.projectFound.name = updateProjectDto.name;
+  //               item.save();
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return projectList;
+  // }
+
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -81,11 +131,39 @@ export class ProjectsController {
   ): Promise<projectModel> {
     const payload = await this.verifyTokenAndGetPayload(authHeader);
     const tenantID = payload.sub;
+    const neededTenant = await this.tenantservice.findById(tenantID);
+
+    const oldname = neededTenant.projects.find(
+      (pro) => pro._id.toString() === id,
+    ).name;
+
     const projectList: any = await this.projectService.update(
       id,
       updateProjectDto,
-      tenantID,
+      neededTenant,
     );
+
+    if (projectList && neededTenant) {
+      const neededProject = neededTenant.projects.find(
+        (pro) => pro._id.toString() === id,
+      );
+
+      if (neededProject && oldname !== updateProjectDto.name) {
+        const users: any[] = await this.userservice.findAll();
+
+        for (const item of users) {
+          const projectFound = item.projects.find(
+            (pro) => pro.projectID === id,
+          );
+
+          if (projectFound) {
+            projectFound.name = updateProjectDto.name;
+            await item.save(); // Save the user to persist changes
+          }
+        }
+      }
+    }
+
     return projectList;
   }
 
@@ -114,31 +192,6 @@ export class ProjectsController {
     }
   }
 
-  // @Delete(':id')
-  // async remove(
-  //   @Param('id') id: string,
-  //   @Headers('Authorization') authHeader: string,
-  // ): Promise<projectModel[]> {
-  //   let tenant: any = '';
-  //   const payload = await this.verifyTokenAndGetPayload(authHeader);
-  //   const userID = payload.sub;
-  //   const user = await this.tenantservice.findById(userID);
-  //   if (user && user.role === 'tenant') {
-  //     return await this.projectService.delete(id, userID);
-  //   } else {
-  //     const user = await this.userservice.findById(userID);
-
-  //     if (user && user.role === 'admin') {
-  //       tenant = await this.tenantservice.findTenantByProjectId(id);
-  //       if (!tenant) {
-  //         throw new NotFoundException('Tenant not found for given project ID');
-  //       }
-  //       let tenantId = tenant._id;
-  //       return await this.projectService.delete(id, tenantId);
-  //     }
-  //   }
-  // }
-
   @Delete(':id')
   async remove(
     @Param('id') id: string,
@@ -151,7 +204,11 @@ export class ProjectsController {
     const tenantUser = await this.tenantservice.findById(userID);
     if (tenantUser) {
       if (tenantUser.role === 'tenant') {
-        return await this.projectService.delete(id, userID);
+        const projectList = await this.projectService.delete(id, userID);
+        if (projectList) {
+          await this.deleteProjectFromUsers(id);
+        }
+        return projectList;
       } else {
         throw new ConflictException(
           "You can't delete the project because of role authorization",
@@ -166,12 +223,34 @@ export class ProjectsController {
         throw new NotFoundException('Tenant not found for given project ID');
       }
       const tenantId = tenant._id;
-      return await this.projectService.delete(id, tenantId);
+      const projectList = await this.projectService.delete(id, tenantId);
+      if (projectList) {
+        await this.deleteProjectFromUsers(id);
+      }
+      return projectList;
     }
 
     throw new ConflictException(
       "You can't delete the project because of role authorization",
     );
+  }
+
+  private async deleteProjectFromUsers(
+    projectId: string,
+  ): Promise<userModel[]> {
+    let users: any[] = await this.userservice.findAll();
+    if (users) {
+      for (let item of users) {
+        let itemProject = item.projects.find(
+          (pro) => pro.projectID === projectId,
+        );
+        if (itemProject) {
+          itemProject.deleted = true;
+          item.save();
+        }
+      }
+    }
+    return;
   }
 
   private async verifyTokenAndGetPayload(authHeader: string): Promise<any> {
