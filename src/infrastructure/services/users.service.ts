@@ -14,6 +14,7 @@ import { updateUserModel } from 'src/presentation/dtos/updateUser.model';
 import * as bcrypt from 'bcrypt';
 import { TenantsService } from './tenants.service';
 import { jwtConstants } from '../../constants';
+import { CreateAdminDto } from 'src/presentation/dtos/createAdmin.model';
 
 @Injectable()
 export class UsersService {
@@ -26,6 +27,11 @@ export class UsersService {
   async create(createUserDto: userModel): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();
+  }
+
+  async createAdmin(createAdminDto: CreateAdminDto): Promise<User> {
+    const createdAdmin = new this.userModel(createAdminDto);
+    return createdAdmin.save();
   }
 
   async createGithubUser(createUserDto: userModel): Promise<User> {
