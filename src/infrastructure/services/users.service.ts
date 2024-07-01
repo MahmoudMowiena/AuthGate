@@ -109,7 +109,7 @@ export class UsersService {
         targetUser.email === newEmail &&
         user.email != newEmail
       ) {
-        throw new ConflictException('Email already exists, try to login');
+        throw new ConflictException('Email already exists, try another email');
       }
 
       const userAfterUpdate: any = await this.userModel
@@ -153,7 +153,7 @@ export class UsersService {
       }
 
       if (targetUser && targetUser.email === newEmail) {
-        throw new ConflictException('Email already exists, try to login');
+        throw new ConflictException('Email already exists, try another email');
       }
 
       if (updateUserDto.oldPassword) {
@@ -204,12 +204,12 @@ export class UsersService {
   async delete(id: string, userID: string): Promise<User> {
     const user = await this.userModel.findById(userID);
     if (!user) {
-      throw new NotFoundException(`Tenant not found`);
+      throw new NotFoundException(`user not found`);
     }
 
     if (!user.projects || !Array.isArray(user.projects)) {
       throw new BadRequestException(
-        'Projects list is not available for this tenant',
+        'Projects list is not available for this user',
       );
     }
 
@@ -217,7 +217,7 @@ export class UsersService {
       (proj) => proj.projectID.toString() === id,
     );
     if (!project) {
-      throw new NotFoundException(`Project with ID: ${id} not found in tenant`);
+      throw new NotFoundException(`Project not found for given user`);
     }
 
     project.deleted = true;
@@ -267,9 +267,11 @@ export class UsersService {
     }
   }
 
-
-  async addImage(id: string, imageBuffer: Buffer, imageName: string): Promise<User> {
-
+  async addImage(
+    id: string,
+    imageBuffer: Buffer,
+    imageName: string,
+  ): Promise<User> {
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException('User not found');
@@ -277,8 +279,7 @@ export class UsersService {
 
     await this.imageService.upload('users', id, imageBuffer, imageName);
 
-    user.image =
-      jwtConstants.imageUrl + 'users/' + `${id}/` + imageName;
+    user.image = jwtConstants.imageUrl + 'users/' + `${id}/` + imageName;
     return user.save();
   }
 

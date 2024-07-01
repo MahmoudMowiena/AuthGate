@@ -222,49 +222,44 @@ export class UserController {
     }
   }
 
-  @Delete('project/:id')
+  @Delete('project/:userId/:projectId')
   async removeProject(
-    @Param('id') id: string,
+    @Param('userId') userId: string,
+    @Param('projectId') projectId: string,
     @Headers('Authorization') authHeader: string,
   ): Promise<userModel> {
-    let targetUser: any = '';
-    const payload = await this.verifyTokenAndGetPayload(authHeader);
-    const userID = payload.sub;
-    const user = await this.userService.findById(userID);
-    if (user && user.role === 'user') {
-      return await this.userService.delete(id, userID);
+    const user = await this.userService.findById(userId);
+
+    if (user && user.role != 'tenant') {
+      return await this.userService.delete(projectId, userId);
     } else {
-      if (user && user.role === 'admin') {
-        targetUser = await this.userService.findUserByProjectId(id);
-        if (!targetUser) {
-          throw new NotFoundException('User not found for given project ID');
-        }
-        let targetUserId = targetUser._id;
-        return await this.userService.delete(id, targetUserId);
-      }
+      throw new NotFoundException('User not found');
     }
   }
 
-  @Patch('undelete-project/:id')
+  @Patch('undelete-project/:userId/:projectId')
   async unremove(
-    @Param('id') id: string,
+    @Param('userId') userId: string,
+    @Param('projectId') projectId: string,
     @Headers('Authorization') authHeader: string,
   ): Promise<userModel> {
     try {
       let targetUser: any = '';
       const payload = await this.verifyTokenAndGetPayload(authHeader);
       if (payload.role === 'admin') {
-        targetUser = await this.userService.findUserByProjectId(id);
+        targetUser = await this.userService.findById(userId);
         if (!targetUser) {
           throw new NotFoundException('User not found for given project ID');
         }
-        let targetUserId = targetUser._id;
-        const user = await this.userService.unremove(id, targetUserId);
+        // let targetUserId = targetUser._id;
+        const user = await this.userService.unremove(projectId, userId);
         if (!user) {
           throw new HttpException('user not found', HttpStatus.NOT_FOUND);
         }
 
         return user;
+      } else {
+        throw new UnauthorizedException('unauthorized action');
       }
     } catch (error) {
       throw new HttpException(
@@ -280,7 +275,7 @@ export class UserController {
   async uploadImage(
     @Param('id') id: string,
     @UploadedFile() image: Express.Multer.File,
-    @UploadedFile(SharpPipe) imageBuffer: Buffer
+    @UploadedFile(SharpPipe) imageBuffer: Buffer,
   ) {
     const imageName: string = image.originalname;
     return await this.userService.addImage(id, imageBuffer, imageName);

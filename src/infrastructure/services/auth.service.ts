@@ -99,7 +99,7 @@ export class AuthService {
 
     const existingUser = await this.usersService.findByEmail(email);
     if (existingUser) {
-      throw new ConflictException('Email already in use');
+      throw new BadRequestException('Email already in use');
     }
 
     const salt = 10;
@@ -282,17 +282,44 @@ export class AuthService {
     };
   }
 
+  // async validateGoogleUser(profile: any): Promise<User> {
+  //   const { id, displayName, emails, photos } = profile;
+
+  //   let user = await this.usersService.findByGoogleId(id);
+  //   if (!user) {
+  //     const email = emails && emails[0] && emails[0].value;
+  //     const hashedPassword = await bcrypt.hash(uuidv4(), 10);
+
+  //     user = await this.usersService.create({
+  //       name: displayName,
+  //       email: email,
+  //       googleId: id,
+  //       image: photos && photos[0] && photos[0].value,
+  //       password: hashedPassword,
+  //       confirmPassword: hashedPassword,
+  //       role: 'user',
+  //     });
+  //   }
+
+  //   return user;
+  // }
+
   async validateGoogleUser(profile: any): Promise<User> {
     const { id, displayName, emails, photos } = profile;
-
+    const email = emails && emails[0] && emails[0].value;
     let user = await this.usersService.findByGoogleId(id);
-    if (!user) {
-      const email = emails && emails[0] && emails[0].value;
+    if (user) {
+      user.googleId = id;
+      if (user.name === undefined || user.name === '' || user.name === null)
+        user.name = displayName;
+      if (user.image === undefined || user.image === '' || user.image === null)
+        user.image = photos && photos[0] && photos[0].value;
+      await this.usersService.save(user);
+    } else {
       const hashedPassword = await bcrypt.hash(uuidv4(), 10);
-
       user = await this.usersService.create({
-        name: displayName,
         email: email,
+        name: displayName,
         googleId: id,
         image: photos && photos[0] && photos[0].value,
         password: hashedPassword,
@@ -389,7 +416,7 @@ export class AuthService {
       user = await this.tenantsService.findByEmail(email);
     }
     if (!user) {
-      throw new Error(`User ${email} not found`);
+      throw new NotFoundException(`User doesn't exist`);
     }
 
     const resetToken = this.jwtService.sign(
