@@ -31,7 +31,7 @@ export class AuthController {
     private authService: AuthService,
     private usersService: UsersService,
     private tenantsService: TenantsService,
-  ) { }
+  ) {}
 
   private readonly frontendUrl = 'http://localhost:4200';
 
@@ -61,7 +61,9 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('authcode')
-  async exchangeCodeWithToken(@Body() obj: { AuthCode: string, CodeVerifier: string }) {
+  async exchangeCodeWithToken(
+    @Body() obj: { AuthCode: string; CodeVerifier: string },
+  ) {
     const { AuthCode, CodeVerifier } = obj;
 
     const users = await this.usersService.findAll();
@@ -74,10 +76,11 @@ export class AuthController {
       (project) => project.authorizationCode === AuthCode,
     );
 
-    const hashedCodeVerifier = CryptoJS.SHA256(CodeVerifier).toString(CryptoJS.enc.Base64);
+    const hashedCodeVerifier = CryptoJS.SHA256(CodeVerifier).toString(
+      CryptoJS.enc.Base64,
+    );
 
-    
-    console.log("after");
+    console.log('after');
 
     console.log(hashedCodeVerifier);
     console.log(targetUserProject.codeChallenge);
@@ -120,7 +123,7 @@ export class AuthController {
 
   @Get('github')
   @UseGuards(AuthGuard('github'))
-  async loginWithGitHub() { }
+  async loginWithGitHub() {}
 
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))
@@ -136,7 +139,7 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async loginWithGoogle() { }
+  async loginWithGoogle() {}
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
@@ -145,14 +148,14 @@ export class AuthController {
     const { access_token, user } =
       await this.authService.signInWithGoogle(user1);
 
-    const redirectUrl = `${this.frontendUrl}/auth/google/callback?token=${access_token}&user=${JSON.stringify(user)}`;
+    const redirectUrl = `${this.frontendUrl}/auth/google/callback?token=${access_token}&user=${encodeURIComponent(JSON.stringify(user))}`;
 
     return res.redirect(redirectUrl);
   }
 
   @Get('facebook')
   @UseGuards(AuthGuard('facebook'))
-  async loginWithFacebook() { }
+  async loginWithFacebook() {}
 
   @Get('facebook/callback')
   @UseGuards(AuthGuard('facebook'))
