@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { tenantModel } from '../../presentation/dtos/tenant.model';
 import { Tenant, TenantDocument } from '../../domain/entities/tenant.entity';
 import { ImageService } from './image.service';
