@@ -1,0 +1,1152 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>auth-gate documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+        <link rel="stylesheet" href="../styles/Vagrant.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">auth-gate documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content controller">
+                   <div class="content-data">
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Controllers</li>
+  <li class="breadcrumb-item" >ProjectsController</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/presentation/controllers/project.controller.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>Prefix</h3>
+            </p>
+            <p class="comment">
+                <code>projects</code>
+            </p>
+
+
+
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#create" >create</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#findOne" >findOne</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#getAll" >getAll</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#getAllPerTenant" >getAllPerTenant</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#remove" >remove</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#undelete" >undelete</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#update" >update</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#verifyTokenAndGetPayload" >verifyTokenAndGetPayload</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="create"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>create</b></span>
+                        <a href="#create"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>create(createProjectDto: <a href="../classes/projectModel.html" target="_self">projectModel</a>, authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Post()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="33"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:33</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>createProjectDto</td>
+                                            <td>
+                                                            <code><a href="../classes/projectModel.html" target="_self" >projectModel</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>authHeader</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/projectModel.html" target="_self" >Promise&lt;projectModel&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findOne"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>findOne</b></span>
+                        <a href="#findOne"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>findOne(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Get(&#x27;:id&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="72"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:72</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/Project.html" target="_self" >Promise&lt;Project&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getAll"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>getAll</b></span>
+                        <a href="#getAll"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getAll(authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Get()<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="47"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:47</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>authHeader</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/projectModel.html" target="_self" >Promise&lt;projectModel[]&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getAllPerTenant"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>getAllPerTenant</b></span>
+                        <a href="#getAllPerTenant"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getAllPerTenant(authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Get(&#x27;tenantProjects&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="63"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:63</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>authHeader</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/Project.html" target="_self" >Promise&lt;Project[]&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="remove"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>remove</b></span>
+                        <a href="#remove"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>remove(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Delete(&#x27;:id&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="143"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:143</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>authHeader</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/projectModel.html" target="_self" >Promise&lt;projectModel[]&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="undelete"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>undelete</b></span>
+                        <a href="#undelete"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>undelete(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Patch(&#x27;undelete/:id&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="93"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:93</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>authHeader</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/projectModel.html" target="_self" >Promise&lt;projectModel&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="update"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>update</b></span>
+                        <a href="#update"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>update(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>, updateProjectDto: <a href="../classes/projectModel.html" target="_self">projectModel</a>, authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@Patch(&#x27;:id&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="77"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:77</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>id</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>updateProjectDto</td>
+                                            <td>
+                                                            <code><a href="../classes/projectModel.html" target="_self" >projectModel</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>authHeader</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="../classes/projectModel.html" target="_self" >Promise&lt;projectModel&gt;</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="verifyTokenAndGetPayload"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>verifyTokenAndGetPayload</b></span>
+                        <a href="#verifyTokenAndGetPayload"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>verifyTokenAndGetPayload(authHeader: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="177"
+                                    class="link-to-prism">src/presentation/controllers/project.controller.ts:177</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>authHeader</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  BadRequestException,
+  Body,
+  ConflictException,
+  Controller,
+  Delete,
+  Get,
+  Headers,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  UnauthorizedException,
+} from &#x27;@nestjs/common&#x27;;
+import { projectModel } from &#x27;../dtos/project.model&#x27;;
+import { Project } from &#x27;src/domain/entities/project.entity&#x27;;
+import { ProjectService } from &#x27;src/infrastructure/services/project.service&#x27;;
+import { JwtService } from &#x27;@nestjs/jwt&#x27;;
+import { TenantsService } from &#x27;src/infrastructure/services/tenants.service&#x27;;
+import { UsersService } from &#x27;src/infrastructure/services/users.service&#x27;;
+import { jwtConstants } from &#x27;src/constants&#x27;;
+
+@Controller(&#x27;projects&#x27;)
+export class ProjectsController {
+  constructor(
+    private readonly projectService: ProjectService,
+    private readonly jwtService: JwtService,
+    private readonly tenantservice: TenantsService,
+    private readonly userservice: UsersService,
+  ) {}
+
+  @Post()
+  async create(
+    @Body() createProjectDto: projectModel,
+    @Headers(&#x27;Authorization&#x27;) authHeader: string,
+  ): Promise&lt;projectModel&gt; {
+    const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+    const tenantID &#x3D; payload.sub;
+    const projetListCreated: any &#x3D; await this.projectService.create(
+      createProjectDto,
+      tenantID,
+    );
+    return projetListCreated;
+  }
+
+  @Get()
+  async getAll(
+    @Headers(&#x27;Authorization&#x27;) authHeader: string,
+  ): Promise&lt;projectModel[]&gt; {
+    let payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+    let role &#x3D; payload.role;
+    if (role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
+      const tenants &#x3D; await this.tenantservice.findAll();
+      let projectList: any[] &#x3D; [];
+      for (let item of tenants) {
+        if (item.projects.length &gt;&#x3D; 1) projectList.push(item);
+      }
+      return projectList;
+    }
+  }
+
+  @Get(&#x27;tenantProjects&#x27;)
+  async getAllPerTenant(
+    @Headers(&#x27;Authorization&#x27;) authHeader: string,
+  ): Promise&lt;Project[]&gt; {
+    const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+    const tenantID &#x3D; payload.sub;
+    return await this.projectService.findAllProjectsPerTenant(tenantID);
+  }
+
+  @Get(&#x27;:id&#x27;)
+  async findOne(@Param(&#x27;id&#x27;) id: string): Promise&lt;Project&gt; {
+    return await this.projectService.findOne(id);
+  }
+
+  @Patch(&#x27;:id&#x27;)
+  async update(
+    @Param(&#x27;id&#x27;) id: string,
+    @Body() updateProjectDto: projectModel,
+    @Headers(&#x27;Authorization&#x27;) authHeader: string,
+  ): Promise&lt;projectModel&gt; {
+    const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+    const tenantID &#x3D; payload.sub;
+    const projectList: any &#x3D; await this.projectService.update(
+      id,
+      updateProjectDto,
+      tenantID,
+    );
+    return projectList;
+  }
+
+  @Patch(&#x27;undelete/:id&#x27;)
+  async undelete(
+    @Param(&#x27;id&#x27;) id: string,
+    @Headers(&#x27;Authorization&#x27;) authHeader: string,
+  ): Promise&lt;projectModel&gt; {
+    const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+    const userID &#x3D; payload.sub;
+    const user &#x3D; await this.userservice.findById(userID);
+
+    if (!user) {
+      throw new NotFoundException(&#x27;User not found&#x27;);
+    }
+
+    if (user.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
+      const tenant &#x3D; await this.tenantservice.findTenantByProjectId(id);
+      if (!tenant) {
+        throw new NotFoundException(&#x27;Tenant not found for given project ID&#x27;);
+      }
+      const tenantId &#x3D; tenant._id;
+      return await this.projectService.undelete(id, tenantId);
+    } else {
+      throw new BadRequestException(&#x27;Only admins can undelete projects&#x27;);
+    }
+  }
+
+  // @Delete(&#x27;:id&#x27;)
+  // async remove(
+  //   @Param(&#x27;id&#x27;) id: string,
+  //   @Headers(&#x27;Authorization&#x27;) authHeader: string,
+  // ): Promise&lt;projectModel[]&gt; {
+  //   let tenant: any &#x3D; &#x27;&#x27;;
+  //   const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+  //   const userID &#x3D; payload.sub;
+  //   const user &#x3D; await this.tenantservice.findById(userID);
+  //   if (user &amp;&amp; user.role &#x3D;&#x3D;&#x3D; &#x27;tenant&#x27;) {
+  //     return await this.projectService.delete(id, userID);
+  //   } else {
+  //     const user &#x3D; await this.userservice.findById(userID);
+
+  //     if (user &amp;&amp; user.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
+  //       tenant &#x3D; await this.tenantservice.findTenantByProjectId(id);
+  //       if (!tenant) {
+  //         throw new NotFoundException(&#x27;Tenant not found for given project ID&#x27;);
+  //       }
+  //       let tenantId &#x3D; tenant._id;
+  //       return await this.projectService.delete(id, tenantId);
+  //     }
+  //   }
+  // }
+
+  @Delete(&#x27;:id&#x27;)
+  async remove(
+    @Param(&#x27;id&#x27;) id: string,
+    @Headers(&#x27;Authorization&#x27;) authHeader: string,
+  ): Promise&lt;projectModel[]&gt; {
+    let tenant: any &#x3D; &#x27;&#x27;;
+    const payload &#x3D; await this.verifyTokenAndGetPayload(authHeader);
+    const userID &#x3D; payload.sub;
+
+    const tenantUser &#x3D; await this.tenantservice.findById(userID);
+    if (tenantUser) {
+      if (tenantUser.role &#x3D;&#x3D;&#x3D; &#x27;tenant&#x27;) {
+        return await this.projectService.delete(id, userID);
+      } else {
+        throw new ConflictException(
+          &quot;You can&#x27;t delete the project because of role authorization&quot;,
+        );
+      }
+    }
+
+    const adminUser &#x3D; await this.userservice.findById(userID);
+    if (adminUser &amp;&amp; adminUser.role &#x3D;&#x3D;&#x3D; &#x27;admin&#x27;) {
+      tenant &#x3D; await this.tenantservice.findTenantByProjectId(id);
+      if (!tenant) {
+        throw new NotFoundException(&#x27;Tenant not found for given project ID&#x27;);
+      }
+      const tenantId &#x3D; tenant._id;
+      return await this.projectService.delete(id, tenantId);
+    }
+
+    throw new ConflictException(
+      &quot;You can&#x27;t delete the project because of role authorization&quot;,
+    );
+  }
+
+  private async verifyTokenAndGetPayload(authHeader: string): Promise&lt;any&gt; {
+    try {
+      const token &#x3D; authHeader.split(&#x27; &#x27;)[1];
+      const payload &#x3D; await this.jwtService.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException(&#x27;Invalid token&#x27;);
+    }
+  }
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'controller';
+            var COMPODOC_CURRENT_PAGE_URL = 'ProjectsController.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

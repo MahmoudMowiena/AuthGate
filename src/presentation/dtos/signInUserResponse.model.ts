@@ -1,8 +1,15 @@
-import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEmail,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { UserProject } from 'src/domain/entities/userProject.entity';
 
 export class SignInUserResponse {
   @IsString()
-  id: string;
+  _id: string;
 
   @IsString()
   name: string;
@@ -23,5 +30,9 @@ export class SignInUserResponse {
   age?: number;
 
   @IsString()
-  role: 'user';
+  role: string;
+
+  @IsOptional()
+  @IsArray()
+  projects?: UserProject[];
 }

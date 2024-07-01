@@ -17,7 +17,7 @@ export class Project extends Document {
   @IsOptional()
   clientSECRET: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -27,6 +27,9 @@ export class Project extends Document {
   @IsUrl()
   @IsNotEmpty()
   callBackUrl: string;
+
+  @Prop({ default: false })
+  deleted: boolean;
 }
 
 export const projectSchema = SchemaFactory.createForClass(Project);

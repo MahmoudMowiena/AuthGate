@@ -8,6 +8,7 @@ import {
   Matches,
   IsArray,
   IsBoolean,
+  IsDate,
 } from 'class-validator';
 import { UserProject } from 'src/domain/entities/userProject.entity';
 
@@ -26,6 +27,14 @@ export class userModel {
   password: string;
   confirmPassword: string;
 
+  @IsOptional()
+  @IsString()
+  resetPasswordToken?: string;
+
+  @IsOptional()
+  @IsDate()
+  resetPasswordExpires?: Date;
+
   @Matches(/^\S+@\S+\.\S+$/, {
     message: 'email pattern is invalid',
   })
@@ -39,6 +48,18 @@ export class userModel {
 
   @IsOptional()
   @IsString()
+  githubId?: string;
+
+  @IsOptional()
+  @IsString()
+  googleId?: string;
+
+  @IsOptional()
+  @IsString()
+  facebookId?: string;
+
+  @IsOptional()
+  @IsString()
   image?: string;
 
   @IsOptional()
@@ -49,7 +70,14 @@ export class userModel {
   @IsArray()
   projects?: UserProject[];
 
+  @IsString()
+  role: string;
+
   @IsOptional()
   @IsBoolean()
   deleted?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isFirstTime?: boolean;
 }

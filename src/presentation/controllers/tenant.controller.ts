@@ -11,28 +11,25 @@ import {
   UseInterceptors,
   UploadedFile,
   Headers,
-  UseGuards,
-  Request,
-  Header,
   NotFoundException,
-  BadRequestException,
+  ConflictException,
+  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { tenantModel } from '../dtos/tenant.model';
 import { TenantsService } from 'src/infrastructure/services/tenants.service';
-import { ProjectService } from 'src/infrastructure/services/project.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthGuard } from '../guards/auth.guard';
-import { AuthService } from 'src/infrastructure/services/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { updateTenantModel } from '../dtos/updateTenant.model';
-import { plainToInstance } from 'class-transformer';
+import { jwtConstants } from 'src/constants';
+import { SharpPipe } from '../pipes/sharp.pipe';
+import { AuthenticationGuard } from '../guards/auth.guard';
 
 @Controller('tenants')
 export class TenantController {
   constructor(
     private readonly tenantsService: TenantsService,
     private readonly jwtservice: JwtService,
-    private readonly authservice: AuthService,
   ) {}
 
   @Get()
@@ -42,45 +39,30 @@ export class TenantController {
 
   @Get(':id')
   async getById(@Param('id') id: string): Promise<tenantModel> {
-    try {
-      const tenant = await this.tenantsService.findById(id);
-      if (!tenant) {
-        throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
-      }
-      return tenant;
-    } catch (error) {
-      throw new HttpException(
-        'Failed to retrieve tenant',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    const tenant = await this.tenantsService.findById(id);
+    if (!tenant) {
+      throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
     }
+    return tenant;
   }
 
   @Get('email/:email')
   async getByEmail(@Param('email') email: string): Promise<tenantModel> {
-    try {
-      const tenant = await this.tenantsService.findByEmail(email);
-      if (!tenant) {
-        throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
-      }
-      return tenant;
-    } catch (error) {
-      throw new HttpException(
-        'Failed to retrieve tenant',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    const tenant = await this.tenantsService.findByEmail(email);
+    if (!tenant) {
+      throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
     }
+    return tenant;
   }
 
   @Patch()
-  @UseGuards(AuthGuard)
   async update(
     @Body() updateTenantDto: tenantModel,
     @Headers('Authorization') authHeader: any,
   ): Promise<tenantModel> {
     try {
-      const token = authHeader.split(' ')[1];
-      const tenantId = this.jwtservice.verify(token).sub;
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
+      const tenantId = payload.sub;
       const updatedTenant = await this.tenantsService.update(
         tenantId,
         updateTenantDto,
@@ -88,25 +70,29 @@ export class TenantController {
       if (!updatedTenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
-      const tenantListAfterUpdate: any = await this.findAll();
-      return tenantListAfterUpdate;
+      return updatedTenant;
     } catch (error) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof NotFoundException
+      ) {
+        throw new HttpException(error.message, error.getStatus());
+      }
       throw new HttpException(
-        'Failed to update tenant',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.message || 'Failed to update tenant',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   @Patch('updateWithPassword')
-  @UseGuards(AuthGuard)
   async updateWithPassword(
     @Body() updateTenantDto: updateTenantModel,
     @Headers('Authorization') authHeader: any,
   ): Promise<tenantModel> {
     try {
-      const token = authHeader.split(' ')[1];
-      const tenantId = this.jwtservice.verify(token).sub;
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
+      const tenantId = payload.sub;
       const updatedTenant = await this.tenantsService.updateWithPassword(
         tenantId,
         updateTenantDto,
@@ -114,8 +100,7 @@ export class TenantController {
       if (!updatedTenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
-      const tenantListAfterUpdate: any = await this.findAll();
-      return tenantListAfterUpdate;
+      return updatedTenant;
     } catch (error) {
       throw new HttpException(
         error.message || 'Failed to update tenant',
@@ -124,15 +109,36 @@ export class TenantController {
     }
   }
 
+  @Patch('undelete/:id')
+  async undelete(
+    @Param('id') id: string,
+    @Headers('Authorization') authHeader: string,
+  ): Promise<tenantModel[]> {
+    try {
+      const payload = await this.verifyTokenAndGetPayload(authHeader);
+      if (payload.role === 'admin') {
+        const tenant = await this.tenantsService.undelete(id);
+        if (!tenant) {
+          throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
+        }
+        return await this.findAll();
+      }
+    } catch (error) {
+      throw new HttpException(
+        'Failed to undelete tenant',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<tenantModel> {
+  async remove(@Param('id') id: string): Promise<tenantModel[]> {
     try {
       const tenant = await this.tenantsService.remove(id);
       if (!tenant) {
         throw new HttpException('Tenant not found', HttpStatus.NOT_FOUND);
       }
-      const tenantListAfterDelete: any = await this.findAll();
-      return tenantListAfterDelete;
+      return await this.findAll();
     } catch (error) {
       throw new HttpException(
         'Failed to delete tenant',
@@ -160,12 +166,15 @@ export class TenantController {
   }
 
   @Post('image/:id')
+  @UseGuards(AuthenticationGuard)
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(
     @Param('id') id: string,
     @UploadedFile() image: Express.Multer.File,
+    @UploadedFile(SharpPipe) imageBuffer: Buffer
   ) {
-    return await this.tenantsService.addImage(id, image);
+    const imageName: string = image.originalname;
+    return await this.tenantsService.addImage(id, imageBuffer, imageName);
   }
 
   async getTenantByProjectId(projectId: string): Promise<tenantModel> {
@@ -174,5 +183,17 @@ export class TenantController {
       throw new NotFoundException('Tenant not found');
     }
     return tenant;
+  }
+
+  private async verifyTokenAndGetPayload(authHeader: string): Promise<any> {
+    try {
+      const token = authHeader.split(' ')[1];
+      const payload = await this.jwtservice.verifyAsync(token, {
+        secret: jwtConstants.secret,
+      });
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }

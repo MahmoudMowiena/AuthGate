@@ -1,8 +1,8 @@
-import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class SignInTenantResponse {
   @IsString()
-  id: string;
+  _id: string;
 
   @IsString()
   name: string;
@@ -27,5 +27,5 @@ export class SignInTenantResponse {
   image?: string;
 
   @IsString()
-  role: 'tenant';
+  role: string;
 }

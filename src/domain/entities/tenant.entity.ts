@@ -7,6 +7,7 @@ import {
   InternalServerErrorException,
   NotAcceptableException,
 } from '@nestjs/common';
+import { IsString } from 'class-validator';
 
 export type TenantDocument = Tenant & Document;
 
@@ -28,11 +29,6 @@ export class Tenant {
   @Prop({
     required: true,
     validate: [
-      // {
-      //   validator: (value: string) =>
-      //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/.test(value),
-      //   message: 'Password must be strong',
-      // },
       {
         validator: function (this: Tenant, value: string) {
           return value === this.confirmPassword;
@@ -47,12 +43,21 @@ export class Tenant {
   confirmPassword: string;
 
   @Prop()
+  resetPasswordToken?: string;
+
+  @Prop()
+  resetPasswordExpires?: Date;
+
+  @Prop({
+    match: [/^(?:\+20|0)?1[0125]\d{8}$/, 'Please use a valid phone number'],
+  })
   phone?: string;
 
   @Prop()
   address?: string;
 
-  @Prop()
+  @Prop({
+  })
   website?: string;
 
   @Prop()
@@ -60,6 +65,9 @@ export class Tenant {
 
   @Prop({ type: [projectSchema], default: [] })
   projects: Project[];
+
+  @Prop()
+  role: string;
 
   @Prop({ default: false })
   deleted: boolean;
