@@ -82,6 +82,9 @@ export class User {
 
   @Prop({ type: [UserProject] })
   projects: UserProject[];
+
+  @Prop()
+  isFirstTime?: boolean;
 }
 
 export const userSchema = SchemaFactory.createForClass(User);
