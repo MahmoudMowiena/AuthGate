@@ -157,7 +157,7 @@ export class TenantController {
         clientID,
         clientSECRET,
       );
-      const frontendURL = 'http://localhost:4200/authorize/';
+      const frontendURL = 'https://auth-gate-angular.vercel.app/authorize/';
       const callbackUrl = frontendURL + projectId;
       return { callbackUrl };
     } catch (error) {

@@ -74,54 +74,6 @@ export class ProjectsController {
     return await this.projectService.findOne(id);
   }
 
-  // @Patch(':id')
-  // async update(
-  //   @Param('id') id: string,
-  //   @Body() updateProjectDto: projectModel,
-  //   @Headers('Authorization') authHeader: string,
-  // ): Promise<projectModel> {
-  //   const payload = await this.verifyTokenAndGetPayload(authHeader);
-  //   const tenantID = payload.sub;
-  //   const neededTenant = await this.tenantservice.findById(tenantID);
-  //   const oldname = neededTenant.projects.find(
-  //     (pro) => pro._id.toString() === id,
-  //   ).name;
-  //   const projectList: any = await this.projectService.update(
-  //     id,
-  //     updateProjectDto,
-  //     neededTenant,
-  //   );
-  //   if (projectList) {
-  //     if (neededTenant) {
-  //       const neededProject = neededTenant.projects.find(
-  //         (pro) => pro._id.toString() === id,
-  //       );
-  //       if (neededProject) {
-  //         //console.log(neededTenant);
-  //         //console.log('-------------------------');
-  //         //console.log(neededProject);
-  //         if (oldname !== updateProjectDto.name) {
-  //           let users: any[] = await this.userservice.findAll();
-  //           //console.log('-------------------------');
-  //           //console.log(users);
-  //           //console.log('-------------------------');
-  //           for (const item of users) {
-  //             let projectFound = item.projects.find(
-  //               (pro) => pro.projectID === id,
-  //             );
-  //             if (projectFound) {
-  //               console.log('-------------------------');
-  //               console.log(projectFound);
-  //               item.projectFound.name = updateProjectDto.name;
-  //               item.save();
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //   return projectList;
-  // }
 
   @Patch(':id')
   async update(

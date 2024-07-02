@@ -33,7 +33,7 @@ export class AuthController {
     private tenantsService: TenantsService,
   ) {}
 
-  private readonly frontendUrl = 'http://localhost:4200';
+  private readonly frontendUrl = 'https://auth-gate-angular.vercel.app';
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
